@@ -12,11 +12,12 @@ const iso=d=>d.toISOString().slice(0,10);
 const today=()=>iso(new Date());
 const days=d=>d?Math.round((new Date(d)-new Date(today()))/864e5):Infinity;
 const addDays=n=>{const d=new Date();d.setDate(d.getDate()+n);return iso(d)};
-const save=()=>{if(S.hist.length>60)S.hist.length=60;W("items",S.items);W("lib",S.lib);W("hist",S.hist);W("mine",S.mine);W("shop",S.shop);W("plan",S.plan);W("pold",S.pold);W("coll",S.coll);W("cdel",S.cdel);W("fly",S.fly);if(!ghMute){try{localStorage.setItem("lm",Date.now())}catch(e){}if(ghOn())ghSched()}push()};
+const save=()=>{if(S.hist.length>60)S.hist.length=60;W("items",S.items);W("lib",S.lib);W("hist",S.hist);W("mine",S.mine);W("shop",S.shop);W("plan",S.plan);W("pold",S.pold);W("coll",S.coll);W("cdel",S.cdel);W("fly",S.fly);if(!ghMute){try{localStorage.setItem("lm",Date.now())}catch(e){}if(sbOn())sbSched();else if(ghOn())ghSched()}push()};
 const fmt=(q,u)=>u==="cucchiai"?(q===.5?"mezzo cucchiaio":q===1?"1 cucchiaio":+q.toFixed(2)+" cucchiai"):u==="cucchiaini"?(q===1?"1 cucchiaino":+q.toFixed(2)+" cucchiaini"):u==="pz"?q+" pz":q>=1000?(q/1000).toFixed(q%1000?2:0).replace(/\.?0+$/,"")+(u==="g"?" kg":" l"):Math.round(q)+" "+u;
 const guess=n=>{n=n.toLowerCase();for(const c in KW)if(KW[c].split(" ").some(k=>n.includes(k)))return c;return "Altro"};
 const soon=()=>S.items.filter(i=>days(i.exp)<=3);
 function toast(m){$("t").innerHTML=`<div class="toast">${m}</div>`;setTimeout(()=>$("t").innerHTML="",8000)}
+function sbOn(){return false}function sbSched(){}function cloudOn(){return ghOn()}function vAccount(){return""}function drawAccount(){}function acctBoot(){if(ghOn())ghInit()}
 const HELP={
 oggi:["Cosa puoi fare qui","Il riepilogo di oggi: i prodotti che stanno per scadere, il pasto del piano e le ricette del tuo Ricettario che puoi preparare subito con quello che hai in casa.<br>• Tocca una ricetta per leggerla passo per passo.<br>• Con i pulsanti in fondo chiedi nuove ricette all’AI, aggiungi la spesa o apri la lista."],
 colori:["Cosa puoi fare qui","Cambia l’aspetto dell’app: tema chiaro o scuro e colori. Scegli un tema già pronto o personalizza i colori: le modifiche si salvano da sole."],
@@ -38,8 +39,8 @@ function helpBox(t){const x=HELP[t];if(!x)return"";
  return hcGet()[t]?`<div style="margin:0 0 6px"><button class="btn g" ${BS} onclick="helpTog('${t}')">ℹ️ Cosa puoi fare qui</button></div>`:`<div class="card" style="padding:12px 20px;margin-top:0"><div class="row"><b>ℹ️ ${x[0]}</b><button class="x" onclick="helpTog('${t}')" aria-label="Nascondi la spiegazione">✕</button></div><div class="mu" style="margin-top:4px">${x[1]}</div></div>`}
 function render(){if(S.tab!=="nuova")S.edId=null;
  const tabs=[["oggi","🏠 Oggi"],["dispensa","Dispensa"],["add","Aggiungi spesa"],["ricette","Ricette AI"],["cerca","Cerca online"],["nuova","Nuova ricetta"],["ricettario","Ricettario"],["lista","Lista spesa"+(S.shop.filter(x=>!x.done).length?" ("+S.shop.filter(x=>!x.done).length+")":"")],["negozi","📍 Dove comprare"],["pref","Preferiti"],["cron","Cronologia"]];
- drawNav();try{drawThemePanel()}catch(e){}
- $("v").innerHTML=(S.tab==="ricette"&&S.cur?"":helpBox(S.tab))+({oggi:vOggi,dispensa:vDisp,add:vAdd,ricette:vRic,cerca:vSearch,nuova:vNew,ricettario:vBook,lista:vShop,negozi:vStores,piano:vPlan,colori:vTheme,guida:vGuida,pref:vPref,cron:vHist})[S.tab]()+(S.tab==="dispensa"?vBackup()+bkCard()+(window.setKey?ghCard():""):"");
+ drawNav();try{drawThemePanel()}catch(e){}try{drawAccount()}catch(e){}
+ $("v").innerHTML=(S.tab==="ricette"&&S.cur?"":helpBox(S.tab))+({oggi:vOggi,dispensa:vDisp,add:vAdd,ricette:vRic,cerca:vSearch,nuova:vNew,ricettario:vBook,lista:vShop,negozi:vStores,piano:vPlan,colori:vTheme,guida:vGuida,pref:vPref,cron:vHist})[S.tab]()+(S.tab==="dispensa"?vBackup()+bkCard()+(window.setKey&&!sbOn()?ghCard():""):"");
 }
 const EM=[["uov","🥚"],["pasta","🍝"],["spaghet","🍝"],["riso","🍚"],["farina","🌾"],["pane","🍞"],["latte","🥛"],["yogurt","🥛"],["panna","🥛"],["formagg","🧀"],["parmigiano","🧀"],["mozzarella","🧀"],["ricotta","🧀"],["burro","🧈"],["pollo","🍗"],["manzo","🥩"],["maiale","🥩"],["carne","🥩"],["prosciutto","🥓"],["salame","🥓"],["tonno","🐟"],["salmone","🐟"],["pesce","🐟"],["pomodor","🍅"],["passata","🍅"],["insalata","🥬"],["spinaci","🥬"],["zucchin","🥒"],["carot","🥕"],["patat","🥔"],["cipolla","🧅"],["aglio","🧄"],["limon","🍋"],["melanzan","🍆"],["mela","🍎"],["banana","🍌"],["arancia","🍊"],["fragol","🍓"],["uva","🍇"],["peperon","🫑"],["funghi","🍄"],["fagioli","🫘"],["ceci","🫘"],["lenticch","🫘"],["piselli","🌱"],["olio","🫒"],["sale","🧂"],["zucchero","🍬"],["miele","🍯"],["cioccolat","🍫"],["biscott","🍪"],["acqua","💧"],["succo","🧃"],["vino","🍷"],["birra","🍺"],["caffè","☕"]];
 const CE={"Cereali e derivati":"🌾","Latticini e uova":"🥛","Carne e pesce":"🥩","Frutta e verdura":"🥦","Legumi":"🫘","Condimenti e oli":"🫒","Dolci e snack":"🍪","Bevande":"🥤","Altro":"🛒"};
@@ -96,7 +97,7 @@ function fcSet(k,v){lss(k,v);render()}
 function drawThemePanel(){let p=$("thp");if(!p){p=document.createElement("div");p.id="thp";document.body.appendChild(p)}
  if(!S.thp){p.style.display="none";p.innerHTML="";return}
  p.style.cssText="position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.5);overflow:auto;padding:calc(env(safe-area-inset-top,0px) + 14px) 14px 40px";
- p.innerHTML=`<div style="max-width:560px;margin:0 auto" onclick="event.stopPropagation()"><div class="row" style="margin-bottom:4px"><b style="color:#fff;font-size:18px">⚙️ Impostazioni</b><button class="btn" onclick="S.thp=false;render()">Chiudi ✕</button></div>${vTheme()}</div>`;
+ p.innerHTML=`<div style="max-width:560px;margin:0 auto" onclick="event.stopPropagation()"><div class="row" style="margin-bottom:4px"><b style="color:#fff;font-size:18px">⚙️ Impostazioni</b><button class="btn" onclick="S.thp=false;render()">Chiudi ✕</button></div>${vAccount()}${vTheme()}</div>`;
  p.onclick=()=>{S.thp=false;render()}}
 const STOP=new Set("di da del della dei degli delle dello al alla allo ai agli alle il lo la i gli le un uno una e con in per a d q b qb".split(" "));
 const QUAL=new Set("fresco fresca freschi fresche secco secca secchi intero intera scremato parzialmente tritato tritata grattugiato grattugiata fine fino grosso grossa bianco bianca nero nera extra vergine biologico bio tipo dolci torte tiepido tiepida tiepidi tiepide caldo calda caldi calde freddo fredda freddi fredde ghiacciato ghiacciata temperatura ambiente sciolto sciolta fuso fusa morbido morbida ammorbidito ammorbidita liquido liquida cubetti pezzi fette affettato affettata sbucciato sbucciata lavato lavata sgocciolato sgocciolata tagliato tagliata 00 0 1 2".split(" "));
@@ -120,7 +121,7 @@ function vGuida(){
  +sec("Per stare tranquilli","Se sbagli o cambi telefono non perdi niente.",[
  ["↩️ Annulla","Dopo una cancellazione compare il pulsante Annulla."],
  ["💾 Copie di sicurezza","Ogni giorno l’app salva una copia dei dati sul dispositivo e, se hai collegato GitHub, anche nel tuo repository. Le trovi in “Dispensa”."],
- ["☁️ Sincronizzazione","Facoltativa: con GitHub puoi ritrovare gli stessi dati su telefono e computer."],
+ ["☁️ Sincronizzazione","Facoltativa: con un account (o con GitHub) ritrovi gli stessi dati su telefono e computer. L’account si gestisce dalla rotella ⚙️."],
  ["⚙️ Colori e impostazioni","Con la rotella in alto a destra, in qualsiasi schermata, scegli tema chiaro o scuro e i colori che preferisci."],
  ["📲 Come app","Dal browser scegli “Aggiungi a schermata Home”: l’app si apre a tutto schermo."]])
  +`<div class="card"><b>🔒 I tuoi dati restano tuoi</b><div class="mu" style="margin-top:4px">Dispensa, ricette e liste sono salvate su questo dispositivo e non sono visibili ad altre persone. Le immagini di volantini e scontrini vengono inviate al servizio AI solo per essere lette.</div></div>`}
