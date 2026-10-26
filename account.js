@@ -7,7 +7,7 @@ function cloudOn(){return sbOn()||ghOn()}
 let sbVer=null,sbT,sbBusy=false,sbAgain=false,sbRef=null,sbPulling=false,sbVis=false;
 function sbStore(j){const u=j.user||{},old=sbSess()||{},s={at:j.access_token,rt:j.refresh_token,exp:j.expires_at||Math.floor(Date.now()/1000)+(+j.expires_in||3600),uid:u.id||old.uid,email:u.email||old.email};try{localStorage.setItem("sbs",JSON.stringify(s))}catch(e){}return s}
 function sbClear(){localStorage.removeItem("sbs");localStorage.removeItem("sbsynced");sbVer=null;S.sbst=null}
-function sbWipe(){["items","lib","hist","ph","mine","shop","plan","pold","geo","recs","coll","cdel","fly","ftx","lm","synced","ghsynced","sbsynced","ghbk","sbbk"].forEach(k=>localStorage.removeItem(k));try{Object.keys(localStorage).filter(k=>k.startsWith("snap_")).forEach(k=>localStorage.removeItem(k))}catch(e){}}
+function sbWipe(){["items","lib","hist","ph","mine","shop","plan","pold","geo","recs","coll","cdel","fly","ftx","lm","synced","ghsynced","sbsynced","ghbk","sbbk","fam","fbase"].forEach(k=>localStorage.removeItem(k));try{Object.keys(localStorage).filter(k=>k.startsWith("snap_")).forEach(k=>localStorage.removeItem(k))}catch(e){}}
 function sbMsg(j,st){const c=(j&&(j.error_code||j.code))||"",m=String((j&&(j.msg||j.message||j.error_description||j.error))||"").toLowerCase();
  if(c==="invalid_credentials"||m.includes("invalid login"))return "Email o password non corretti.";
  if(c==="user_already_exists"||m.includes("already registered")||m.includes("already been registered"))return "Esiste già un account con questa email: accedi.";
@@ -33,14 +33,14 @@ function sbBad(r){if(r.status===401||r.status===403)return "Accesso non autorizz
 const sbTxt=()=>{const s=S.sbst;if(!s)return "In attesa della prima sincronizzazione…";return s.s==="ok"?"☁️ Sincronizzato alle "+new Date(s.t).toLocaleTimeString("it-IT",{hour:"2-digit",minute:"2-digit"}):"⚠️ "+s.m};
 function sbSt(s,m){S.sbst={s,m,t:Date.now()};const e=$("sbs");if(e)e.textContent=sbTxt();const y=$("sy");if(y&&sbOn())y.textContent=s==="ok"?"☁️ Account sincronizzato":"⚠️ Account: errore"}
 async function sbGet(){const r=await sbRest("dispensa_dati?select=data,updated_at&limit=1");if(!r.ok)throw new Error(sbBad(r));const a=await r.json();return a.length?{d:a[0].data,ver:a[0].updated_at}:null}
-function sbSched(){clearTimeout(sbT);sbT=setTimeout(()=>sbPush(),3000)}
+function sbSched(){clearTimeout(sbT);sbT=setTimeout(()=>sbPush(),3000);famSched()}
 async function sbPush(retry){if(!sbOn())return;if(sbBusy){sbAgain=true;return}sbBusy=true;
- try{const s=sbSess(),lm=+localStorage.getItem("lm")||Date.now(),body={data:{...bkData(),saved:new Date(lm).toISOString()},updated_at:new Date().toISOString()};let r,conflict=false;
+ try{const s=sbSess(),lm=+localStorage.getItem("lm")||Date.now(),body={data:{...sbData(),saved:new Date(lm).toISOString()},updated_at:new Date().toISOString()};let r,conflict=false;
   if(sbVer){r=await sbRest("dispensa_dati?user_id=eq."+s.uid+"&updated_at=eq."+encodeURIComponent(sbVer),{method:"PATCH",headers:{Prefer:"return=representation"},body:JSON.stringify(body)});
    if(r.ok){const a=await r.json();if(a.length)sbVer=a[0].updated_at;else conflict=true}}
   else{r=await sbRest("dispensa_dati",{method:"POST",headers:{Prefer:"return=representation"},body:JSON.stringify({user_id:s.uid,...body})});
    if(r.status===409)conflict=true;else if(r.ok){const a=await r.json();sbVer=a[0]?a[0].updated_at:body.updated_at}}
-  if(conflict){if(retry)throw new Error("I dati online sono cambiati da un altro dispositivo: riprova tra poco.");const g=await sbGet();sbVer=g?g.ver:null;if(g){ghMute=true;try{bkApply(g.d,false)}finally{ghMute=false}}sbBusy=false;return sbPush(1)}
+  if(conflict){if(retry)throw new Error("I dati online sono cambiati da un altro dispositivo: riprova tra poco.");const g=await sbGet();sbVer=g?g.ver:null;if(g){sbApply(g.d,false)}sbBusy=false;return sbPush(1)}
   if(!r.ok)throw new Error(sbBad(r));
   sbSt("ok");sbBackup()
  }catch(e){sbSt("err",e.message)}
@@ -49,13 +49,13 @@ async function sbPull(manual){if(!sbOn()||sbPulling)return;sbPulling=true;
  try{const g=await sbGet(),has=S.items.length||S.mine.length;
   if(!g){sbPulling=false;if(has)await sbPush();else if(manual)toast("Account collegato: non c’è ancora nessun dato online.");sbSt("ok");return}
   sbVer=g.ver;const rs=Date.parse(g.d&&g.d.saved)||0,lm=+localStorage.getItem("lm")||0,synced=localStorage.getItem("sbsynced");
-  if(!has||(synced&&rs>lm)){ghMute=true;try{bkApply(g.d,true)}finally{ghMute=false}localStorage.setItem("lm",rs);localStorage.setItem("sbsynced","1");sbSt("ok");render();if(manual)toast("✅ Dati aggiornati dall’account.")}
-  else if(!synced){ghMute=true;try{bkApply(g.d,false)}finally{ghMute=false}localStorage.setItem("sbsynced","1");localStorage.setItem("lm",Date.now());sbPulling=false;await sbPush();render()}
+  if(!has||(synced&&rs>lm)){sbApply(g.d,true);localStorage.setItem("lm",rs);localStorage.setItem("sbsynced","1");sbSt("ok");render();if(manual)toast("✅ Dati aggiornati dall’account.")}
+  else if(!synced){sbApply(g.d,false);localStorage.setItem("sbsynced","1");localStorage.setItem("lm",Date.now());sbPulling=false;await sbPush();render()}
   else if(lm>rs){sbPulling=false;await sbPush();if(manual)toast("✅ Dati salvati online.")}
   else{sbSt("ok");if(manual)toast("Tutto già aggiornato.")}
  }catch(e){sbSt("err",e.message);if(manual)toast("⚠️ "+esc(e.message))}
  sbPulling=false}
-function sbInit(){if(!sbVis&&document.addEventListener){sbVis=true;document.addEventListener("visibilitychange",()=>{if(!document.hidden&&sbOn())sbPull()})}return sbPull()}
+function sbInit(){if(!sbVis&&document.addEventListener){sbVis=true;document.addEventListener("visibilitychange",()=>{if(!document.hidden&&sbOn()){sbPull();famSync()}})}return sbPull().then(()=>famInit())}
 /* ---------- copie di sicurezza online ---------- */
 async function sbBackup(force){if(!sbOn())return false;const day=today();if(!force&&lsg("sbbk","")===day)return true;
  try{const s=sbSess(),d=bkData();delete d.ph;const r=await sbRest("dispensa_copie",{method:"POST",headers:{Prefer:"resolution=merge-duplicates,return=minimal"},body:JSON.stringify({user_id:s.uid,giorno:day,data:d})});
@@ -94,15 +94,75 @@ function sbPostLogin(quiet){const s=sbSess();if(!s)return;const prev=localStorag
 async function acctOut(wipe){const s=sbSess();if(!s)return;
  if(wipe&&!S.acctWipe){S.acctWipe=true;setTimeout(()=>{S.acctWipe=false;if(S.thp)render()},6000);render();return toast("Premi di nuovo entro 6 secondi: i dati verranno cancellati da questo dispositivo (restano online nel tuo account).")}
  S.acctWipe=false;
- if(wipe){toast("Salvo i dati online prima di cancellarli…");await sbPush();if(!S.sbst||S.sbst.s!=="ok")return toast("⚠️ Non riesco a salvare i dati online, quindi non li cancello. Controlla la connessione e riprova.")}
+ if(wipe){toast("Salvo i dati online prima di cancellarli…");await famSync();await sbPush();if(!S.sbst||S.sbst.s!=="ok")return toast("⚠️ Non riesco a salvare i dati online, quindi non li cancello. Controlla la connessione e riprova.")}
  try{const c=sbCfg();fetch(c.url+"/auth/v1/logout",{method:"POST",headers:{apikey:c.key,authorization:"Bearer "+s.at}}).catch(()=>{})}catch(e){}
  clearTimeout(sbT);sbClear();
  if(wipe){sbWipe();localStorage.removeItem("sbuid");location.reload();return}
  S.thp=false;S.acct={mode:"login"};S.acctK=null;render()}
+/* ---------- famiglia: dispensa, lista e piano condivisi ---------- */
+const FSH=["items","shop","plan"];let famBusy=false,famAgain=false,famT,famMute=false;
+const famGet=()=>{try{const f=JSON.parse(localStorage.getItem("fam"));return f&&f.id?f:null}catch(e){return null}};
+const famOn=()=>sbOn()&&!!famGet();
+const famJs=x=>JSON.stringify(x===undefined?null:x);
+function sbData(){const d=bkData();if(famOn())FSH.forEach(k=>delete d[k]);return d}
+function sbApply(d,rep){ghMute=true;try{if(famOn()){const keep={items:S.items,shop:S.shop,plan:S.plan};d={...d};FSH.forEach(k=>delete d[k]);bkApply(d,rep);S.items=keep.items;S.shop=keep.shop;S.plan=keep.plan}else bkApply(d,rep)}finally{ghMute=false}}
+function famMergeArr(b,l,r){const mp=a=>{const m=new Map();(Array.isArray(a)?a:[]).forEach(x=>{if(x&&x.id!=null)m.set(String(x.id),x)});return m};
+ const B=mp(b),Lm=mp(l),R=mp(r),out=[],seen=new Set();
+ [...(Array.isArray(l)?l:[]),...(Array.isArray(r)?r:[])].forEach(x=>{if(!x||x.id==null)return;const id=String(x.id);if(seen.has(id))return;seen.add(id);
+  const lo=Lm.get(id),ro=R.get(id),bo=B.get(id);
+  if(lo&&ro)out.push(bo&&famJs(lo)===famJs(bo)?ro:lo);
+  else if(lo){if(!bo||famJs(lo)!==famJs(bo))out.push(lo)}
+  else if(ro){if(!bo||famJs(ro)!==famJs(bo))out.push(ro)}});
+ return out}
+function famMergePlan(b,l,r){if(!l)return r===undefined?null:r;if(b!==undefined&&famJs(l)===famJs(b))return r===undefined?l:r;return l}
+function famSt(s,m){S.fst={s,m,t:Date.now()};const e=$("fst");if(e)e.textContent=famTxt()}
+const famTxt=()=>{const s=S.fst;if(!s)return "In attesa della prima sincronizzazione…";return s.s==="ok"?"👨‍👩‍👧 Condivisa e aggiornata alle "+new Date(s.t).toLocaleTimeString("it-IT",{hour:"2-digit",minute:"2-digit"}):"⚠️ "+s.m};
+function famSched(){if(famMute||!famOn())return;clearTimeout(famT);famT=setTimeout(()=>famSync(),3500)}
+async function famSync(manual){if(!famOn())return;if(famBusy){famAgain=true;return}famBusy=true;
+ try{let done=false;
+  for(let n=0;n<4&&!done;n++){const f=famGet();if(!f)break;
+   const r=await sbRest("famiglia_dati?famiglia_id=eq."+f.id+"&select=data,updated_at");if(!r.ok)throw new Error(sbBad(r));
+   const a=await r.json(),rem=a[0]||null,rd=(rem&&rem.data)||{};let base={};try{base=JSON.parse(localStorage.getItem("fbase"))||{}}catch(e){}
+   const m={items:famMergeArr(base.items,S.items,rd.items),shop:famMergeArr(base.shop,S.shop,rd.shop),plan:famMergePlan(base.plan,S.plan,rd.plan)};
+   if(famJs(m)!==famJs({items:S.items,shop:S.shop,plan:S.plan})){famMute=true;ghMute=true;try{S.items=m.items;S.shop=m.shop;S.plan=m.plan;save()}finally{ghMute=false;famMute=false}render()}
+   if(famJs(m.items)===famJs(rd.items||[])&&famJs(m.shop)===famJs(rd.shop||[])&&famJs(m.plan)===famJs(rd.plan)){localStorage.setItem("fbase",JSON.stringify(m));done=true;break}
+   const body={data:{...m,saved:new Date().toISOString()},updated_at:new Date().toISOString()};let w;
+   if(rem){w=await sbRest("famiglia_dati?famiglia_id=eq."+f.id+"&updated_at=eq."+encodeURIComponent(rem.updated_at),{method:"PATCH",headers:{Prefer:"return=representation"},body:JSON.stringify(body)});
+    if(w.ok){const b2=await w.json();if(b2.length)done=true}else throw new Error(sbBad(w))}
+   else{w=await sbRest("famiglia_dati",{method:"POST",headers:{Prefer:"return=representation"},body:JSON.stringify({famiglia_id:f.id,...body})});
+    if(w.status===409)continue;if(!w.ok)throw new Error(sbBad(w));done=true}
+   if(done)localStorage.setItem("fbase",JSON.stringify(m))}
+  if(!done)throw new Error("La lista condivisa è cambiata nel frattempo: riprova tra poco.");
+  famSt("ok");if(manual)toast("✅ Famiglia aggiornata.")
+ }catch(e){famSt("err",e.message);if(manual)toast("⚠️ "+esc(e.message))}
+ famBusy=false;if(famAgain){famAgain=false;famSched()}}
+async function famRpc(name,args){const r=await sbRest("rpc/"+name,{method:"POST",body:JSON.stringify(args||{})});let j=null;try{j=await r.json()}catch(e){}
+ if(!r.ok){const m=(j&&(j.message||j.msg))||"";if(r.status===404||/Could not find the function/i.test(m))throw new Error("La condivisione in famiglia non è ancora attiva: esegui di nuovo supabase-setup.sql in Supabase.");throw new Error(m||sbBad(r))}
+ return j}
+async function famInfo(){if(!sbOn())return;try{const j=await famRpc("info_famiglia"),had=famGet();
+  if(j&&j.id){localStorage.setItem("fam",JSON.stringify(j));if(!had){S.fst=null}}
+  else if(had){localStorage.removeItem("fam");localStorage.removeItem("fbase");toast("Non fai più parte della famiglia: i dati restano su questo dispositivo.")}
+  if(S.thp)render()}catch(e){if(famGet())famSt("err",e.message)}}
+async function famInit(){if(!sbOn())return;await famInfo();if(famOn())return famSync()}
+function famBusyUi(on,err){S.fbz=on;S.ferr=err||"";if(S.thp)render()}
+async function famCreate(){if(S.fbz)return;const n=(($("fn")||{}).value||"").trim().slice(0,40)||"La mia famiglia";famBusyUi(true);
+ try{const j=await famRpc("crea_famiglia",{p_nome:n});localStorage.setItem("fam",JSON.stringify(j));localStorage.removeItem("fbase");S.fst=null;famBusyUi(false);toast("👨‍👩‍👧 Famiglia creata. Dai il codice alle persone che vuoi invitare.");await famSync()}
+ catch(e){famBusyUi(false,e.message)}}
+async function famJoin(){if(S.fbz)return;const c=(($("fc")||{}).value||"").trim();if(!c)return famBusyUi(false,"Scrivi il codice che ti hanno dato.");famBusyUi(true);
+ try{const j=await famRpc("entra_famiglia",{p_codice:c});localStorage.setItem("fam",JSON.stringify(j));localStorage.removeItem("fbase");S.fst=null;famBusyUi(false);toast("👨‍👩‍👧 Sei entrato nella famiglia.");await famSync()}
+ catch(e){famBusyUi(false,e.message)}}
+async function famLeave(){if(S.fbz)return;if(!S.famQ){S.famQ=true;setTimeout(()=>{S.famQ=false;if(S.thp)render()},6000);if(S.thp)render();return toast("Premi di nuovo entro 6 secondi per uscire dalla famiglia.")}
+ S.famQ=false;famBusyUi(true);
+ try{await famSync();await famRpc("esci_famiglia");localStorage.removeItem("fam");localStorage.removeItem("fbase");S.fst=null;famBusyUi(false);toast("Sei uscito dalla famiglia: i dati restano su questo dispositivo.");sbSched()}
+ catch(e){famBusyUi(false,e.message)}}
+function famCopy(){const f=famGet();if(!f)return;const t=f.codice;try{navigator.clipboard.writeText(t).then(()=>toast("📋 Codice copiato: "+t),()=>toast("Codice: "+t))}catch(e){toast("Codice: "+t)}}
+function vFamiglia(){const f=famGet(),err=S.ferr?`<div class="al" style="margin-top:8px">${esc(S.ferr)}</div>`:"";
+ if(f)return `<div class="card"><b>👨‍👩‍👧 ${esc(f.nome||"Famiglia")}</b><div class="mu" style="margin-top:4px">Dispensa, lista della spesa e piano della settimana sono condivisi con ${f.n>1?"le altre "+(f.n-1)+" persone":"chi entrerà"}. Le ricette e il resto restano tuoi.</div><div style="margin-top:8px">Codice invito: <b style="letter-spacing:.08em;font-size:18px">${esc(f.codice||"")}</b></div><div class="mu" id="fst" style="margin-top:4px">${esc(famTxt())}</div><div class="row" style="gap:8px;flex-wrap:wrap;justify-content:flex-start;margin-top:10px"><button class="btn" onclick="famCopy()">📋 Copia il codice</button><button class="btn g" onclick="famSync(true)">🔄 Aggiorna</button><button class="btn g" ${S.fbz?"disabled":""} onclick="famLeave()">${S.famQ?"Conferma: esci dalla famiglia":"Esci dalla famiglia"}</button></div>${err}</div>`;
+ return `<div class="card"><b>👨‍👩‍👧 Famiglia</b><div class="mu" style="margin-top:4px">Condividi dispensa, lista della spesa e piano con chi vive con te: ognuno ha il proprio account e vede gli stessi dati. I dati che hai già su questo dispositivo vengono uniti a quelli della famiglia.</div><div style="margin-top:10px"><input id="fn" placeholder="Nome della famiglia (facoltativo)" maxlength="40"><button class="btn" style="margin-top:6px" ${S.fbz?"disabled":""} onclick="famCreate()">Crea una famiglia</button></div><div style="margin-top:12px"><input id="fc" placeholder="Hai un codice invito? Scrivilo qui" autocapitalize="characters" maxlength="14"><button class="btn g" style="margin-top:6px" ${S.fbz?"disabled":""} onclick="famJoin()">Entra con il codice</button></div>${err}</div>`}
 /* ---------- schermate ---------- */
 function vAccount(){if(!sbCfg())return"";const s=sbSess();
  if(!s)return `<div class="card"><b>👤 Account</b><div class="mu" style="margin-top:4px">Non hai effettuato l’accesso: i dati restano solo su questo dispositivo.</div><button class="btn" style="margin-top:10px" onclick="S.thp=false;acctOpen('login')">Accedi o crea un account</button></div>`;
- return `<div class="card"><b>👤 Il tuo account</b><div style="margin-top:4px;word-break:break-all">${esc(s.email||"")}</div><div class="mu" id="sbs" style="margin-top:4px">${esc(sbTxt())}</div><div class="row" style="gap:8px;flex-wrap:wrap;justify-content:flex-start;margin-top:10px"><button class="btn" onclick="sbPull(true)">🔄 Sincronizza ora</button><button class="btn g" onclick="acctOut(false)">Esci</button><button class="btn g" onclick="S.thp=false;acctOpen('newpw')">Cambia password</button></div><button class="btn g" style="margin-top:8px" onclick="acctOut(true)">${S.acctWipe?"Conferma: cancella i dati da questo dispositivo":"Esci e cancella i dati da questo dispositivo"}</button><div class="mu" style="margin-top:8px">Con “Esci” i dati restano su questo dispositivo e online. Con la cancellazione restano solo online: utile su un telefono che non è tuo.</div></div>`}
+ return vFamiglia()+`<div class="card"><b>👤 Il tuo account</b><div style="margin-top:4px;word-break:break-all">${esc(s.email||"")}</div><div class="mu" id="sbs" style="margin-top:4px">${esc(sbTxt())}</div><div class="row" style="gap:8px;flex-wrap:wrap;justify-content:flex-start;margin-top:10px"><button class="btn" onclick="sbPull(true)">🔄 Sincronizza ora</button><button class="btn g" onclick="acctOut(false)">Esci</button><button class="btn g" onclick="S.thp=false;acctOpen('newpw')">Cambia password</button></div><button class="btn g" style="margin-top:8px" onclick="acctOut(true)">${S.acctWipe?"Conferma: cancella i dati da questo dispositivo":"Esci e cancella i dati da questo dispositivo"}</button><div class="mu" style="margin-top:8px">Con “Esci” i dati restano su questo dispositivo e online. Con la cancellazione restano solo online: utile su un telefono che non è tuo.</div></div>`}
 function drawAccount(){let p=$("acct");if(!p){p=document.createElement("div");p.id="acct";document.body.appendChild(p)}
  const hide=()=>{p.style.display="none";p.innerHTML="";S.acctK=null};
  if(!sbCfg())return hide();

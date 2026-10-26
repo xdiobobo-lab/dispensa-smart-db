@@ -39,7 +39,7 @@ function helpBox(t){const x=HELP[t];if(!x)return"";
  return hcGet()[t]?`<div style="margin:0 0 6px"><button class="btn g" ${BS} onclick="helpTog('${t}')">ℹ️ Cosa puoi fare qui</button></div>`:`<div class="card" style="padding:12px 20px;margin-top:0"><div class="row"><b>ℹ️ ${x[0]}</b><button class="x" onclick="helpTog('${t}')" aria-label="Nascondi la spiegazione">✕</button></div><div class="mu" style="margin-top:4px">${x[1]}</div></div>`}
 function render(){if(S.tab!=="nuova")S.edId=null;
  const tabs=[["oggi","🏠 Oggi"],["dispensa","Dispensa"],["add","Aggiungi spesa"],["ricette","Ricette AI"],["cerca","Cerca online"],["nuova","Nuova ricetta"],["ricettario","Ricettario"],["lista","Lista spesa"+(S.shop.filter(x=>!x.done).length?" ("+S.shop.filter(x=>!x.done).length+")":"")],["negozi","📍 Dove comprare"],["pref","Preferiti"],["cron","Cronologia"]];
- drawNav();try{drawThemePanel()}catch(e){}try{drawAccount()}catch(e){}
+ drawNav();try{cookSync()}catch(e){}try{drawThemePanel()}catch(e){}try{drawAccount()}catch(e){}
  $("v").innerHTML=(S.tab==="ricette"&&S.cur?"":helpBox(S.tab))+({oggi:vOggi,dispensa:vDisp,add:vAdd,ricette:vRic,cerca:vSearch,nuova:vNew,ricettario:vBook,lista:vShop,negozi:vStores,piano:vPlan,colori:vTheme,guida:vGuida,pref:vPref,cron:vHist})[S.tab]()+(S.tab==="dispensa"?vBackup()+bkCard()+(window.setKey&&!sbOn()?ghCard():""):"");
 }
 const EM=[["uov","🥚"],["pasta","🍝"],["spaghet","🍝"],["riso","🍚"],["farina","🌾"],["pane","🍞"],["latte","🥛"],["yogurt","🥛"],["panna","🥛"],["formagg","🧀"],["parmigiano","🧀"],["mozzarella","🧀"],["ricotta","🧀"],["burro","🧈"],["pollo","🍗"],["manzo","🥩"],["maiale","🥩"],["carne","🥩"],["prosciutto","🥓"],["salame","🥓"],["tonno","🐟"],["salmone","🐟"],["pesce","🐟"],["pomodor","🍅"],["passata","🍅"],["insalata","🥬"],["spinaci","🥬"],["zucchin","🥒"],["carot","🥕"],["patat","🥔"],["cipolla","🧅"],["aglio","🧄"],["limon","🍋"],["melanzan","🍆"],["mela","🍎"],["banana","🍌"],["arancia","🍊"],["fragol","🍓"],["uva","🍇"],["peperon","🫑"],["funghi","🍄"],["fagioli","🫘"],["ceci","🫘"],["lenticch","🫘"],["piselli","🌱"],["olio","🫒"],["sale","🧂"],["zucchero","🍬"],["miele","🍯"],["cioccolat","🍫"],["biscott","🍪"],["acqua","💧"],["succo","🧃"],["vino","🍷"],["birra","🍺"],["caffè","☕"]];
@@ -58,7 +58,7 @@ const GR=[["🏠","Oggi",[["oggi","Oggi"],["guida","ℹ️ Cosa puoi fare"]]],["
 function drawNav(){const gi=Math.max(0,GR.findIndex(g=>g[2].some(t=>t[0]===S.tab))),g=GR[gi],n=S.shop.filter(x=>!x.done).length;S.gt=S.gt||{};S.gt[gi]=S.tab;
  $("nav").innerHTML=g[2].length>1?g[2].map(([k,t])=>`<button class="${S.tab===k?"on":""}" onclick="S.tab='${k}';render()">${t}</button>`).join(""):"";
  $("nav").style.display=g[2].length>1?"flex":"none";
- $("bar").innerHTML=GR.map((x,i)=>`<button class="${i===gi?"on":""}" onclick="S.tab=(S.gt&&S.gt[${i}])||'${x[2][0][0]}';render()"><span>${x[0]}</span>${x[1]}${x[1]==="Spesa"&&n?" ("+n+")":""}</button>`).join("")}
+ $("bar").innerHTML=GR.map((x,i)=>`<button class="${i===gi?"on":""}" onclick="S.tab=(S.gt&&S.gt[${i}])||'${x[2][0][0]}';render()"><span>${x[0]}</span>${x[1]}${x[1]==="Spesa"&&n?" ("+n+")":""}${x[1]==="Oggi"&&soon().length?" ⚠️"+soon().length:""}</button>`).join("")}
 const TP={
  verde:{n:"Verde",light:{bg:"#f1f8f1",card:"#ffffff",tx:"#14281a",mu:"#5f7a66",ac:"#2e9e57",acx:"#ffffff",bd:"#cfe6d4"},dark:{bg:"#0f1a13",card:"#17261c",tx:"#e6f3ea",mu:"#8fb09a",ac:"#4cc77a",acx:"#06210f",bd:"#27402f"}},
  oceano:{n:"Oceano",light:{bg:"#eef6fb",card:"#ffffff",tx:"#10253a",mu:"#5b7791",ac:"#1d7fd1",acx:"#ffffff",bd:"#cfe2f1"},dark:{bg:"#0e1822",card:"#162533",tx:"#e5eff8",mu:"#8aa6bf",ac:"#4aa8f0",acx:"#06203a",bd:"#26394c"}},
@@ -94,10 +94,11 @@ function sx(k,v){S["sx_"+k]=v;render();const e=$("sx_"+k);if(e){e.focus();try{e.
 const sxBox=(k,ph)=>`<input id="sx_${k}" type="search" placeholder="🔎 ${ph}" value="${esc(S["sx_"+k]||"")}" oninput="sx('${k}',this.value)" style="margin:8px 0">`;
 const sxOk=(k,txt)=>{const q=nm(S["sx_"+k]||"");return !q||nm(txt).includes(q)};
 function fcSet(k,v){lss(k,v);render()}
+const APP_VER="2.0.0";
 function drawThemePanel(){let p=$("thp");if(!p){p=document.createElement("div");p.id="thp";document.body.appendChild(p)}
  if(!S.thp){p.style.display="none";p.innerHTML="";return}
  p.style.cssText="position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.5);overflow:auto;padding:calc(env(safe-area-inset-top,0px) + 14px) 14px 40px";
- p.innerHTML=`<div style="max-width:560px;margin:0 auto" onclick="event.stopPropagation()"><div class="row" style="margin-bottom:4px"><b style="color:#fff;font-size:18px">⚙️ Impostazioni</b><button class="btn" onclick="S.thp=false;render()">Chiudi ✕</button></div>${vAccount()}${vTheme()}</div>`;
+ p.innerHTML=`<div style="max-width:560px;margin:0 auto" onclick="event.stopPropagation()"><div class="row" style="margin-bottom:4px"><b style="color:#fff;font-size:18px">⚙️ Impostazioni</b><button class="btn" onclick="S.thp=false;render()">Chiudi ✕</button></div>${vAccount()}${vTheme()}<div style="text-align:center;color:#fff;opacity:.75;margin-top:14px;font-size:13px">Dispensa Smart · versione ${APP_VER}</div></div>`;
  p.onclick=()=>{S.thp=false;render()}}
 const STOP=new Set("di da del della dei degli delle dello al alla allo ai agli alle il lo la i gli le un uno una e con in per a d q b qb".split(" "));
 const QUAL=new Set("fresco fresca freschi fresche secco secca secchi intero intera scremato parzialmente tritato tritata grattugiato grattugiata fine fino grosso grossa bianco bianca nero nera extra vergine biologico bio tipo dolci torte tiepido tiepida tiepidi tiepide caldo calda caldi calde freddo fredda freddi fredde ghiacciato ghiacciata temperatura ambiente sciolto sciolta fuso fusa morbido morbida ammorbidito ammorbidita liquido liquida cubetti pezzi fette affettato affettata sbucciato sbucciata lavato lavata sgocciolato sgocciolata tagliato tagliata 00 0 1 2".split(" "));

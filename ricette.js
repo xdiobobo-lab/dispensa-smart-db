@@ -1,11 +1,6 @@
 /* Dispensa Smart - ricette.js */
-const matchItOld=g=>{if(g.id)return S.items.find(i=>i.id===g.id);const n=nm(g.name);if(n.length<3)return;return S.items.find(i=>i.u===g.unit&&nm(i.name).length>=3&&(nm(i.name).includes(n)||n.includes(nm(i.name))))};
 const srcLinks=r=>{const q=encodeURIComponent("ricetta "+r.title),a=u=>`<a href="https://www.google.com/search?q=${q}${u}" target="_blank" rel="noopener noreferrer">`;return `<div class="mu" style="margin-top:8px">${r.origin?"🌍 Origine: "+esc(r.origin)+"<br>":""}📚 Fonte: elaborata dall’AI, non copiata da un sito. Confrontala con le fonti reali: ${a("")}Google ↗</a> · ${a("+site:giallozafferano.it")}GialloZafferano ↗</a> · ${a("+site:cucchiaio.it")}Cucchiaio d’Argento ↗</a></div>`};
 const BASIC=/^(acqua|sale|pepe|ghiaccio)\b/i;
-function availOld(g){if(BASIC.test(g.name||""))return{st:"ok"};
- let it=matchIt(g);const amt=+g.amount||0;
- if(!it){const n=nm(g.name);if(n.length>=3)it=S.items.find(i=>nm(i.name).length>=3&&(nm(i.name).includes(n)||n.includes(nm(i.name))));return it?{st:"ok",it,note:true}:{st:"no"}}
- return amt>0&&it.u===g.unit&&it.q<amt?{st:"part",it}:{st:"ok",it}}
 const inList=g=>S.shop.some(x=>!x.done&&nm(x.name)===nm(g.name));
 const miss=r=>r.ingredients.filter(g=>avail(g).st!=="ok").length;
 const avTxt=r=>{const m=miss(r);return m?`🛒 mancano ${m} ingredient${m===1?"e":"i"}`:"✅ hai tutto"};
@@ -72,7 +67,7 @@ function vOggi0(){
  const now=info.filter(o=>o.m===0).sort((a,b)=>b.ex-a.ex).slice(0,6),almost=info.filter(o=>o.m>0&&o.m<=2).sort((a,b)=>a.m-b.m).slice(0,4);
  const tile=o=>`<div class="card row" style="cursor:pointer" onclick="${o.k==="m"?`openM(${o.i})`:`open_(${o.i})`}">${th(o.r)}<div style="flex:1"><b>${esc(o.r.title)}</b>${o.ex?' <span class="bd">usa prodotti in scadenza</span>':""}<div class="mu">${esc(o.r.time||"")}${o.r.course?" · "+esc(o.r.course):""}<br>${avTxt(o.r)}</div></div><span>›</span></div>`;
  let h=`<div class="card"><b style="font-size:18px">${new Date().toLocaleDateString("it-IT",{weekday:"long",day:"numeric",month:"long"})}</b><div class="mu" style="margin-top:4px">🥫 ${S.items.length} prodotti · ⚠️ ${s.length} in scadenza · 🛒 ${op} da comprare</div></div>`;
- if(s.length)h+=`<div class="al">⚠️ Da consumare presto: <b>${s.map(i=>esc(i.name)+" ("+(days(i.exp)<=0?"oggi":days(i.exp)+" gg")+")").join(", ")}</b></div>`;
+ h+=scadHtml();
  const dk=["dom","lun","mar","mer","gio","ven","sab"][new Date().getDay()],PL=S.plan&&S.plan.start===weekStart()?S.plan:null,tm=PL&&PL.days[dk];
  h+=offBanner();if(tm&&(tm.pranzo||tm.cena))h+=`<h2>📅 Oggi a tavola</h2>`+["pranzo","cena"].filter(k=>tm[k]).map(k=>`<div class="card row" style="cursor:pointer" onclick="planOpen('${dk}','${k}')">${th(tm[k].r)}<div style="flex:1"><div class="mu">${k==="pranzo"?"☀️ Pranzo":"🌙 Cena"}</div><b>${esc(tm[k].r.title)}</b>${tm[k].done?' <span class="bd ok">✅ completato</span>':""}</div><span>›</span></div>`).join("");
  h+=`<h2>🍽️ Puoi cucinarle ora</h2>`+(now.length?now.map(tile).join(""):`<p class="mu">Nessuna ricetta del Ricettario è realizzabile con la dispensa di adesso.</p>`);
@@ -125,6 +120,14 @@ function collTog(cidv,rid){const c=S.coll.find(x=>x.id===cidv);if(!c)return;cons
 function collMake(rid){const n=($("cq").value||"").trim();if(!n)return toast("Scrivi il nome della nuova raccolta.");S.coll.push(ctouch({id:cid(),name:n,ids:[rid]}));save();render();toast(`📁 Raccolta “${esc(n)}” creata`)}
 
 /* ===== volantini ===== */
+function scadHtml(){const L=S.items.filter(i=>i.exp&&days(i.exp)<=3).sort((a,b)=>a.exp<b.exp?-1:1);if(!L.length)return"";
+ const G=[["Scaduti",i=>days(i.exp)<0],["Scadono oggi",i=>days(i.exp)===0],["Scadono domani",i=>days(i.exp)===1],["Entro 3 giorni",i=>days(i.exp)>=2]];
+ return `<div class="card" style="border-color:var(--wa)"><b>⏰ Da consumare presto</b>${G.map(([t,f])=>{const a=L.filter(f);return a.length?`<div style="margin-top:8px"><span class="bd">${t}</span> ${a.map(i=>esc(i.name)+" ("+fmt(i.q,i.u)+")").join(" · ")}</div>`:""}).join("")}<div class="row" style="gap:6px;flex-wrap:wrap;justify-content:flex-start;margin-top:10px"><button class="btn" ${BS} onclick="S.tab='ricette';render()">🍽️ Ricette per consumarli</button><button class="btn g" ${BS} onclick="S.tab='dispensa';render()">Apri la dispensa</button></div></div>`}
+const isCook=()=>S.cook===undefined?(S.cook=lsg("cook","")==="1"):S.cook;
+async function cookWake(on){try{if(on&&navigator.wakeLock){S.wl=await navigator.wakeLock.request("screen");S.wl.addEventListener("release",()=>{S.wl=null})}else if(S.wl){const w=S.wl;S.wl=null;await w.release()}}catch(e){}}
+function cookSync(){const want=isCook()&&S.tab==="ricette"&&!!S.cur;if(want&&!S.wl&&!S.wlb){S.wlb=true;cookWake(true).finally(()=>{S.wlb=false})}else if(!want&&S.wl)cookWake(false);
+ if(!window.__cwv&&document.addEventListener){window.__cwv=1;document.addEventListener("visibilitychange",()=>{if(!document.hidden)cookSync()})}}
+function cookTog(){S.cook=!isCook();lss("cook",S.cook?"1":"");render();toast(S.cook?"👨‍🍳 Modalità cucina: testo grande e schermo sempre acceso.":"Modalità cucina disattivata.")}
 function vRic(){
  if(S.cur)return vCur();
  const s=soon();
@@ -149,12 +152,12 @@ Rispondi SOLO con un array JSON: [{"title":"","emoji":"🍝","course":"Antipasto
  S.busy=false;render()}
 function open_(i){S.cur=S.recs[i];S.step=0;S.done={};S.from="ricette";render()}
 function vCur(){const r=cr(),n=r.steps.length,last=S.step===n-1,l=S.lib[r.title]||{};
- return `<button class="btn g" onclick="S.cur=null;S.tab=S.from||'ricette';render()">← Indietro</button><h2 style="font-size:20px">${esc(r.title)}</h2><div>${srcB(r)}${r.course?` <span class="bd">🍽️ ${esc(r.course)}</span>`:""}</div>${(r.time||r.cook)?`<div class="mu" style="margin-top:6px">${r.time?"⏱️ "+(r.cook?"Preparazione":"Tempo")+": "+esc(r.time):""}${r.time&&r.cook?" · ":""}${r.cook?"🔥 Cottura: "+esc(r.cook):""}</div>`:""}${r.src==="web"?srcLinks(r):""}${r.src==="link"&&r.link?`<div class="mu" style="margin-top:6px;word-break:break-all">🔗 Fonte: <a href="${esc(r.link)}" target="_blank" rel="noopener noreferrer">${esc(r.link)}</a></div>`:""}${photoBlock(r)}
+ return `<button class="btn g" onclick="S.cur=null;S.tab=S.from||'ricette';render()">← Indietro</button> <button class="btn ${isCook()?"":"g"}" style="float:right" onclick="cookTog()">${isCook()?"✅ Modalità cucina":"👨‍🍳 Modalità cucina"}</button><h2 style="font-size:20px">${esc(r.title)}</h2><div>${srcB(r)}${r.course?` <span class="bd">🍽️ ${esc(r.course)}</span>`:""}</div>${(r.time||r.cook)?`<div class="mu" style="margin-top:6px">${r.time?"⏱️ "+(r.cook?"Preparazione":"Tempo")+": "+esc(r.time):""}${r.time&&r.cook?" · ":""}${r.cook?"🔥 Cottura: "+esc(r.cook):""}</div>`:""}${r.src==="web"?srcLinks(r):""}${r.src==="link"&&r.link?`<div class="mu" style="margin-top:6px;word-break:break-all">🔗 Fonte: <a href="${esc(r.link)}" target="_blank" rel="noopener noreferrer">${esc(r.link)}</a></div>`:""}${photoBlock(r)}
 ${porUI()}<div class="card"><b>Ingredienti</b><ul style="margin:6px 0 0;padding-left:18px">${r.ingredients.map((g,gi)=>{const a=avail(g),ok=a.st==="ok";return `<li style="${ok?"":"color:var(--mu);opacity:.7"}">${emo(g.name)} ${esc(g.name)} — ${g.amount?g.amount+" "+esc(g.unit):"q.b."}${g.id||(r.src&&r.src!=="ai")?"":' <span class="mu">(base)</span>'}${ok?(a.it&&(a.note||a.via||nm(a.it.name)!==nm(g.name))?` <span class="mu">(${a.via?"alternativa: ":"in dispensa: "}${esc(a.it.name)}, ${fmt(a.it.q,a.it.u)})</span>`:""):(a.st==="part"?` (hai solo ${fmt(a.it.q,a.it.u)})`:" (non disponibile)"+(altOf(g).length?" — oppure: "+altOf(g).slice(0,3).map(esc).join(", "):""))+" "+(inList(g)?`<span class="bd ok">✅ in lista</span>`:`<button class="btn g" style="padding:2px 10px;font-size:12px" onclick="shopOne(${gi})">🛒 Aggiungi alla lista</button>`)}</li>`}).join("")}</ul><button class="btn g" style="margin-top:10px" onclick="toShop(cr())">🛒 Aggiungi alla lista della spesa</button> <button class="btn g" style="margin-top:10px" onclick="saveR(S.cur)">${inBook(r)?"✅ Nel ricettario":"💾 Salva nel ricettario"}</button>${inBook(r)?` <button class="btn g" style="margin-top:10px" onclick="editM(S.mine.findIndex(m=>m.title===S.cur.title))">✏️ Modifica ricetta</button>`:""}</div>
 ${r.notes?`<div class="card"><b>📝 Note</b><div style="white-space:pre-wrap">${esc(r.notes)}</div></div>`:""}<div class="dots">${r.steps.map((_,i)=>`<button class="${i===S.step?"on":S.done[i]?"d":""}" onclick="S.step=${i};render()" aria-label="Step ${i+1}">${i+1}</button>`).join("")}</div>
-<div class="card"><div class="mu">STEP ${S.step+1} DI ${n}</div><p style="font-size:18px;margin:6px 0">${esc(r.steps[S.step])}</p></div>
-<div class="row"><button class="btn g" ${S.step?"":"disabled"} onclick="go(-1)">← Indietro</button>
-${last?`<button class="btn" onclick="${S.from==="piano"?"planFinish()":"finish()"}">✅ Segna ricetta completata</button>`:`<button class="btn" onclick="go(1)">Avanti →</button>`}</div>
+<div class="card"><div class="mu">STEP ${S.step+1} DI ${n}</div><p style="font-size:${isCook()?"28px;line-height:1.35":"18px"};margin:6px 0">${esc(r.steps[S.step])}</p></div>
+<div class="row"><button class="btn g" ${S.step?"":"disabled"} style="${isCook()?"padding:18px 24px;font-size:20px":""}" onclick="go(-1)">← Indietro</button>
+${last?`<button class="btn" onclick="${S.from==="piano"?"planFinish()":"finish()"}">✅ Segna ricetta completata</button>`:`<button class="btn" style="${isCook()?"padding:18px 28px;font-size:20px":""}" onclick="go(1)">Avanti →</button>`}</div>
 <div class="card" style="margin-top:14px"><div class="row"><div>${[1,2,3,4,5].map(k=>`<button class="st ${(l.stars||0)>=k?"on":""}" onclick="rate(${k})" aria-label="${k} stelle">★</button>`).join("")}</div><button class="btn g" onclick="fav()">${l.fav?"♥ Nei preferiti":"♡ Aggiungi ai preferiti"}</button></div></div>`}
 function photoBlock(r){const p=S.ph[r.title];
  return p?`<div class="card" style="padding:0;overflow:hidden"><img src="${esc(p)}" alt="${esc(r.title)}" style="width:100%;max-height:300px;object-fit:cover;display:block"><div class="row" style="padding:8px 12px"><label class="btn g" style="cursor:pointer">Cambia foto<input type="file" accept="image/*" hidden onchange="pick(this)"></label><button class="btn g" onclick="rmPh()">Rimuovi</button></div></div>`

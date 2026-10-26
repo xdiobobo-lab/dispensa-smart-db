@@ -1,0 +1,97 @@
+ACCESSO CON ACCOUNT (registrazione e login) - istruzioni
+=========================================================
+
+Cosa ottieni
+- Schermata di accesso: ognuno si registra con email e password.
+- Ogni utente ha la sua dispensa, ricette, lista e piano, e li ritrova accedendo
+  da telefono o computer.
+- Copie di sicurezza giornaliere online (ultime 14).
+- Chi non vuole un account può toccare "Continua senza account": l'app funziona
+  come prima, con i dati solo sul dispositivo.
+
+Cosa serve: un account gratuito su Supabase (supabase.com). Il piano gratuito basta.
+Attenzione: sul piano gratuito un progetto senza visite per 7 giorni viene messo in
+pausa. Si riattiva con un clic dalla dashboard (i dati non si perdono), ma finché è
+in pausa l'accesso non funziona.
+
+PASSO 1 - Crea il progetto
+1. Vai su supabase.com, accedi e premi "New project".
+2. Dai un nome (per esempio dispensa), scegli una password per il database
+   (conservala) e una regione in Europa. Attendi un paio di minuti.
+
+PASSO 2 - Crea il database
+1. Nel menu a sinistra apri "SQL Editor" e "New query".
+2. Apri il file supabase-setup.sql, copia tutto il testo, incollalo e premi "Run".
+   Deve comparire "Success".
+
+PASSO 3 - Regola l'accesso
+1. Menu "Authentication" > "Sign In / Providers" > Email.
+2. Conferma email: puoi scegliere
+   - SPENTA (consigliato per famiglia): chi si registra entra subito.
+   - ACCESA: chi si registra riceve un'email da confermare. Il servizio di posta
+     gratuito di Supabase invia pochissime email all'ora, quindi con più persone
+     può bloccarsi. Vale lo stesso per "Password dimenticata".
+3. Menu "Authentication" > "URL Configuration":
+   - Site URL: l'indirizzo del tuo sito, per esempio
+     https://xdiobobo-lab.github.io/dispensa-smart/
+   - Redirect URLs: aggiungi lo stesso indirizzo.
+   Serve perché i link nelle email (conferma, nuova password) riportino all'app.
+4. Quando tutti i tuoi familiari si sono registrati puoi spegnere "Allow new users
+   to sign up" (Authentication > Sign In / Providers), così nessun altro può creare
+   account.
+
+PASSO 4 - Collega l'app
+1. Menu "Project Settings" (ingranaggio) > "API" (o "API Keys").
+2. Copia "Project URL" (https://xxxx.supabase.co) e la chiave "anon public"
+   (chiamata anche "publishable").
+3. Apri config.js con un editor di testo e scrivi i due valori tra le virgolette:
+     window.SB_CONFIG={url:"https://xxxx.supabase.co",key:"la-tua-chiave-anon"};
+4. Carica config.js nel repository del sito, insieme agli altri file.
+
+SICUREZZA - da sapere
+- La chiave "anon public" è fatta per stare nel sito: è pubblica per natura. A
+  proteggere i dati è lo script SQL, che permette a ogni utente di vedere solo le
+  proprie righe.
+- NON usare MAI la chiave "service_role" (quella segreta) né nel sito né in
+  config.js.
+- Le password non passano da noi: le gestisce Supabase.
+- L'accesso protegge i dati online. I dati salvati sul dispositivo restano leggibili
+  da chi usa quel telefono: su un dispositivo non tuo usa "Esci e cancella i dati".
+
+COSA SUCCEDE ALLA PRIMA REGISTRAZIONE
+- Se sul dispositivo ci sono già dati (ricette, dispensa), vengono salvati nel nuovo
+  account.
+- Se accedi con un altro account sullo stesso dispositivo, i dati locali del
+  precedente vengono tolti dal dispositivo (restano online nel suo account) e si
+  scaricano quelli del nuovo.
+
+SE QUALCOSA NON FUNZIONA
+- "Il database online non è pronto": non hai eseguito supabase-setup.sql.
+- "Email o password non corretti": controlla; per le password dimenticate usa il
+  link nella schermata di accesso.
+- "Troppe richieste": con la conferma email accesa il limite di invio è basso;
+  aspetta o spegni la conferma.
+- La schermata di accesso non compare: config.js è ancora vuoto o non è stato
+  caricato nel repository.
+
+FAMIGLIA (dispensa, lista e piano condivisi)
+- Serve aver eseguito di nuovo supabase-setup.sql (ora contiene anche la parte
+  "FAMIGLIA"). Si può rieseguire senza problemi.
+- Ogni persona ha il proprio account. Una crea la famiglia da Impostazioni (⚙️) e
+  passa il codice invito alle altre, che scelgono "Entra con il codice".
+- Si condividono SOLO dispensa, lista della spesa e piano della settimana. Ricette,
+  volantini e colori restano personali.
+- Le modifiche fatte da due persone nello stesso momento vengono unite: non si
+  perde nulla. Se uno cancella un prodotto, sparisce per tutti.
+- I dati che una persona ha già sul telefono vengono UNITI a quelli della famiglia
+  (possono comparire doppioni da togliere a mano).
+- Chi esce dalla famiglia tiene una copia dei dati, ma non riceve più gli
+  aggiornamenti. L'ultima persona che esce chiude la famiglia.
+- Chi ha il codice può entrare: non pubblicarlo.
+
+PROGETTO GRATUITO IN PAUSA
+- Un progetto Supabase gratuito va in pausa dopo circa 7 giorni senza alcuna
+  attività. L'app mostra un errore di connessione e i dati restano al sicuro.
+- Per riattivarlo: apri supabase.com, entra nel progetto e premi "Restore project".
+  Se lo usate ogni settimana non succede.
+- Nel dubbio, ogni tanto usa "Copie di sicurezza" > scarica un file con i dati.
