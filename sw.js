@@ -1,4 +1,4 @@
-const C="dispensa-v20261026c";
+const C="dispensa-v20261027a;
 const FILES=["./","index.html","style.css","ai.js","config.js","core.js","dispensa.js","ricette.js","piano.js","negozi.js","account.js","dati.js","manifest.webmanifest","icon-192.png","icon-512.png"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(FILES.map(f=>f==="./"||f==="config.js"?f:f+"?v=20261026c"))));self.skipWaiting()});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))));self.clients.claim()});
