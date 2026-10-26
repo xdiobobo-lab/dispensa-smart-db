@@ -3,6 +3,14 @@
 Tutte le modifiche importanti a **Dispensa Smart** sono annotate qui.
 Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) e il numero di versione, mostrato in basso nelle Impostazioni (⚙️), segue il [versionamento semantico](https://semver.org/lang/it/).
 
+## [2.0.1] – 2026-10-26
+
+### Novità
+- **Avviso di nuova versione**: quando sul sito c'è un aggiornamento, l'app mostra "C'è una nuova versione" con il pulsante **Aggiorna**, che scarica i file nuovi senza toccare i dati. Evita di dover cancellare a mano la memoria del browser.
+
+### Note per chi installa
+- Dopo ogni aggiornamento carica tutti i file insieme (compreso il nuovo `versione.json`), ma **non** sovrascrivere `config.js` con quello vuoto dello zip.
+
 ## [2.0.0] – 2026-10-26
 
 ### Novità
