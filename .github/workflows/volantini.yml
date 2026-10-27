@@ -1,1 +1,30 @@
 
+name: Scarica volantini
+on:
+  schedule:
+    - cron: "30 4 * * *"   # ogni giorno alle 04:30 UTC
+  workflow_dispatch: {}     # anche a mano dalla scheda Actions
+permissions:
+  contents: write
+concurrency:
+  group: volantini
+  cancel-in-progress: false
+jobs:
+  volantini:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:Q
+          node-version: 20
+      - name: Browser
+        run: npm install --no-save playwright && npx playwright install --with-deps chromium
+      - name: Scarica i volantini
+        run: node scripts/scarica-volantini.mjs
+      - name: Salva i risultati
+        run: |
+          git config user.name "volantini-bot"
+          git config user.email "volantini-bot@users.noreply.github.com"
+          git add volantini
+          git diff --cached --quiet || (git commit -m "Volantini: aggiornamento automatico" Q&& git push)
