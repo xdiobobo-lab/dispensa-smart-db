@@ -217,7 +217,22 @@ async function vcCerca(){const f=S.vc||{};
   if(sbOn()){try{const r=await sbRest("richieste_volantini",{method:"POST",headers:{Prefer:"return=minimal"},body:JSON.stringify({catena:f.catena,regione:f.regione,citta,chiave:vcSlug(f.catena)+"|"+vcSlug(citta)})});
     if(!r.ok&&r.status!==409){let j=null;try{j=await r.json()}catch(e){}const m=(j&&(j.message||j.msg||j.hint))||"",cod=(j&&j.code)||"";S.vcr={n:0,err:(r.status===404||cod==="PGRST205"||cod==="42P01")?"La ricerca non è ancora attiva: la tabella delle richieste non esiste ancora in Supabase (esegui il blocco SQL, poi attendi un minuto).":cod==="42501"?"Supabase rifiuta la richiesta: "+(m||"permessi insufficienti")+" ["+cod+"]":"Non riesco a salvare la richiesta: "+(m||sbBad(r))+(cod?" ["+cod+"]":"")}}else S.vcr={n:0,ric:1,citta}}catch(e){S.vcr={n:0,err:e.message}}}
   else S.vcr={n:0,login:1}}
- render()}
+ render();if(S.vcr&&S.vcr.ric)vcAvvia()}
+function vcPx(){try{return window.__PX&&window.__PX()}catch(e){return null}}
+async function vcApi(path,m){const p=vcPx();if(!p)throw new Error("Accesso all'AI non attivo su questo dispositivo.");const r=await fetch(p.u.replace(/\/+$/,"")+"/v1/volantini/"+path,{method:m||"GET",headers:{"x-access-code":p.c}});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error((j.error&&j.error.message)||"Errore "+r.status);return j}
+async function vcAvvia(){const R=S.vcr;if(!R||!vcPx())return;R.att=1;render();
+ try{const j=await vcApi("avvia","POST");R.t0=(j.t||Date.now())-15000;R.gia=!!j.gia;R.again=!!j.gia;vcPoll(Date.now())}
+ catch(e){if(S.vcr===R){R.att=0;R.warn=e.message;render()}}}
+async function vcPoll(t){const R=S.vcr;if(!R||!R.att)return;
+ if(Date.now()-t>15*60000){R.att=0;R.warn="La ricerca sta durando più del previsto: riprova tra poco.";return render()}
+ try{const j=await vcApi("stato"),u=j.ultima;
+  if(u&&u.stato==="completed"&&(R.gia||new Date(u.creata).getTime()>=R.t0)){
+   if(R.again){R.again=false;R.gia=false;const k=await vcApi("avvia","POST");R.t0=(k.t||Date.now())-15000;R.gia=!!k.gia;R.again=!!k.gia;render();return setTimeout(()=>vcPoll(t),8000)}
+   R.att=0;await new Promise(r=>{flyIdx();setTimeout(r,1500)});const trov=vcFind();
+   if(trov.length)S.vcr={n:trov.length};else{R.fine=1;R.ok=u.conclusione==="success"}
+   return render()}
+ }catch(e){R.warn=e.message}
+ if(S.vcr===R){render();setTimeout(()=>vcPoll(t),8000)}}
 function vcFlyers(trov){return trov.map(x=>`<div style="margin-top:14px"><b>${esc(x.n.nome)}</b>${x.n.regione?` <span class="bd">${esc(x.n.regione)}</span>`:""}${x.n.citta?` <span class="mu">${esc(x.n.citta)}</span>`:""}<div style="display:flex;gap:10px;overflow-x:auto;padding:8px 0;scroll-snap-type:x proximity">${x.v.map(y=>`<div style="flex:0 0 150px;scroll-snap-align:start"><div onclick="flyOpen(${x.si},${y.fi})" style="cursor:pointer;aspect-ratio:3/4;background:var(--bd);border-radius:14px;overflow:hidden"><img src="volantini/${esc(y.v.pagine[0])}" alt="Copertina" loading="lazy" style="width:100%;height:100%;object-fit:cover"></div><div style="font-size:13px;margin-top:6px;line-height:1.3">${esc(y.v.nome||"Volantino")}</div><div class="mu" style="font-size:12px">${y.v.pagine.length} pagine${y.v.validita?" · "+esc(y.v.validita):""}</div><button class="btn" style="width:100%;margin-top:6px;padding:8px;font-size:14px" onclick="flyOpen(${x.si},${y.fi})">📖 Sfoglia</button><button class="btn g" style="width:100%;margin-top:6px;padding:8px;font-size:14px;${S.fb?"opacity:.5;pointer-events:none":""}" onclick="flyAiRead(${x.si},${y.fi})">🤖 Leggi le offerte</button></div>`).join("")}</div></div>`).join("")}
 function vSfoglia(){if(S.fidx===undefined){S.fidx=null;flyIdx()}
  if(!S.vc){try{S.vc=JSON.parse(localStorage.getItem("vc"))||{}}catch(e){S.vc={}}}
@@ -225,7 +240,9 @@ function vSfoglia(){if(S.fidx===undefined){S.fidx=null;flyIdx()}
  let res="";
  if(r&&r.q)res=`<div class="mu" style="margin-top:12px">Cerco…</div>`;
  else if(r&&r.n)res=vcFlyers(vcFind());
- else if(r&&r.ric)res=`<div class="card" style="margin-top:12px;border-color:var(--ac)"><b>✅ Richiesta registrata</b><div style="margin-top:4px">Non avevo ancora i volantini di <b>${esc(f.catena)}</b> (${esc(r.citta)}). Li cerco entro qualche ora: riprova più tardi e li trovi qui.</div></div>`;
+ else if(r&&r.ric&&r.att)res=`<div class="card" style="margin-top:12px;border-color:var(--ac)"><b>⏳ Sto cercando i volantini di ${esc(f.catena)}…</b><div style="margin-top:4px">Ci vogliono circa 5 minuti. Puoi restare qui: appena li trovo compaiono. ${r.warn?`<div class="mu" style="margin-top:6px">${esc(r.warn)}</div>`:""}</div></div>`;
+ else if(r&&r.ric&&r.fine)res=`<div class="al" style="margin-top:12px">${r.ok?"La ricerca è finita, ma non ho trovato volantini di <b>"+esc(f.catena)+"</b> per "+esc(r.citta)+". Controlla il nome del supermercato e la città (potrebbe non averli).":"La ricerca ha avuto un problema e non è andata a buon fine. Riprova più tardi."}</div>`;
+ else if(r&&r.ric)res=`<div class="card" style="margin-top:12px;border-color:var(--ac)"><b>✅ Richiesta registrata</b><div style="margin-top:4px">Non avevo ancora i volantini di <b>${esc(f.catena)}</b> (${esc(r.citta)}). Li cerco entro qualche ora: riprova più tardi e li trovi qui.${r.warn?`<div class="mu" style="margin-top:6px">${esc(r.warn)}</div>`:""}</div></div>`;
  else if(r&&r.login)res=`<div class="al" style="margin-top:12px">Non ho ancora i volantini di ${esc(f.catena)} per questa zona. Per chiederli accedi al tuo account (⚙️ Impostazioni).</div>`;
  else if(r&&r.err)res=`<div class="al" style="margin-top:12px">${esc(r.err)}</div>`;
  const inp="width:100%;margin-top:4px";

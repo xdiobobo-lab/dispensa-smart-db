@@ -3,6 +3,12 @@
 Tutte le modifiche importanti a **Dispensa Smart** sono annotate qui.
 Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) e il numero di versione, mostrato in basso nelle Impostazioni (⚙️), segue il [versionamento semantico](https://semver.org/lang/it/).
 
+## [2.2.0] – 2026-10-27
+
+### Novità
+- **Ricerca immediata dei volantini**: se il supermercato cercato non è ancora disponibile, l'app avvia subito lo scaricatore tramite il Worker di Cloudflare e mostra "Sto cercando i volantini… circa 5 minuti"; appena è pronto il volantino compare da solo. Il token GitHub resta nascosto nel Worker.
+- Messaggi più chiari se il salvataggio della richiesta viene rifiutato da Supabase.
+
 ## [2.1.0] – 2026-10-27
 
 ### Novità
