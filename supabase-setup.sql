@@ -132,3 +132,23 @@ end $$;
 
 revoke execute on function public.mia_famiglia(), public.info_famiglia(), public.crea_famiglia(text), public.entra_famiglia(text), public.esci_famiglia() from public, anon;
 grant  execute on function public.mia_famiglia(), public.info_famiglia(), public.crea_famiglia(text), public.entra_famiglia(text), public.esci_famiglia() to authenticated;
+
+-- =====================================================================
+-- RICHIESTE DI VOLANTINI (facoltativo): chi cerca un supermercato che non
+-- c'è ancora lo "prenota"; lo scaricatore notturno lo aggiunge.
+-- =====================================================================
+create table if not exists public.richieste_volantini (
+  id      bigserial primary key,
+  chiave  text unique not null,                       -- catena|città, per evitare doppioni
+  catena  text not null check (char_length(catena) <= 60),
+  regione text not null check (char_length(regione) <= 60),
+  citta   text not null check (char_length(citta) <= 60),
+  user_id uuid default auth.uid() references auth.users(id) on delete set null,
+  creata  timestamptz not null default now()
+);
+alter table public.richieste_volantini enable row level security;
+revoke all on public.richieste_volantini from anon;
+drop policy if exists "richieste: inserire" on public.richieste_volantini;
+create policy "richieste: inserire" on public.richieste_volantini
+  for insert to authenticated with check (user_id = auth.uid());
+-- Nessuno può leggere le richieste dall'app: le legge solo lo scaricatore con la chiave segreta di GitHub.
