@@ -218,9 +218,9 @@ async function vcCerca(){const f=S.vc||{};
     if(!r.ok&&r.status!==409){let j=null;try{j=await r.json()}catch(e){}const m=(j&&(j.message||j.msg||j.hint))||"",cod=(j&&j.code)||"";S.vcr={n:0,err:(r.status===404||cod==="PGRST205"||cod==="42P01")?"La ricerca non è ancora attiva: la tabella delle richieste non esiste ancora in Supabase (esegui il blocco SQL, poi attendi un minuto).":cod==="42501"?"Supabase rifiuta la richiesta: "+(m||"permessi insufficienti")+" ["+cod+"]":"Non riesco a salvare la richiesta: "+(m||sbBad(r))+(cod?" ["+cod+"]":"")}}else S.vcr={n:0,ric:1,citta}}catch(e){S.vcr={n:0,err:e.message}}}
   else S.vcr={n:0,login:1}}
  render();if(S.vcr&&S.vcr.ric)vcAvvia()}
-function vcPx(){try{return window.__PX&&window.__PX()}catch(e){return null}}
+function vcPx(){try{const p=window.__PX&&window.__PX();if(p)return p;const A=window.AI_PROXY;return A&&A.u&&A.c?{u:String(A.u).trim(),c:String(A.c).trim()}:null}catch(e){return null}}
 async function vcApi(path,m){const p=vcPx();if(!p)throw new Error("Accesso all'AI non attivo su questo dispositivo.");const r=await fetch(p.u.replace(/\/+$/,"")+"/v1/volantini/"+path,{method:m||"GET",headers:{"x-access-code":p.c}});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error((j.error&&j.error.message)||"Errore "+r.status);return j}
-async function vcAvvia(){const R=S.vcr;if(!R||!vcPx())return;R.att=1;render();
+async function vcAvvia(){const R=S.vcr;if(!R)return;if(!vcPx()){R.warn="Avvio immediato non disponibile: manca AI_PROXY in config.js.";return render()}R.att=1;render();
  try{const j=await vcApi("avvia","POST");R.t0=(j.t||Date.now())-15000;R.gia=!!j.gia;R.again=!!j.gia;vcPoll(Date.now())}
  catch(e){if(S.vcr===R){R.att=0;R.warn=e.message;render()}}}
 async function vcPoll(t){const R=S.vcr;if(!R||!R.att)return;
