@@ -212,7 +212,7 @@ async function vcCerca(){const f=S.vc||{};
  try{localStorage.setItem("vc",JSON.stringify({regione:f.regione||"",catena:f.catena||"",citta:f.citta||""}))}catch(e){}
  if(!f.catena)return toast("Scrivi il nome del supermercato.");if(!f.regione)return toast("Scegli la regione.");
  S.vcr={q:1};if(!S.fidx)await new Promise(r=>{flyIdx();setTimeout(r,900)});
- const trov=vcFind();S.vcr={n:trov.length};
+ const trov=vcFind();S.vcr={n:trov.length};if(trov.length)S.vcf=trov[0].n.nome;
  if(!trov.length){const citta=f.citta||VC_REG[f.regione]||"";
   if(sbOn()){try{const r=await sbRest("richieste_volantini",{method:"POST",headers:{Prefer:"return=minimal"},body:JSON.stringify({catena:f.catena,regione:f.regione,citta,chiave:vcSlug(f.catena)+"|"+vcSlug(citta)})});
     if(!r.ok&&r.status!==409){let j=null;try{j=await r.json()}catch(e){}const m=(j&&(j.message||j.msg||j.hint))||"",cod=(j&&j.code)||"";S.vcr={n:0,err:(r.status===404||cod==="PGRST205"||cod==="42P01")?"La ricerca non è ancora attiva: la tabella delle richieste non esiste ancora in Supabase (esegui il blocco SQL, poi attendi un minuto).":cod==="42501"?"Supabase rifiuta la richiesta: "+(m||"permessi insufficienti")+" ["+cod+"]":"Non riesco a salvare la richiesta: "+(m||sbBad(r))+(cod?" ["+cod+"]":"")}}else S.vcr={n:0,ric:1,citta}}catch(e){S.vcr={n:0,err:e.message}}}
@@ -228,30 +228,40 @@ async function vcPoll(t){const R=S.vcr;if(!R||!R.att)return;
  try{const j=await vcApi("stato"),u=j.ultima;
   if(u&&u.stato==="completed"&&(R.gia||new Date(u.creata).getTime()>=R.t0)){
    if(R.again){R.again=false;R.gia=false;const k=await vcApi("avvia","POST");R.t0=(k.t||Date.now())-15000;R.gia=!!k.gia;R.again=!!k.gia;render();return setTimeout(()=>vcPoll(t),8000)}
-   R.att=0;await new Promise(r=>{flyIdx();setTimeout(r,1500)});const trov=vcFind();
-   if(trov.length)S.vcr={n:trov.length};else{R.fine=1;R.ok=u.conclusione==="success"}
-   return render()}
+   await new Promise(r=>{flyIdx();setTimeout(r,1500)});const trov=vcFind();R.fin=(R.fin||0)+1;
+   if(trov.length){S.vcr={n:trov.length};S.vcf=trov[0].n.nome;return render()}
+   if(R.fin<10&&u.conclusione==="success"){R.pub=1;render();return setTimeout(()=>vcPoll(t),20000)}
+   R.att=0;R.fine=1;R.ok=u.conclusione==="success";return render()}
  }catch(e){R.warn=e.message}
  if(S.vcr===R){render();setTimeout(()=>vcPoll(t),8000)}}
-function vcFlyers(trov){return trov.map(x=>`<div style="margin-top:14px"><b>${esc(x.n.nome)}</b>${x.n.regione?` <span class="bd">${esc(x.n.regione)}</span>`:""}${x.n.citta?` <span class="mu">${esc(x.n.citta)}</span>`:""}<div style="display:flex;gap:10px;overflow-x:auto;padding:8px 0;scroll-snap-type:x proximity">${x.v.map(y=>`<div style="flex:0 0 150px;scroll-snap-align:start"><div onclick="flyOpen(${x.si},${y.fi})" style="cursor:pointer;aspect-ratio:3/4;background:var(--bd);border-radius:14px;overflow:hidden"><img src="volantini/${esc(y.v.pagine[0])}" alt="Copertina" loading="lazy" style="width:100%;height:100%;object-fit:cover"></div><div style="font-size:13px;margin-top:6px;line-height:1.3">${esc(y.v.nome||"Volantino")}</div><div class="mu" style="font-size:12px">${y.v.pagine.length} pagine${y.v.validita?" · "+esc(y.v.validita):""}</div><button class="btn" style="width:100%;margin-top:6px;padding:8px;font-size:14px" onclick="flyOpen(${x.si},${y.fi})">📖 Sfoglia</button><button class="btn g" style="width:100%;margin-top:6px;padding:8px;font-size:14px;${S.fb?"opacity:.5;pointer-events:none":""}" onclick="flyAiRead(${x.si},${y.fi})">🤖 Leggi le offerte</button></div>`).join("")}</div></div>`).join("")}
+function vcChip(n){S.vcf=n;if(S.vcr&&S.vcr.n)S.vcr=null;render()}
+function vcCard(x,y){const v=y.v,n=x.n,np=v.pagine.length,sub=[n.nome,n.citta||n.regione].filter(Boolean).join(" · ");
+ return `<div style="background:var(--card);border:1px solid var(--bd);border-radius:16px;overflow:hidden;display:flex;flex-direction:column"><div onclick="flyOpen(${x.si},${y.fi})" style="position:relative;aspect-ratio:3/4;background:var(--bd);cursor:pointer;display:flex;align-items:center;justify-content:center"><img src="volantini/${esc(v.pagine[0])}" alt="Copertina di ${esc(v.nome||n.nome)}" loading="lazy" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div style="display:none;flex-direction:column;align-items:center;gap:6px;padding:10px;text-align:center"><span style="font-size:36px">🛒</span><b>${esc(n.nome)}</b><span class="mu" style="font-size:12px">Anteprima non disponibile</span></div><span style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,.65);color:#fff;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600">${np} pagin${np===1?"a":"e"}</span></div>
+<div style="padding:10px;display:flex;flex-direction:column;gap:6px;flex:1"><div style="font-weight:600;font-size:14px;line-height:1.25">${esc(v.nome||"Volantino")}</div><div class="mu" style="font-size:12px">${esc(sub)}${v.validita?" · "+esc(v.validita):""}</div><div style="margin-top:auto;display:flex;flex-direction:column;gap:6px"><button class="btn" style="width:100%;padding:10px;font-size:14px" onclick="flyOpen(${x.si},${y.fi})">📖 Sfoglia</button><button class="btn g" style="width:100%;padding:9px;font-size:13px;${S.fb?"opacity:.5;pointer-events:none":""}" onclick="flyAiRead(${x.si},${y.fi})">🤖 Leggi le offerte</button></div></div></div>`}
+function vcFlyers(trov){return `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(125px,1fr));gap:12px;margin-top:12px">${trov.map(x=>x.v.map(y=>vcCard(x,y)).join("")).join("")}</div>`}
 function vSfoglia(){if(S.fidx===undefined){S.fidx=null;flyIdx()}
  if(!S.vc){try{S.vc=JSON.parse(localStorage.getItem("vc"))||{}}catch(e){S.vc={}}}
- const f=S.vc,j=S.fidx,r=S.vcr,disp=j?j.negozi.filter(n=>(n.volantini||[]).some(v=>v.pagine&&v.pagine.length)):[];
+ const f=S.vc,j=S.fidx,r=S.vcr,all=j?j.negozi.map((n,si)=>({n,si,v:(n.volantini||[]).map((v,fi)=>({v,fi})).filter(x=>x.v.pagine&&x.v.pagine.length)})).filter(x=>x.v.length):[];
+ const nomi=[...new Set(all.map(x=>x.n.nome))].sort((a,b)=>a.localeCompare(b));if(S.vcf&&!nomi.includes(S.vcf))S.vcf="";
+ const tot=all.reduce((a,x)=>a+x.v.length,0);
  let res="";
  if(r&&r.q)res=`<div class="mu" style="margin-top:12px">Cerco…</div>`;
- else if(r&&r.n)res=vcFlyers(vcFind());
- else if(r&&r.ric&&r.att)res=`<div class="card" style="margin-top:12px;border-color:var(--ac)"><b>⏳ Sto cercando i volantini di ${esc(f.catena)}…</b><div style="margin-top:4px">Ci vogliono circa 5 minuti. Puoi restare qui: appena li trovo compaiono. ${r.warn?`<div class="mu" style="margin-top:6px">${esc(r.warn)}</div>`:""}</div></div>`;
+ else if(r&&r.n)res=`<div style="margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--bd)">✅ Ho trovato i volantini di <b>${esc(f.catena)}</b>: li vedi qui sotto.</div>`;
+ else if(r&&r.ric&&r.att)res=`<div class="card" style="margin-top:12px;border-color:var(--ac)"><b>⏳ ${r.pub?"Sto pubblicando i volantini di ":"Sto cercando i volantini di "}${esc(f.catena)}…</b><div style="margin-top:4px">${r.pub?"Li ho trovati: sul sito ci vuole ancora uno o due minuti perché compaiano.":"Ci vogliono circa 5 minuti. Puoi restare qui: appena li trovo compaiono."}${r.warn?`<div class="mu" style="margin-top:6px">${esc(r.warn)}</div>`:""}</div></div>`;
  else if(r&&r.ric&&r.fine)res=`<div class="al" style="margin-top:12px">${r.ok?"La ricerca è finita, ma non ho trovato volantini di <b>"+esc(f.catena)+"</b> per "+esc(r.citta)+". Controlla il nome del supermercato e la città (potrebbe non averli).":"La ricerca ha avuto un problema e non è andata a buon fine. Riprova più tardi."}</div>`;
  else if(r&&r.ric)res=`<div class="card" style="margin-top:12px;border-color:var(--ac)"><b>✅ Richiesta registrata</b><div style="margin-top:4px">Non avevo ancora i volantini di <b>${esc(f.catena)}</b> (${esc(r.citta)}). Li cerco entro qualche ora: riprova più tardi e li trovi qui.${r.warn?`<div class="mu" style="margin-top:6px">${esc(r.warn)}</div>`:""}</div></div>`;
  else if(r&&r.login)res=`<div class="al" style="margin-top:12px">Non ho ancora i volantini di ${esc(f.catena)} per questa zona. Per chiederli accedi al tuo account (⚙️ Impostazioni).</div>`;
  else if(r&&r.err)res=`<div class="al" style="margin-top:12px">${esc(r.err)}</div>`;
- const inp="width:100%;margin-top:4px";
- return `<div class="card"><b>🔎 Cerca i volantini nella tua zona!</b><div class="mu">Scegli la regione e scrivi il supermercato: se ho già i volantini li trovi subito, altrimenti li cerco entro qualche ora.</div>
+ const inp="width:100%;margin-top:4px",ag=j&&j.aggiornato?new Date(j.aggiornato).toLocaleDateString("it-IT",{day:"numeric",month:"long"}):"";
+ const lista=(r&&r.n)?vcFind():(S.vcf?all.filter(x=>x.n.nome===S.vcf):all);
+ const chip=(n,l)=>`<button class="btn ${(S.vcf||"")===n?"":"g"}" style="padding:8px 14px;font-size:14px;white-space:nowrap" onclick="vcChip('${esc(n).replace(/'/g,"\\'")}')">${esc(l)}</button>`;
+ return `<div class="card"><b>📚 Volantini disponibili</b><div class="mu">${tot?tot+" volantin"+(tot===1?"o":"i")+" già pronti"+(ag?" (aggiornati il "+ag+")":"")+". Scegli il supermercato, tocca un volantino per sfogliarlo oppure fai leggere le offerte all’intelligenza artificiale.":(j===null?"Carico i volantini…":"Non ci sono ancora volantini scaricati: cerca il tuo supermercato qui sotto.")}</div>
+${tot?`<div style="display:flex;gap:8px;overflow-x:auto;padding:12px 0 2px">${chip("","Tutti")}${nomi.map(n=>chip(n,n)).join("")}</div>${vcFlyers(lista)}`:""}</div>
+<div class="card"><b>🔎 Cerca i volantini nella tua zona!</b><div class="mu">Non trovi il tuo supermercato? Scegli la regione e scrivi il nome: lo cerco e lo aggiungo all’elenco.</div>
 <div style="margin-top:10px"><div class="mu" style="font-size:12px">Regione</div><select id="vc_r" style="${inp}" onchange="vcSet('regione',this.value)"><option value="">Scegli la regione</option>${Object.keys(VC_REG).map(x=>`<option ${f.regione===x?"selected":""}>${esc(x)}</option>`).join("")}</select></div>
 <div style="margin-top:8px"><div class="mu" style="font-size:12px">Supermercato</div><input id="vc_c" list="vc_l" style="${inp}" placeholder="Es. Conad, Lidl, Eurospin…" value="${esc(f.catena||"")}" oninput="vcSet('catena',this.value)"><datalist id="vc_l">${VC_CAT.map(x=>`<option value="${x}">`).join("")}</datalist></div>
 <div style="margin-top:8px"><div class="mu" style="font-size:12px">Città (facoltativa)</div><input id="vc_t" style="${inp}" placeholder="Se vuota uso il capoluogo della regione" value="${esc(f.citta||"")}" oninput="vcSet('citta',this.value)"></div>
-<button class="btn" style="width:100%;margin-top:10px" onclick="vcCerca()">🔎 Cerca i volantini</button>
-${disp.length?`<div class="mu" style="margin-top:10px;font-size:13px">Già disponibili: ${disp.map(n=>`<a href="#" style="color:var(--ac);font-weight:600" onclick="vcPick('${esc(n.regione||f.regione||"")}','${esc(n.nome)}','${esc(n.citta||"")}');return false">${esc(n.nome)}${n.citta?" ("+esc(n.citta)+")":""}</a>`).join(" · ")}</div>`:""}${res}</div>`}
+<button class="btn" style="width:100%;margin-top:10px" onclick="vcCerca()">🔎 Cerca i volantini</button>${res}</div>`}
 function flyOpen(si,fi){const v=S.fidx&&S.fidx.negozi[si]&&S.fidx.negozi[si].volantini[fi];if(!v||!v.pagine.length)return;S.fv={si,fi,p:0};drawFv();if(!window.__fvk){window.__fvk=1;document.addEventListener("keydown",e=>{if(!S.fv)return;if(e.key==="ArrowRight")flyPg(1);else if(e.key==="ArrowLeft")flyPg(-1);else if(e.key==="Escape")flyClose()})}}
 function flyPg(d){const f=S.fv;if(!f)return;const v=S.fidx.negozi[f.si].volantini[f.fi],n=v.pagine.length;f.p=Math.max(0,Math.min(n-1,f.p+d));drawFv()}
 function flyClose(){S.fv=null;drawFv()}

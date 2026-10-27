@@ -3,6 +3,13 @@
 Tutte le modifiche importanti a **Dispensa Smart** sono annotate qui.
 Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) e il numero di versione, mostrato in basso nelle Impostazioni (⚙️), segue il [versionamento semantico](https://semver.org/lang/it/).
 
+## [2.2.1] – 2026-10-27
+
+### Modificato
+- **Schermata dei volantini ridisegnata**: elenco "Volantini disponibili" sempre visibile, scelta del supermercato con pulsanti, copertine in griglia a due colonne con numero di pagine, nome e validità; se una copertina non si carica compare un segnaposto. La ricerca per regione e città è in un riquadro separato sotto.
+- Lo scaricatore recupera le pagine mancanti di un volantino (di solito le prime).
+- Dopo una ricerca, l'app aspetta che il sito pubblichi i volantini prima di dire che non ci sono.
+
 ## [2.2.0] – 2026-10-27
 
 ### Novità
