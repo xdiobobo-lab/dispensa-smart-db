@@ -25,11 +25,11 @@ const ctx = await br.newContext({ userAgent: UA, locale: "it-IT", timezoneId: "E
 // Richieste fatte dall'app (tabella richieste_volantini): le aggiungo ai negozi del file di configurazione.
 const urlSlug = s => String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 async function richieste() {
-  const U = (process.env.SUPABASE_URL || "").replace(/\/+$/, ""), K = process.env.SUPABASE_SERVICE_KEY || "";
+  const U = (process.env.SUPABASE_URL || "").trim().replace(/\/+$/, ""), K = (process.env.SUPABASE_SERVICE_KEY || "").trim();
   if (!U || !K) { L("Richieste dall'app: non collegate (mancano SUPABASE_URL e SUPABASE_SERVICE_KEY nei Secrets)"); return [] }
   try {
-    const r = await fetch(U + "/rest/v1/richieste_volantini?select=catena,regione,citta&order=creata.asc&limit=" + (+CFG.max_richieste || 12), { headers: { apikey: K, authorization: "Bearer " + K } });
-    if (!r.ok) { L("Richieste dall'app: errore HTTP " + r.status); return [] }
+    const r = await fetch(U + "/rest/v1/richieste_volantini?select=catena,regione,citta&order=creata.asc&limit=" + (+CFG.max_richieste || 12), { headers: K.startsWith("sb_") ? { apikey: K } : { apikey: K, authorization: "Bearer " + K } });
+    if (!r.ok) { L("Richieste dall'app: errore HTTP " + r.status + (r.status === 401 || r.status === 403 ? " (la chiave non è accettata: serve la chiave SEGRETA del progetto, non quella pubblica; tipo della chiave usata: " + (K.startsWith("sb_secret_") ? "sb_secret" : K.startsWith("sb_publishable_") ? "PUBBLICA (sbagliata)" : K.startsWith("eyJ") ? "JWT" : "non riconosciuto") + ")" : "")); return [] }
     const a = await r.json(); L("Richieste dall'app:", a.length); return a;
   } catch (e) { L("Richieste dall'app: errore", String(e.message).slice(0, 120)); return [] }
 }
@@ -98,19 +98,36 @@ for (const n of CFG.negozi || []) {
         // Le pagine arrivano in più risoluzioni (page_N_level_L): per ogni pagina tengo la più grande,
         // e solo del volantino con più pagine (il visualizzatore carica anche altri volantini consigliati).
         const PA = /page_assets\/(\d+)\/(\d+)\/page_\d+_level_(\d+)_/;
-        const pubs = new Map(), altre = [];
-        for (const u of imgs.keys()) {
-          const m = u.match(PA);
-          if (!m) { altre.push(u); continue }
-          const pub = m[1], pg = +m[2], lv = +m[3];
-          if (!pubs.has(pub)) pubs.set(pub, new Map());
-          const mp = pubs.get(pub), cur = mp.get(pg);
-          if (!cur || lv > cur.lv) mp.set(pg, { u, lv });
+        const raggruppa = () => {
+          const pubs = new Map(), altre = [];
+          for (const u of imgs.keys()) {
+            const m = u.match(PA);
+            if (!m) { altre.push(u); continue }
+            const pub = m[1], pg = +m[2], lv = +m[3];
+            if (!pubs.has(pub)) pubs.set(pub, new Map());
+            const mp = pubs.get(pub), cur = mp.get(pg);
+            if (!cur || lv > cur.lv) mp.set(pg, { u, lv });
+          }
+          return { pubs, altre };
+        };
+        let { pubs, altre } = raggruppa();
+        // Pagine mancanti (di solito le prime): le riapro una per una con flyerPage=N.
+        if (pubs.size) {
+          const [bp0] = [...pubs.entries()].sort((x, y) => y[1].size - x[1].size);
+          const mx = Math.max(...bp0[1].keys()), mancano = [];
+          for (let k = 1; k <= mx; k++) if (!bp0[1].has(k)) mancano.push(k);
+          if (mancano.length) {
+            L("  pagine mancanti:", mancano.join(","), "- le riapro");
+            for (const k of mancano.slice(0, 15)) {
+              try { await page.goto(base.replace(/([?&])flyerPage=\d+/, "$1flyerPage=" + k), { waitUntil: "domcontentloaded", timeout: 30000 }); await sleep(1800) } catch {}
+            }
+            ({ pubs, altre } = raggruppa());
+          }
         }
         let scelte = [];
         if (pubs.size) {
           const [best] = [...pubs.entries()].sort((a, b) => b[1].size - a[1].size);
-          L("  pubblicazione", best[0], "pagine:", best[1].size, "(altre pubblicazioni viste: " + (pubs.size - 1) + ")");
+          L("  pubblicazione", best[0], "pagine:", best[1].size, "(altre pubblicazioni viste: " + (pubs.size - 1) + ") numeri: " + [...best[1].keys()].sort((x, y) => x - y).join(","));
           scelte = [...best[1].entries()].sort((a, b) => a[0] - b[0]).map(([pg, o]) => ({ u: o.u, n: pg }));
         } else {
           scelte = altre.map((u, i) => ({ u, n: i + 1 }));
@@ -118,6 +135,16 @@ for (const n of CFG.negozi || []) {
         const final = new Map();
         for (const c of scelte) {
           try { const rr = await ctx.request.get(c.u, { headers: { referer: base }, timeout: 30000 }); const b = rr.ok() ? await rr.body() : null; if (b && b.length >= (pubs.size ? 8000 : MINB)) final.set(c.u, { b, ct: imgs.get(c.u).ct, n: c.n }) } catch {}
+        }
+        if (final.size < 2 && imgs.size) {
+          // secondo tentativo: nessun nome riconosciuto, prendo tutte le immagini grandi nell'ordine in cui sono arrivate
+          L("  nessuna pagina riconosciuta: indirizzi visti:");
+          for (const u of [...imgs.keys()].slice(0, 8)) L("    ?", u.slice(0, 170));
+          let n2 = 0;
+          for (const u of imgs.keys()) {
+            try { const rr = await ctx.request.get(u, { headers: { referer: base }, timeout: 30000 }); const b = rr.ok() ? await rr.body() : null; if (b && b.length >= 15000) { n2++; final.set(u, { b, ct: imgs.get(u).ct || "image/jpeg", n: n2 }) } } catch {}
+          }
+          L("  secondo tentativo: ", final.size, "immagini");
         }
         const pagine = [];
         for (const [u, v] of final) { const ext = /png/.test(v.ct) ? "png" : /webp/.test(v.ct) ? "webp" : "jpg"; const fn = "p" + String(v.n).padStart(2, "0") + "." + ext; fs.writeFileSync(path.join(dir, fn), v.b); pagine.push(slug(n.nome) + "/" + f.id + "/" + fn); if (pagine.length <= 2) L("    img", u.slice(0, 140), v.b.length + "B") }
