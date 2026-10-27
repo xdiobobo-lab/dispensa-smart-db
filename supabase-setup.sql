@@ -152,3 +152,6 @@ drop policy if exists "richieste: inserire" on public.richieste_volantini;
 create policy "richieste: inserire" on public.richieste_volantini
   for insert to authenticated with check (user_id = auth.uid());
 -- Nessuno può leggere le richieste dall'app: le legge solo lo scaricatore con la chiave segreta di GitHub.
+grant insert on public.richieste_volantini to authenticated;
+grant usage, select on sequence public.richieste_volantini_id_seq to authenticated;
+notify pgrst, 'reload schema';

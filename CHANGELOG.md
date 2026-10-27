@@ -7,10 +7,10 @@ Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) e il n
 
 ### Novità
 - **Sfoglia i volantini**: nella sezione Negozi compare l'elenco dei volantini scaricati automaticamente (copertine per supermercato). Si sfoglia pagina per pagina a schermo intero, con frecce, tastiera e scorrimento con il dito.
-- **Cerca i volantini nella tua zona!**: schermata con Regione, Supermercato e Città (facoltativa). Se i volantini ci sono già si aprono subito; altrimenti la richiesta viene registrata e lo scaricatore notturno li aggiunge (compaiono il giorno dopo).
+- **Cerca i volantini nella tua zona!**: schermata con Regione, Supermercato e Città (facoltativa). Se i volantini ci sono già si aprono subito; altrimenti la richiesta viene registrata e lo scaricatore (ogni 3 ore) li aggiunge.
 - **Le offerte si salvano con il nome del volantino** (e la regione) e, rileggendo lo stesso volantino, sostituiscono la copia precedente invece di duplicarla.
 - **Leggi le offerte con l'AI** direttamente da un volantino sfogliato, senza caricare nulla a mano (prime 24 pagine).
-- **Scaricatore automatico** (GitHub Actions + browser) che ogni giorno salva le pagine dei volantini di Conad e Lidl dalla pagina della città in `volantini/`: vedi `LEGGIMI-volantini.txt`.
+- **Scaricatore automatico** (GitHub Actions + browser) che ogni 3 ore salva le pagine dei volantini di Conad e Lidl dalla pagina della città in `volantini/`: vedi `LEGGIMI-volantini.txt`.
 
 ## [2.0.3] – 2026-10-26
 
