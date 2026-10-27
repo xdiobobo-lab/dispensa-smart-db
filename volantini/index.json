@@ -1,8 +1,10 @@
 {
- "aggiornato": "2026-10-27T19:45:36.272Z",
+ "aggiornato": "2026-10-27T21:12:36.026Z",
  "negozi": [
   {
    "nome": "Conad",
+   "regione": "",
+   "citta": "roma",
    "url": "https://www.doveconviene.it/roma/volantino/conad",
    "volantini": [
     {
@@ -10,7 +12,20 @@
      "nome": "Volantino 1703398",
      "url": "https://www.doveconviene.it/roma/iper-e-super/conad/volantino/ultime-offerte-conad?flyerId=1703398&flyerPage=1&utm_medium=rsv&origin_retailer_id=102",
      "validita": "",
-     "pagine": []
+     "pagine": [
+      "conad/1703398/p01.webp",
+      "conad/1703398/p02.webp",
+      "conad/1703398/p03.webp",
+      "conad/1703398/p04.webp",
+      "conad/1703398/p05.webp",
+      "conad/1703398/p06.webp",
+      "conad/1703398/p07.webp",
+      "conad/1703398/p08.webp",
+      "conad/1703398/p09.webp",
+      "conad/1703398/p10.webp",
+      "conad/1703398/p11.webp",
+      "conad/1703398/p12.webp"
+     ]
     },
     {
      "id": "1720420",
@@ -30,10 +45,7 @@
      "nome": "-5 GIORNI",
      "url": "https://www.doveconviene.it/roma/iper-e-super/conad/volantino/ultime-offerte-conad?flyerId=1716772&flyerPage=1&utm_medium=rfg&origin_retailer_id=102",
      "validita": "",
-     "pagine": [
-      "conad/1716772/p01.webp",
-      "conad/1716772/p02.webp"
-     ]
+     "pagine": []
     },
     {
      "id": "1725968",
@@ -55,6 +67,8 @@
   },
   {
    "nome": "Lidl",
+   "regione": "",
+   "citta": "roma",
    "url": "https://www.doveconviene.it/roma/volantino/lidl",
    "volantini": [
     {
