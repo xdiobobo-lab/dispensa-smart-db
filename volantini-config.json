@@ -1,0 +1,8 @@
+{
+  "max_volantini": 4,
+  "max_pagine": 40,
+  "negozi": [
+    { "nome": "Conad", "url": "https://www.doveconviene.it/roma/volantino/conad", "attivo": true },
+    { "nome": "Lidl",  "url": "https://www.doveconviene.it/roma/volantino/lidl",  "attivo": true }
+  ]
+}
