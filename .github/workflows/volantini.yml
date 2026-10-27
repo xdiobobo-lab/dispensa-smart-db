@@ -16,7 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with:Q
+        with:
           node-version: 20
       - name: Browser
         run: npm install --no-save playwright && npx playwright install --with-deps chromium
