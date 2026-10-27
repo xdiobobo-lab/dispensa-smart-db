@@ -1,4 +1,4 @@
-Richieste dall'app: 4
+Richieste dall'app: 5
 == Conad https://www.doveconviene.it/roma/volantino/conad
   volantini trovati: 6 1703398,1720420,1716772,1725968,1719418,1720680
   volantino 1703398 giri: 8 immagini: 24
@@ -9,7 +9,7 @@ Richieste dall'app: 4
   pubblicazione 953360 pagine: 5 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953360/1/page_1_level_4_1618497500.webp 75626B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953360/2/page_2_level_4_604577613.webp 108542B
-  volantino 1716772 giri: 3 immagini: 13
+  volantino 1716772 giri: 4 immagini: 13
   pubblicazione 950170 pagine: 2 (altre pubblicazioni viste: 0) numeri: 1,2
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/950170/1/page_1_level_4_996480027.webp 58568B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/950170/2/page_2_level_4_1691241270.webp 45896B
@@ -23,7 +23,8 @@ Richieste dall'app: 4
   pubblicazione 960784 pagine: 61 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/960784/1/page_1_level_4_314785863.webp 131010B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/960784/2/page_2_level_4_214737871.webp 81878B
-  volantino 1722393 giri: 30 immagini: 71
+  volantino 1722393 giri: 30 immagini: 70
+  pagine mancanti: 1 - le riapro
   pubblicazione 959595 pagine: 57 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/959595/1/page_1_level_4_900095506.webp 122726B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/959595/2/page_2_level_4_722150540.webp 64880B
@@ -39,7 +40,7 @@ Richieste dall'app: 4
   pubblicazione 958739 pagine: 32 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/958739/1/page_1_level_4_1877883188.webp 66288B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/958739/2/page_2_level_4_1728627864.webp 64510B
-  volantino 1726851 giri: 10 immagini: 30
+  volantino 1726851 giri: 11 immagini: 30
   pubblicazione 958737 pagine: 16 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/958737/1/page_1_level_4_1154393714.webp 60996B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/958737/2/page_2_level_4_586765572.webp 71710B
@@ -53,9 +54,15 @@ Richieste dall'app: 4
   pubblicazione 959537 pagine: 10 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/959537/1/page_1_level_4_980643718.webp 47780B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/959537/2/page_2_level_4_127327204.webp 60590B
-  volantino 1596886 giri: 7 immagini: 23
+  volantino 1596886 giri: 8 immagini: 23
   pubblicazione 846926 pagine: 8 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/846926/1/page_1_level_4_1907393732.webp 39016B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/846926/2/page_2_level_4_2030291659.webp 41632B
 == Despar https://www.doveconviene.it/roma/volantino/despar
   volantini trovati: 0 
+== Conad https://www.doveconviene.it/firenze/volantino/conad
+  volantini trovati: 1 1720690
+  volantino 1720690 giri: 16 immagini: 42
+  pubblicazione 953657 pagine: 28 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953657/1/page_1_level_4_633224615.webp 60632B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953657/2/page_2_level_4_1118107858.webp 81650B

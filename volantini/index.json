@@ -1,5 +1,5 @@
 {
- "aggiornato": "2026-10-27T21:35:06.157Z",
+ "aggiornato": "2026-10-27T21:47:58.042Z",
  "negozi": [
   {
    "nome": "Conad",
@@ -405,6 +405,50 @@
    "citta": "Roma",
    "url": "https://www.doveconviene.it/roma/volantino/despar",
    "volantini": []
+  },
+  {
+   "nome": "Conad",
+   "regione": "Toscana",
+   "citta": "Firenze",
+   "url": "https://www.doveconviene.it/firenze/volantino/conad",
+   "volantini": [
+    {
+     "id": "1720690",
+     "nome": "Volantino 1720690",
+     "url": "https://www.doveconviene.it/firenze/iper-e-super/conad/volantino/ultime-offerte-conad?flyerId=1720690&flyerPage=1&utm_medium=rsv&origin_retailer_id=102",
+     "validita": "",
+     "pagine": [
+      "conad/1720690/p01.webp",
+      "conad/1720690/p02.webp",
+      "conad/1720690/p03.webp",
+      "conad/1720690/p04.webp",
+      "conad/1720690/p05.webp",
+      "conad/1720690/p06.webp",
+      "conad/1720690/p07.webp",
+      "conad/1720690/p08.webp",
+      "conad/1720690/p09.webp",
+      "conad/1720690/p10.webp",
+      "conad/1720690/p11.webp",
+      "conad/1720690/p12.webp",
+      "conad/1720690/p13.webp",
+      "conad/1720690/p14.webp",
+      "conad/1720690/p15.webp",
+      "conad/1720690/p16.webp",
+      "conad/1720690/p17.webp",
+      "conad/1720690/p18.webp",
+      "conad/1720690/p19.webp",
+      "conad/1720690/p20.webp",
+      "conad/1720690/p21.webp",
+      "conad/1720690/p22.webp",
+      "conad/1720690/p23.webp",
+      "conad/1720690/p24.webp",
+      "conad/1720690/p25.webp",
+      "conad/1720690/p26.webp",
+      "conad/1720690/p27.webp",
+      "conad/1720690/p28.webp"
+     ]
+    }
+   ]
   }
  ]
 }
