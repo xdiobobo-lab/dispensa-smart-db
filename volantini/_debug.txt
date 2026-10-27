@@ -1,0 +1,25 @@
+== Conad https://www.doveconviene.it/roma/volantino/conad
+  volantini trovati: 6 1703398,1720420,1716772,1725968,1719418,1720680
+  volantino 1703398 giri: 3 immagini: 9
+  ATTENZIONE: poche immagini catturate (0): serve guardare la pagina del volantino
+  volantino 1720420 giri: 4 immagini: 16
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953360/1/page_1_level_4_1618497500.webp 75626B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953360/3/page_3_level_4_1253582134.webp 99536B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953360/2/page_2_level_4_604577613.webp 108542B
+  volantino 1716772 giri: 4 immagini: 13
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/950170/2/page_2_level_4_1691241270.webp 45896B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/950170/1/page_1_level_4_996480027.webp 58568B
+  volantino 1725968 giri: 8 immagini: 20
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/957979/2/page_2_level_4_1946785120.webp 78132B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/957979/1/page_1_level_4_1079671682.webp 67138B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/957979/3/page_3_level_4_1051283840.webp 79642B
+== Lidl https://www.doveconviene.it/roma/volantino/lidl
+  volantini trovati: 2 1728838,1722393
+  volantino 1728838 giri: 32 immagini: 75
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/960784/1/page_1_level_4_314785863.webp 131010B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/960784/2/page_2_level_4_214737871.webp 81878B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/960784/3/page_3_level_4_1039490051.webp 99156B
+  volantino 1722393 giri: 30 immagini: 71
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/959595/1/page_1_level_4_900095506.webp 122726B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/959595/2/page_2_level_4_722150540.webp 64880B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/959595/3/page_3_level_4_1598307819.webp 99360B
