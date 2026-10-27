@@ -77,7 +77,7 @@ async function vision(prompt,images){
  try{return JSON.parse(t.slice(a,z+1))}catch(e){throw new Error("Risposta AI non leggibile, riprova.")}
 }
 window.claude={use:async n=>n==="sample"?{json:ask}:null,vision};
-function upd(){const b=document.getElementById("kb");if(b){const k=localStorage.getItem(KEY);b.textContent=PX()?"🔑 Accesso famiglia ✓":k?"🔑 Chiave AI ✓ ("+(prov(k)==="ant"?"Claude":"Groq")+")":"🔑 Chiave AI"}}
+function upd(){const b=document.getElementById("kb");if(b){if(b.parentNode)b.parentNode.style.display=PX()?"none":"flex";const k=localStorage.getItem(KEY);b.textContent=PX()?"🔑 Accesso famiglia ✓":k?"🔑 Chiave AI ✓ ("+(prov(k)==="ant"?"Claude":"Groq")+")":"🔑 Chiave AI"}}
 window.setKey=()=>{const k=prompt("Incolla la tua chiave API: GroqCloud (inizia con gsk_) oppure Anthropic (sk-ant-). Se hai ricevuto un accesso dalla famiglia, incolla invece il testo indirizzo|codice (oppure apri il link che ti hanno mandato). Resta salvato solo in questo browser. Lascia vuoto per rimuovere.",PX()?PX().u+"|"+PX().c:(localStorage.getItem(KEY)||""));if(k===null)return;const t=k.trim();
  if(/^https:\/\/[^|\s]+\|\S+$/.test(t)){const i=t.indexOf("|");localStorage.setItem("aproxy",JSON.stringify({u:t.slice(0,i),c:t.slice(i+1)}));localStorage.removeItem(KEY)}
  else if(t){localStorage.setItem(KEY,t);localStorage.removeItem("aproxy")}else{localStorage.removeItem(KEY);localStorage.removeItem("aproxy")}upd()};

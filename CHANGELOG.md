@@ -3,6 +3,17 @@
 Tutte le modifiche importanti a **Dispensa Smart** sono annotate qui.
 Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) e il numero di versione, mostrato in basso nelle Impostazioni (⚙️), segue il [versionamento semantico](https://semver.org/lang/it/).
 
+## [2.0.3] – 2026-10-26
+
+### Modificato
+- Il riquadro "Sincronizzazione automatica con GitHub" compare solo a chi l'aveva già collegata (per poterla scollegare): la sincronizzazione ora passa dall'account.
+- I pulsanti "Chiave AI" e "Modello" spariscono quando l'accesso all'AI è già attivo tramite il link ricevuto.
+
+## [2.0.2] – 2026-10-26
+
+### Novità
+- **Messaggi chiari quando il servizio online non risponde**: se sei offline lo dice; se il progetto Supabase gratuito è in pausa (dopo circa una settimana senza uso) spiega come riattivarlo ("Restore project") e ricorda che i dati restano sul dispositivo.
+
 ## [2.0.1] – 2026-10-26
 
 ### Novità

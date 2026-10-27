@@ -94,7 +94,7 @@ function sx(k,v){S["sx_"+k]=v;render();const e=$("sx_"+k);if(e){e.focus();try{e.
 const sxBox=(k,ph)=>`<input id="sx_${k}" type="search" placeholder="🔎 ${ph}" value="${esc(S["sx_"+k]||"")}" oninput="sx('${k}',this.value)" style="margin:8px 0">`;
 const sxOk=(k,txt)=>{const q=nm(S["sx_"+k]||"");return !q||nm(txt).includes(q)};
 function fcSet(k,v){lss(k,v);render()}
-const APP_VER="2.0.1";
+const APP_VER="2.0.3";
 function drawThemePanel(){let p=$("thp");if(!p){p=document.createElement("div");p.id="thp";document.body.appendChild(p)}
  if(!S.thp){p.style.display="none";p.innerHTML="";return}
  p.style.cssText="position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.5);overflow:auto;padding:calc(env(safe-area-inset-top,0px) + 14px) 14px 40px";

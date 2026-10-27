@@ -19,16 +19,17 @@ function sbMsg(j,st){const c=(j&&(j.error_code||j.code))||"",m=String((j&&(j.msg
  if(c==="same_password"||m.includes("different from the old"))return "La nuova password deve essere diversa da quella vecchia.";
  return "Operazione non riuscita"+(st?" ("+st+")":"")+"."}
 async function sbAuth(path,body,method,token){const c=sbCfg();let r;
- try{r=await fetch(c.url+"/auth/v1/"+path,{method:method||"POST",headers:{apikey:c.key,authorization:"Bearer "+(token||c.key),"content-type":"application/json"},body:JSON.stringify(body||{})})}catch(e){throw new Error("Non riesco a collegarmi: controlla la connessione.")}
+ try{r=await fetch(c.url+"/auth/v1/"+path,{method:method||"POST",headers:{apikey:c.key,authorization:"Bearer "+(token||c.key),"content-type":"application/json"},body:JSON.stringify(body||{})})}catch(e){throw new Error(sbDown())}
  let j=null;try{j=await r.json()}catch(e){}if(!r.ok)throw new Error(sbMsg(j,r.status));return j}
 async function sbToken(){const s=sbSess();if(!s)throw new Error("Non hai effettuato l’accesso.");if(s.exp-60>Date.now()/1000)return s.at;
- if(!sbRef)sbRef=(async()=>{try{const c=sbCfg(),r=await fetch(c.url+"/auth/v1/token?grant_type=refresh_token",{method:"POST",headers:{apikey:c.key,"content-type":"application/json"},body:JSON.stringify({refresh_token:s.rt})});
+ if(!sbRef)sbRef=(async()=>{try{const c=sbCfg(),r=await fetch(c.url+"/auth/v1/token?grant_type=refresh_token",{method:"POST",headers:{apikey:c.key,"content-type":"application/json"},body:JSON.stringify({refresh_token:s.rt})}).catch(()=>{throw new Error(sbDown())});
   if(r.status>=400&&r.status<500){sbClear();S.acct={mode:"login",err:"La sessione è scaduta: accedi di nuovo."};render();throw new Error("Sessione scaduta: accedi di nuovo.")}
   if(!r.ok)throw new Error("Il servizio non risponde ("+r.status+").");
   return sbStore(await r.json()).at}finally{sbRef=null}})();
  return sbRef}
-async function sbRest(path,opt){const c=sbCfg(),t=await sbToken();return fetch(c.url+"/rest/v1/"+path,{...(opt||{}),headers:{apikey:c.key,authorization:"Bearer "+t,"content-type":"application/json",...((opt&&opt.headers)||{})},cache:"no-store"})}
-function sbBad(r){if(r.status===401||r.status===403)return "Accesso non autorizzato: esci e accedi di nuovo.";if(r.status===404)return "Il database online non è pronto: manca lo script SQL (vedi le istruzioni).";return "Il servizio ha risposto "+r.status+"."}
+const sbDown=()=>navigator.onLine===false?"Sei offline: i dati restano sul dispositivo e si sincronizzeranno appena torna la connessione.":"Non riesco a collegarmi al servizio online. Se la connessione va bene, il progetto Supabase gratuito potrebbe essere in pausa (succede dopo circa una settimana senza uso): da supabase.com apri il progetto e premi “Restore project”. I tuoi dati sono al sicuro su questo dispositivo.";
+async function sbRest(path,opt){const c=sbCfg(),t=await sbToken();try{return await fetch(c.url+"/rest/v1/"+path,{...(opt||{}),headers:{apikey:c.key,authorization:"Bearer "+t,"content-type":"application/json",...((opt&&opt.headers)||{})},cache:"no-store"})}catch(e){throw new Error(sbDown())}}
+function sbBad(r){if(r.status===401||r.status===403)return "Accesso non autorizzato: esci e accedi di nuovo.";if(r.status===404)return "Il database online non è pronto: manca lo script SQL (vedi le istruzioni).";return r.status>=500?"Il servizio online non risponde ("+r.status+"): potrebbe essere in pausa o in manutenzione. Riprova più tardi; i dati restano sul dispositivo.":"Il servizio ha risposto "+r.status+"."}
 /* ---------- stato e sincronizzazione dei dati ---------- */
 const sbTxt=()=>{const s=S.sbst;if(!s)return "In attesa della prima sincronizzazione…";return s.s==="ok"?"☁️ Sincronizzato alle "+new Date(s.t).toLocaleTimeString("it-IT",{hour:"2-digit",minute:"2-digit"}):"⚠️ "+s.m};
 function sbSt(s,m){S.sbst={s,m,t:Date.now()};const e=$("sbs");if(e)e.textContent=sbTxt();const y=$("sy");if(y&&sbOn())y.textContent=s==="ok"?"☁️ Account sincronizzato":"⚠️ Account: errore"}
