@@ -1,5 +1,5 @@
 {
- "aggiornato": "2026-10-27T21:23:15.293Z",
+ "aggiornato": "2026-10-27T21:35:06.157Z",
  "negozi": [
   {
    "nome": "Conad",
@@ -13,6 +13,9 @@
      "url": "https://www.doveconviene.it/roma/iper-e-super/conad/volantino/ultime-offerte-conad?flyerId=1703398&flyerPage=1&utm_medium=rsv&origin_retailer_id=102",
      "validita": "",
      "pagine": [
+      "conad/1703398/p01.webp",
+      "conad/1703398/p02.webp",
+      "conad/1703398/p03.webp",
       "conad/1703398/p04.webp",
       "conad/1703398/p05.webp",
       "conad/1703398/p06.webp",
@@ -256,7 +259,40 @@
      "nome": "Volantino 1726853",
      "url": "https://www.doveconviene.it/roma/iper-e-super/coop/volantino/ultime-offerte-coop?flyerId=1726853&flyerPage=1&utm_medium=rsv&origin_retailer_id=962",
      "validita": "",
-     "pagine": []
+     "pagine": [
+      "coop/1726853/p01.webp",
+      "coop/1726853/p02.webp",
+      "coop/1726853/p03.webp",
+      "coop/1726853/p04.webp",
+      "coop/1726853/p05.webp",
+      "coop/1726853/p06.webp",
+      "coop/1726853/p07.webp",
+      "coop/1726853/p08.webp",
+      "coop/1726853/p09.webp",
+      "coop/1726853/p10.webp",
+      "coop/1726853/p11.webp",
+      "coop/1726853/p12.webp",
+      "coop/1726853/p13.webp",
+      "coop/1726853/p14.webp",
+      "coop/1726853/p15.webp",
+      "coop/1726853/p16.webp",
+      "coop/1726853/p17.webp",
+      "coop/1726853/p18.webp",
+      "coop/1726853/p19.webp",
+      "coop/1726853/p20.webp",
+      "coop/1726853/p21.webp",
+      "coop/1726853/p22.webp",
+      "coop/1726853/p23.webp",
+      "coop/1726853/p24.webp",
+      "coop/1726853/p25.webp",
+      "coop/1726853/p26.webp",
+      "coop/1726853/p27.webp",
+      "coop/1726853/p28.webp",
+      "coop/1726853/p29.webp",
+      "coop/1726853/p30.webp",
+      "coop/1726853/p31.webp",
+      "coop/1726853/p32.webp"
+     ]
     },
     {
      "id": "1726851",
@@ -362,6 +398,13 @@
      ]
     }
    ]
+  },
+  {
+   "nome": "Despar",
+   "regione": "Lazio",
+   "citta": "Roma",
+   "url": "https://www.doveconviene.it/roma/volantino/despar",
+   "volantini": []
   }
  ]
 }
