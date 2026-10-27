@@ -1,15 +1,15 @@
-Richieste dall'app: errore HTTP 401
+Richieste dall'app: 3
 == Conad https://www.doveconviene.it/roma/volantino/conad
   volantini trovati: 6 1703398,1720420,1716772,1725968,1719418,1720680
-  volantino 1703398 giri: 8 immagini: 24
-  pubblicazione 937177 pagine: 12 (altre pubblicazioni viste: 0)
-    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/937177/1/page_1_level_4_1164641003.webp 88886B
-    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/937177/2/page_2_level_4_575622485.webp 85300B
+  volantino 1703398 giri: 8 immagini: 21
+  pubblicazione 937177 pagine: 9 (altre pubblicazioni viste: 0)
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/937177/4/page_4_level_4_1166763400.webp 90736B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/937177/5/page_5_level_4_885092093.webp 92834B
   volantino 1720420 giri: 4 immagini: 16
   pubblicazione 953360 pagine: 5 (altre pubblicazioni viste: 0)
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953360/1/page_1_level_4_1618497500.webp 75626B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953360/2/page_2_level_4_604577613.webp 108542B
-  volantino 1716772 giri: 4 immagini: 13
+  volantino 1716772 giri: 3 immagini: 13
   pubblicazione 950170 pagine: 2 (altre pubblicazioni viste: 0)
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/950170/1/page_1_level_4_996480027.webp 58568B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/950170/2/page_2_level_4_1691241270.webp 45896B
@@ -19,7 +19,7 @@ Richieste dall'app: errore HTTP 401
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/957979/2/page_2_level_4_1946785120.webp 78132B
 == Lidl https://www.doveconviene.it/roma/volantino/lidl
   volantini trovati: 2 1728838,1722393
-  volantino 1728838 giri: 34 immagini: 75
+  volantino 1728838 giri: 32 immagini: 75
   pubblicazione 960784 pagine: 61 (altre pubblicazioni viste: 0)
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/960784/1/page_1_level_4_314785863.webp 131010B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/960784/2/page_2_level_4_214737871.webp 81878B
@@ -27,3 +27,31 @@ Richieste dall'app: errore HTTP 401
   pubblicazione 959595 pagine: 57 (altre pubblicazioni viste: 0)
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/959595/1/page_1_level_4_900095506.webp 122726B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/959595/2/page_2_level_4_722150540.webp 64880B
+== Eurospin https://www.doveconviene.it/roma/volantino/eurospin
+  volantini trovati: 1 1724046
+  volantino 1724046 giri: 13 immagini: 36
+  pubblicazione 956521 pagine: 22 (altre pubblicazioni viste: 0)
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/956521/1/page_1_level_4_909726631.webp 92918B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/956521/2/page_2_level_4_451107733.webp 88908B
+== coop https://www.doveconviene.it/roma/volantino/coop
+  volantini trovati: 2 1726853,1726851
+  volantino 1726853 giri: 3 immagini: 11
+  ATTENZIONE: poche immagini catturate (0): serve guardare la pagina del volantino
+  volantino 1726851 giri: 10 immagini: 30
+  pubblicazione 958737 pagine: 16 (altre pubblicazioni viste: 0)
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/958737/1/page_1_level_4_1154393714.webp 60996B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/958737/2/page_2_level_4_586765572.webp 71710B
+== Esselunga https://www.doveconviene.it/roma/volantino/esselunga
+  volantini trovati: 3 1727357,1727344,1596886
+  volantino 1727357 giri: 20 immagini: 44
+  pubblicazione 959549 pagine: 29 (altre pubblicazioni viste: 0)
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/959549/1/page_1_level_4_2090597167.webp 43260B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/959549/2/page_2_level_4_1777656540.webp 82146B
+  volantino 1727344 giri: 8 immagini: 24
+  pubblicazione 959537 pagine: 10 (altre pubblicazioni viste: 0)
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/959537/1/page_1_level_4_980643718.webp 47780B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/959537/2/page_2_level_4_127327204.webp 60590B
+  volantino 1596886 giri: 7 immagini: 23
+  pubblicazione 846926 pagine: 8 (altre pubblicazioni viste: 0)
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/846926/1/page_1_level_4_1907393732.webp 39016B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/846926/2/page_2_level_4_2030291659.webp 41632B

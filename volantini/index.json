@@ -1,5 +1,5 @@
 {
- "aggiornato": "2026-10-27T21:19:13.068Z",
+ "aggiornato": "2026-10-27T21:23:15.293Z",
  "negozi": [
   {
    "nome": "Conad",
@@ -13,9 +13,6 @@
      "url": "https://www.doveconviene.it/roma/iper-e-super/conad/volantino/ultime-offerte-conad?flyerId=1703398&flyerPage=1&utm_medium=rsv&origin_retailer_id=102",
      "validita": "",
      "pagine": [
-      "conad/1703398/p01.webp",
-      "conad/1703398/p02.webp",
-      "conad/1703398/p03.webp",
       "conad/1703398/p04.webp",
       "conad/1703398/p05.webp",
       "conad/1703398/p06.webp",
@@ -206,6 +203,162 @@
       "lidl/1722393/p55.webp",
       "lidl/1722393/p56.webp",
       "lidl/1722393/p57.webp"
+     ]
+    }
+   ]
+  },
+  {
+   "nome": "Eurospin",
+   "regione": "Lazio",
+   "citta": "Roma",
+   "url": "https://www.doveconviene.it/roma/volantino/eurospin",
+   "volantini": [
+    {
+     "id": "1724046",
+     "nome": "Volantino 1724046",
+     "url": "https://www.doveconviene.it/roma/discount/eurospin/volantino/ultime-offerte-eurospin?flyerId=1724046&flyerPage=1&utm_medium=rsv&origin_retailer_id=12",
+     "validita": "",
+     "pagine": [
+      "eurospin/1724046/p01.webp",
+      "eurospin/1724046/p02.webp",
+      "eurospin/1724046/p03.webp",
+      "eurospin/1724046/p04.webp",
+      "eurospin/1724046/p05.webp",
+      "eurospin/1724046/p06.webp",
+      "eurospin/1724046/p07.webp",
+      "eurospin/1724046/p08.webp",
+      "eurospin/1724046/p09.webp",
+      "eurospin/1724046/p10.webp",
+      "eurospin/1724046/p11.webp",
+      "eurospin/1724046/p12.webp",
+      "eurospin/1724046/p13.webp",
+      "eurospin/1724046/p14.webp",
+      "eurospin/1724046/p15.webp",
+      "eurospin/1724046/p16.webp",
+      "eurospin/1724046/p17.webp",
+      "eurospin/1724046/p18.webp",
+      "eurospin/1724046/p19.webp",
+      "eurospin/1724046/p20.webp",
+      "eurospin/1724046/p21.webp",
+      "eurospin/1724046/p22.webp"
+     ]
+    }
+   ]
+  },
+  {
+   "nome": "coop",
+   "regione": "Lazio",
+   "citta": "Roma",
+   "url": "https://www.doveconviene.it/roma/volantino/coop",
+   "volantini": [
+    {
+     "id": "1726853",
+     "nome": "Volantino 1726853",
+     "url": "https://www.doveconviene.it/roma/iper-e-super/coop/volantino/ultime-offerte-coop?flyerId=1726853&flyerPage=1&utm_medium=rsv&origin_retailer_id=962",
+     "validita": "",
+     "pagine": []
+    },
+    {
+     "id": "1726851",
+     "nome": "Volantino 1726851",
+     "url": "https://www.doveconviene.it/roma/iper-e-super/coop/volantino/ultime-offerte-coop?flyerId=1726851&flyerPage=1&utm_medium=rfg&origin_retailer_id=962",
+     "validita": "",
+     "pagine": [
+      "coop/1726851/p01.webp",
+      "coop/1726851/p02.webp",
+      "coop/1726851/p03.webp",
+      "coop/1726851/p04.webp",
+      "coop/1726851/p05.webp",
+      "coop/1726851/p06.webp",
+      "coop/1726851/p07.webp",
+      "coop/1726851/p08.webp",
+      "coop/1726851/p09.webp",
+      "coop/1726851/p10.webp",
+      "coop/1726851/p11.webp",
+      "coop/1726851/p12.webp",
+      "coop/1726851/p13.webp",
+      "coop/1726851/p14.webp",
+      "coop/1726851/p15.webp",
+      "coop/1726851/p16.webp"
+     ]
+    }
+   ]
+  },
+  {
+   "nome": "Esselunga",
+   "regione": "Lazio",
+   "citta": "Roma",
+   "url": "https://www.doveconviene.it/roma/volantino/esselunga",
+   "volantini": [
+    {
+     "id": "1727357",
+     "nome": "Volantino 1727357",
+     "url": "https://www.doveconviene.it/roma/iper-e-super/esselunga/volantino/ultime-offerte-esselunga?flyerId=1727357&flyerPage=1&utm_medium=rsv&origin_retailer_id=43",
+     "validita": "",
+     "pagine": [
+      "esselunga/1727357/p01.webp",
+      "esselunga/1727357/p02.webp",
+      "esselunga/1727357/p03.webp",
+      "esselunga/1727357/p04.webp",
+      "esselunga/1727357/p05.webp",
+      "esselunga/1727357/p06.webp",
+      "esselunga/1727357/p07.webp",
+      "esselunga/1727357/p08.webp",
+      "esselunga/1727357/p09.webp",
+      "esselunga/1727357/p10.webp",
+      "esselunga/1727357/p11.webp",
+      "esselunga/1727357/p12.webp",
+      "esselunga/1727357/p13.webp",
+      "esselunga/1727357/p14.webp",
+      "esselunga/1727357/p15.webp",
+      "esselunga/1727357/p16.webp",
+      "esselunga/1727357/p17.webp",
+      "esselunga/1727357/p18.webp",
+      "esselunga/1727357/p19.webp",
+      "esselunga/1727357/p20.webp",
+      "esselunga/1727357/p21.webp",
+      "esselunga/1727357/p22.webp",
+      "esselunga/1727357/p23.webp",
+      "esselunga/1727357/p24.webp",
+      "esselunga/1727357/p25.webp",
+      "esselunga/1727357/p26.webp",
+      "esselunga/1727357/p27.webp",
+      "esselunga/1727357/p28.webp",
+      "esselunga/1727357/p29.webp"
+     ]
+    },
+    {
+     "id": "1727344",
+     "nome": "Volantino 1727344",
+     "url": "https://www.doveconviene.it/roma/iper-e-super/esselunga/volantino/ultime-offerte-esselunga?flyerId=1727344&flyerPage=1&utm_medium=rfg&origin_retailer_id=43",
+     "validita": "",
+     "pagine": [
+      "esselunga/1727344/p01.webp",
+      "esselunga/1727344/p02.webp",
+      "esselunga/1727344/p03.webp",
+      "esselunga/1727344/p04.webp",
+      "esselunga/1727344/p05.webp",
+      "esselunga/1727344/p06.webp",
+      "esselunga/1727344/p07.webp",
+      "esselunga/1727344/p08.webp",
+      "esselunga/1727344/p09.webp",
+      "esselunga/1727344/p10.webp"
+     ]
+    },
+    {
+     "id": "1596886",
+     "nome": "Volantino 1596886",
+     "url": "https://www.doveconviene.it/roma/iper-e-super/esselunga/volantino/ultime-offerte-esselunga?flyerId=1596886&flyerPage=1&utm_medium=rfg&origin_retailer_id=43",
+     "validita": "",
+     "pagine": [
+      "esselunga/1596886/p01.webp",
+      "esselunga/1596886/p02.webp",
+      "esselunga/1596886/p03.webp",
+      "esselunga/1596886/p04.webp",
+      "esselunga/1596886/p05.webp",
+      "esselunga/1596886/p06.webp",
+      "esselunga/1596886/p07.webp",
+      "esselunga/1596886/p08.webp"
      ]
     }
    ]
