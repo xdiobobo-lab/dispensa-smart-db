@@ -29,7 +29,7 @@ async function consenso(page) {
     try { const b = page.getByRole("button", { name: t }).first(); if (await b.count()) { await b.click({ timeout: 1500 }); L("  consenso cliccato", t); await sleep(500); return } } catch {}
   }
 }
-const isFlyerImg = (url, ct) => /^image\//.test(ct || "") && /shopfully|images\/volantini|\/flyer/i.test(url) && !/logo|icon|avatar|sprite|placeholder|favicon/i.test(url);
+const isFlyerImg = (url, ct) => /^image\//.test(ct || "") && /shopfully|page_assets|images\/volantini|\/flyer/i.test(url) && !/logo|icon|avatar|sprite|placeholder|favicon/i.test(url);
 
 for (const n of CFG.negozi || []) {
   if (!n.attivo) continue;
@@ -73,13 +73,36 @@ for (const n of CFG.negozi || []) {
           if (imgs.size === prima) fermi++; else fermi = 0;
         }
         L("  volantino", f.id, "giri:", giri, "immagini:", imgs.size);
+        
+        
         const dir = path.join(OUT, slug(n.nome), f.id); fs.mkdirSync(dir, { recursive: true });
-        const pagine = []; let k = 0;
-        for (const [u, v] of [...imgs]) {
-          try { const rr = await ctx.request.get(u, { headers: { referer: base }, timeout: 30000 }); v.b = rr.ok() ? await rr.body() : null } catch { v.b = null }
-          if (!v.b || v.b.length < MINB) imgs.delete(u);
+        // Le pagine arrivano in più risoluzioni (page_N_level_L): per ogni pagina tengo la più grande,
+        // e solo del volantino con più pagine (il visualizzatore carica anche altri volantini consigliati).
+        const PA = /page_assets\/(\d+)\/(\d+)\/page_\d+_level_(\d+)_/;
+        const pubs = new Map(), altre = [];
+        for (const u of imgs.keys()) {
+          const m = u.match(PA);
+          if (!m) { altre.push(u); continue }
+          const pub = m[1], pg = +m[2], lv = +m[3];
+          if (!pubs.has(pub)) pubs.set(pub, new Map());
+          const mp = pubs.get(pub), cur = mp.get(pg);
+          if (!cur || lv > cur.lv) mp.set(pg, { u, lv });
         }
-        for (const [u, v] of imgs) { k++; const ext = /png/.test(v.ct) ? "png" : /webp/.test(v.ct) ? "webp" : "jpg"; const fn = "p" + String(k).padStart(2, "0") + "." + ext; fs.writeFileSync(path.join(dir, fn), v.b); pagine.push(slug(n.nome) + "/" + f.id + "/" + fn); if (k <= 3) L("    img", u.slice(0, 140), v.b.length + "B") }
+        let scelte = [];
+        if (pubs.size) {
+          const [best] = [...pubs.entries()].sort((a, b) => b[1].size - a[1].size);
+          L("  pubblicazione", best[0], "pagine:", best[1].size, "(altre pubblicazioni viste: " + (pubs.size - 1) + ")");
+          scelte = [...best[1].entries()].sort((a, b) => a[0] - b[0]).map(([pg, o]) => ({ u: o.u, n: pg }));
+        } else {
+          scelte = altre.map((u, i) => ({ u, n: i + 1 }));
+        }
+        const final = new Map();
+        for (const c of scelte) {
+          try { const rr = await ctx.request.get(c.u, { headers: { referer: base }, timeout: 30000 }); const b = rr.ok() ? await rr.body() : null; if (b && b.length >= (pubs.size ? 8000 : MINB)) final.set(c.u, { b, ct: imgs.get(c.u).ct, n: c.n }) } catch {}
+        }
+        const pagine = [];
+        for (const [u, v] of final) { const ext = /png/.test(v.ct) ? "png" : /webp/.test(v.ct) ? "webp" : "jpg"; const fn = "p" + String(v.n).padStart(2, "0") + "." + ext; fs.writeFileSync(path.join(dir, fn), v.b); pagine.push(slug(n.nome) + "/" + f.id + "/" + fn); if (pagine.length <= 2) L("    img", u.slice(0, 140), v.b.length + "B") }
+        imgs.clear(); for (const [u, v] of final) imgs.set(u, v);
         if (imgs.size < 2) L("  ATTENZIONE: poche immagini catturate (" + imgs.size + "): serve guardare la pagina del volantino");
         const val = (f.testo.match(/(valid[oi]|scad[ea]|dal|fino)[^|]{0,40}/i) || [""])[0];
         rec.volantini.push({ id: f.id, nome: f.testo.slice(0, 80) || ("Volantino " + f.id), url: f.href, validita: val, pagine });
