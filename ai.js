@@ -5,6 +5,8 @@ const PREF=["openai/gpt-oss-120b","llama-3.3-70b-versatile","openai/gpt-oss-20b"
 const NOCHAT=/whisper|guard|tts|orpheus|playai|embed|safeguard|compound/i;
 const prov=k=>String(k).startsWith("sk-ant")?"ant":"groq";
 try{const hm=location.hash.match(/[#&]ai=([^&]+)/);if(hm){const o=JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(hm[1])))));if(o&&o.u&&o.c){localStorage.setItem("aproxy",JSON.stringify({u:String(o.u),c:String(o.c)}));history.replaceState(null,"",location.pathname+location.search)}}}catch(e){}
+/* Accesso AI automatico: se config.js contiene AI_PROXY, ogni dispositivo lo usa senza chiavi da inserire. */
+try{const A=window.AI_PROXY;if(A&&A.u&&A.c&&!localStorage.getItem("aproxy")&&!localStorage.getItem(KEY))localStorage.setItem("aproxy",JSON.stringify({u:String(A.u).trim(),c:String(A.c).trim()}))}catch(e){}
 const PX=()=>{try{const p=JSON.parse(localStorage.getItem("aproxy")||"null");return p&&p.u&&p.c?p:null}catch(e){return null}};
 const EP=path=>PX()?PX().u.replace(/\/+$/,"")+"/v1"+path:"https://api.groq.com/openai/v1"+path;
 const HD=key=>PX()?{"content-type":"application/json","x-access-code":PX().c}:{"content-type":"application/json",authorization:"Bearer "+key};
@@ -77,7 +79,7 @@ async function vision(prompt,images){
  try{return JSON.parse(t.slice(a,z+1))}catch(e){throw new Error("Risposta AI non leggibile, riprova.")}
 }
 window.claude={use:async n=>n==="sample"?{json:ask}:null,vision};
-function upd(){const b=document.getElementById("kb");if(b){if(b.parentNode)b.parentNode.style.display=PX()?"none":"flex";const k=localStorage.getItem(KEY);b.textContent=PX()?"🔑 Accesso famiglia ✓":k?"🔑 Chiave AI ✓ ("+(prov(k)==="ant"?"Claude":"Groq")+")":"🔑 Chiave AI"}}
+function upd(){const b=document.getElementById("kb");if(b){if(b.parentNode)b.parentNode.style.display=window.__kbShow?"flex":"none";const k=localStorage.getItem(KEY);b.textContent=PX()?"🔑 Accesso famiglia ✓":k?"🔑 Chiave AI ✓ ("+(prov(k)==="ant"?"Claude":"Groq")+")":"🔑 Chiave AI"}}
 window.setKey=()=>{const k=prompt("Incolla la tua chiave API: GroqCloud (inizia con gsk_) oppure Anthropic (sk-ant-). Se hai ricevuto un accesso dalla famiglia, incolla invece il testo indirizzo|codice (oppure apri il link che ti hanno mandato). Resta salvato solo in questo browser. Lascia vuoto per rimuovere.",PX()?PX().u+"|"+PX().c:(localStorage.getItem(KEY)||""));if(k===null)return;const t=k.trim();
  if(/^https:\/\/[^|\s]+\|\S+$/.test(t)){const i=t.indexOf("|");localStorage.setItem("aproxy",JSON.stringify({u:t.slice(0,i),c:t.slice(i+1)}));localStorage.removeItem(KEY)}
  else if(t){localStorage.setItem(KEY,t);localStorage.removeItem("aproxy")}else{localStorage.removeItem(KEY);localStorage.removeItem("aproxy")}upd()};
@@ -86,5 +88,5 @@ window.setModel=async()=>{
  if(key&&p==="groq"){const ids=await groqModels(key);if(ids.length)extra="\n\nModelli disponibili con la tua chiave:\n"+ids.join("\n")}
  const m=prompt("Nome del modello da usare ("+(p==="ant"?"Claude":"GroqCloud")+"). Lascia vuoto per il predefinito ("+DEF[p]+")."+extra,model(p));
  if(m===null)return;m.trim()?localStorage.setItem("amodel_"+p,m.trim()):localStorage.removeItem("amodel_"+p)};
-document.querySelector("h1").insertAdjacentHTML("afterend",'<div style="display:flex;gap:6px;flex-wrap:wrap"><button id="kb" class="btn g" style="padding:5px 12px;font-size:13px" onclick="setKey()"></button><button class="btn g" style="padding:5px 12px;font-size:13px" onclick="setModel()" aria-label="Cambia modello">⚙️ Modello</button></div>');upd();
+document.querySelector("h1").insertAdjacentHTML("afterend",'<div style="display:flex;gap:6px;flex-wrap:wrap"><button id="kb" class="btn g" style="padding:5px 12px;font-size:13px" onclick="setKey()"></button><button class="btn g" style="padding:5px 12px;font-size:13px" onclick="setModel()" aria-label="Cambia modello">⚙️ Modello</button></div>');upd();(function(){var h=document.querySelector("h1"),n=0,t;if(h)h.addEventListener("click",function(){n++;clearTimeout(t);t=setTimeout(function(){n=0},2500);if(n>=5){n=0;window.__kbShow=window.__kbShow?0:1;upd()}})})();
 })()}

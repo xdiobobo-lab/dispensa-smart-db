@@ -95,3 +95,11 @@ PROGETTO GRATUITO IN PAUSA
 - Per riattivarlo: apri supabase.com, entra nel progetto e premi "Restore project".
   Se lo usate ogni settimana non succede.
 - Nel dubbio, ogni tanto usa "Copie di sicurezza" > scarica un file con i dati.
+
+AI SENZA CHIAVI SUI DISPOSITIVI (consigliato per la famiglia)
+- La chiave Groq NON va mai scritta nel sito: chiunque potrebbe leggerla.
+- Resta segreta nel Worker di Cloudflare. Per far usare l'AI a tutti senza
+  inserire nulla, aggiungi in config.js questa riga (con i tuoi valori):
+    window.AI_PROXY={u:"https://IL-TUO-WORKER.workers.dev",c:"IL-TUO-CODICE"};
+- Il codice resta leggibile a chi apre config.js: nel Worker imposta ALLOWED_ORIGIN
+  sul tuo sito (https://xdiobobo-lab.github.io) e tieni un limite di utilizzo.

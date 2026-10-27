@@ -5,9 +5,12 @@ Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) e il n
 
 ## [2.0.3] – 2026-10-26
 
+### Novità
+- **AI senza chiavi sui dispositivi**: se in `config.js` si aggiunge la riga `window.AI_PROXY` con l'indirizzo e il codice del Worker, tutti i dispositivi usano l'AI automaticamente, senza vedere né inserire alcuna chiave (la chiave Groq resta segreta nel Worker).
+
 ### Modificato
+- I pulsanti "Chiave AI" e "Modello" sono nascosti a tutti: restano attivi (la chiave o il link già salvati continuano a funzionare) e si mostrano toccando 5 volte di seguito il titolo "Dispensa Smart".
 - Il riquadro "Sincronizzazione automatica con GitHub" compare solo a chi l'aveva già collegata (per poterla scollegare): la sincronizzazione ora passa dall'account.
-- I pulsanti "Chiave AI" e "Modello" spariscono quando l'accesso all'AI è già attivo tramite il link ricevuto.
 
 ## [2.0.2] – 2026-10-26
 
