@@ -7,7 +7,7 @@ const prov=k=>String(k).startsWith("sk-ant")?"ant":"groq";
 try{const hm=location.hash.match(/[#&]ai=([^&]+)/);if(hm){const o=JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(hm[1])))));if(o&&o.u&&o.c){localStorage.setItem("aproxy",JSON.stringify({u:String(o.u),c:String(o.c)}));history.replaceState(null,"",location.pathname+location.search)}}}catch(e){}
 /* Accesso AI automatico: se config.js contiene AI_PROXY, ogni dispositivo lo usa senza chiavi da inserire. */
 try{const A=window.AI_PROXY;if(A&&A.u&&A.c&&!localStorage.getItem("aproxy")&&!localStorage.getItem(KEY))localStorage.setItem("aproxy",JSON.stringify({u:String(A.u).trim(),c:String(A.c).trim()}))}catch(e){}
-const PX=()=>{try{const p=JSON.parse(localStorage.getItem("aproxy")||"null");return p&&p.u&&p.c?p:null}catch(e){return null}};
+const PX=()=>{try{const p=JSON.parse(localStorage.getItem("aproxy")||"null");if(p&&p.u&&p.c)return p;const A=window.AI_PROXY;if(A&&A.u&&A.c&&!localStorage.getItem(KEY)){const q={u:String(A.u).trim(),c:String(A.c).trim()};localStorage.setItem("aproxy",JSON.stringify(q));return q}return null}catch(e){return null}};
 const EP=path=>PX()?PX().u.replace(/\/+$/,"")+"/v1"+path:"https://api.groq.com/openai/v1"+path;
 const HD=key=>PX()?{"content-type":"application/json","x-access-code":PX().c}:{"content-type":"application/json",authorization:"Bearer "+key};
 const model=p=>localStorage.getItem("amodel_"+p)||DEF[p];
