@@ -3,6 +3,13 @@
 Tutte le modifiche importanti a **Dispensa Smart** sono annotate qui.
 Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) e il numero di versione, mostrato in basso nelle Impostazioni (⚙️), segue il [versionamento semantico](https://semver.org/lang/it/).
 
+## [2.1.0] – 2026-10-27
+
+### Novità
+- **Sfoglia i volantini**: nella sezione Negozi compare l'elenco dei volantini scaricati automaticamente (copertine per supermercato). Si sfoglia pagina per pagina a schermo intero, con frecce, tastiera e scorrimento con il dito.
+- **Leggi le offerte con l'AI** direttamente da un volantino sfogliato, senza caricare nulla a mano (prime 24 pagine).
+- **Scaricatore automatico** (GitHub Actions + browser) che ogni giorno salva le pagine dei volantini di Conad e Lidl dalla pagina della città in `volantini/`: vedi `LEGGIMI-volantini.txt`.
+
 ## [2.0.3] – 2026-10-26
 
 ### Novità
