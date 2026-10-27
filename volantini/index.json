@@ -1,5 +1,5 @@
 {
- "aggiornato": "2026-10-27T21:12:36.026Z",
+ "aggiornato": "2026-10-27T21:19:13.068Z",
  "negozi": [
   {
    "nome": "Conad",
@@ -45,7 +45,10 @@
      "nome": "-5 GIORNI",
      "url": "https://www.doveconviene.it/roma/iper-e-super/conad/volantino/ultime-offerte-conad?flyerId=1716772&flyerPage=1&utm_medium=rfg&origin_retailer_id=102",
      "validita": "",
-     "pagine": []
+     "pagine": [
+      "conad/1716772/p01.webp",
+      "conad/1716772/p02.webp"
+     ]
     },
     {
      "id": "1725968",

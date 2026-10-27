@@ -1,7 +1,6 @@
-Richieste dall'app: non collegate (mancano SUPABASE_URL e SUPABASE_SERVICE_KEY nei Secrets)
+Richieste dall'app: errore HTTP 401
 == Conad https://www.doveconviene.it/roma/volantino/conad
   volantini trovati: 6 1703398,1720420,1716772,1725968,1719418,1720680
-  consenso cliccato /accetta/i
   volantino 1703398 giri: 8 immagini: 24
   pubblicazione 937177 pagine: 12 (altre pubblicazioni viste: 0)
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/937177/1/page_1_level_4_1164641003.webp 88886B
@@ -10,15 +9,17 @@ Richieste dall'app: non collegate (mancano SUPABASE_URL e SUPABASE_SERVICE_KEY n
   pubblicazione 953360 pagine: 5 (altre pubblicazioni viste: 0)
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953360/1/page_1_level_4_1618497500.webp 75626B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953360/2/page_2_level_4_604577613.webp 108542B
-  volantino 1716772 giri: 3 immagini: 9
-  ATTENZIONE: poche immagini catturate (0): serve guardare la pagina del volantino
+  volantino 1716772 giri: 4 immagini: 13
+  pubblicazione 950170 pagine: 2 (altre pubblicazioni viste: 0)
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/950170/1/page_1_level_4_996480027.webp 58568B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/950170/2/page_2_level_4_1691241270.webp 45896B
   volantino 1725968 giri: 6 immagini: 20
   pubblicazione 957979 pagine: 8 (altre pubblicazioni viste: 0)
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/957979/1/page_1_level_4_1079671682.webp 67138B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/957979/2/page_2_level_4_1946785120.webp 78132B
 == Lidl https://www.doveconviene.it/roma/volantino/lidl
   volantini trovati: 2 1728838,1722393
-  volantino 1728838 giri: 32 immagini: 75
+  volantino 1728838 giri: 34 immagini: 75
   pubblicazione 960784 pagine: 61 (altre pubblicazioni viste: 0)
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/960784/1/page_1_level_4_314785863.webp 131010B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/960784/2/page_2_level_4_214737871.webp 81878B
