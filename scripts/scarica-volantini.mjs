@@ -22,6 +22,25 @@ fs.mkdirSync(OUT, { recursive: true });
 const { chromium } = await import("playwright");
 const br = await chromium.launch();
 const ctx = await br.newContext({ userAgent: UA, locale: "it-IT", timezoneId: "Europe/Rome", viewport: { width: 1280, height: 1800 } });
+// Richieste fatte dall'app (tabella richieste_volantini): le aggiungo ai negozi del file di configurazione.
+const urlSlug = s => String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+async function richieste() {
+  const U = (process.env.SUPABASE_URL || "").replace(/\/+$/, ""), K = process.env.SUPABASE_SERVICE_KEY || "";
+  if (!U || !K) { L("Richieste dall'app: non collegate (mancano SUPABASE_URL e SUPABASE_SERVICE_KEY nei Secrets)"); return [] }
+  try {
+    const r = await fetch(U + "/rest/v1/richieste_volantini?select=catena,regione,citta&order=creata.asc&limit=" + (+CFG.max_richieste || 12), { headers: { apikey: K, authorization: "Bearer " + K } });
+    if (!r.ok) { L("Richieste dall'app: errore HTTP " + r.status); return [] }
+    const a = await r.json(); L("Richieste dall'app:", a.length); return a;
+  } catch (e) { L("Richieste dall'app: errore", String(e.message).slice(0, 120)); return [] }
+}
+const base0 = (process.env.VOL_BASE || "https://www.doveconviene.it").replace(/\/+$/, "");
+for (const q of await richieste()) {
+  const citta = urlSlug(q.citta || ""), cat = urlSlug(q.catena || "");
+  if (!citta || !cat) continue;
+  const url = base0 + "/" + citta + "/volantino/" + cat;
+  if ((CFG.negozi || []).some(n => n.url === url)) continue;
+  (CFG.negozi = CFG.negozi || []).push({ nome: String(q.catena).trim().slice(0, 40), regione: String(q.regione || "").slice(0, 40), citta: String(q.citta || "").slice(0, 40), url, attivo: true });
+}
 const index = { aggiornato: new Date().toISOString(), negozi: [] };
 
 async function consenso(page) {
@@ -33,7 +52,7 @@ const isFlyerImg = (url, ct) => /^image\//.test(ct || "") && /shopfully|page_ass
 
 for (const n of CFG.negozi || []) {
   if (!n.attivo) continue;
-  const rec = { nome: n.nome, url: n.url, volantini: [] };
+  const rec = { nome: n.nome, regione: n.regione || "", citta: n.citta || ((n.url.match(/doveconviene\.it\/([^/]+)\/volantino/) || [])[1] || ""), url: n.url, volantini: [] };
   index.negozi.push(rec);
   L("== " + n.nome + " " + n.url);
   try {
