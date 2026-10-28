@@ -16,7 +16,6 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 const log = [];
 const L = (...a) => { const t = a.join(" "); console.log(t); log.push(t); };
 
-fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
 
 const { chromium } = await import("playwright");
@@ -28,20 +27,28 @@ async function richieste() {
   const U = (process.env.SUPABASE_URL || "").trim().replace(/\/+$/, ""), K = (process.env.SUPABASE_SERVICE_KEY || "").trim();
   if (!U || !K) { L("Richieste dall'app: non collegate (mancano SUPABASE_URL e SUPABASE_SERVICE_KEY nei Secrets)"); return [] }
   try {
-    const r = await fetch(U + "/rest/v1/richieste_volantini?select=catena,regione,citta&order=creata.asc&limit=" + (+CFG.max_richieste || 12), { headers: K.startsWith("sb_") ? { apikey: K } : { apikey: K, authorization: "Bearer " + K } });
+    const r = await fetch(U + "/rest/v1/richieste_volantini?select=id,catena,regione,citta&order=creata.asc&limit=" + (+CFG.max_richieste || 12), { headers: K.startsWith("sb_") ? { apikey: K } : { apikey: K, authorization: "Bearer " + K } });
     if (!r.ok) { L("Richieste dall'app: errore HTTP " + r.status + (r.status === 401 || r.status === 403 ? " (la chiave non è accettata: serve la chiave SEGRETA del progetto, non quella pubblica; tipo della chiave usata: " + (K.startsWith("sb_secret_") ? "sb_secret" : K.startsWith("sb_publishable_") ? "PUBBLICA (sbagliata)" : K.startsWith("eyJ") ? "JWT" : "non riconosciuto") + ")" : "")); return [] }
     const a = await r.json(); L("Richieste dall'app:", a.length); return a;
   } catch (e) { L("Richieste dall'app: errore", String(e.message).slice(0, 120)); return [] }
 }
 const base0 = (process.env.VOL_BASE || "https://www.doveconviene.it").replace(/\/+$/, "");
-for (const q of await richieste()) {
+const reqs = await richieste();
+const daCancellare = [];                                   // id delle richieste da togliere dalla coda
+const mappa = {};                                          // url -> id richieste
+const esistente = (() => { try { return JSON.parse(fs.readFileSync(path.join(OUT, "index.json"), "utf8")) } catch { return { negozi: [] } } })();
+const disponibile = url => (esistente.negozi || []).some(n => n.url === url && (n.volantini || []).length);
+const tutti = process.env.VOL_TUTTI === "1";               // VOL_TUTTI=1: riscarica anche i negozi già presenti
+for (const q of reqs) {
   const citta = urlSlug(q.citta || ""), cat = urlSlug(q.catena || "");
-  if (!citta || !cat) continue;
+  if (!citta || !cat) { if (q.id != null) daCancellare.push(q.id); continue }
   const url = base0 + "/" + citta + "/volantino/" + cat;
+  (mappa[url] = mappa[url] || []).push(q.id);
+  if (disponibile(url) && !tutti) { L("Già disponibile, non lo cerco:", q.catena, q.citta); if (q.id != null) daCancellare.push(q.id); continue }
   if ((CFG.negozi || []).some(n => n.url === url)) continue;
   (CFG.negozi = CFG.negozi || []).push({ nome: String(q.catena).trim().slice(0, 40), regione: String(q.regione || "").slice(0, 40), citta: String(q.citta || "").slice(0, 40), url, attivo: true });
 }
-const index = { aggiornato: new Date().toISOString(), negozi: [] };
+const index = { aggiornato: new Date().toISOString(), negozi: (esistente.negozi || []).slice() };
 
 async function consenso(page) {
   for (const t of [/accetta/i, /accetto/i, /consenti/i, /^ok$/i, /agree/i]) {
@@ -52,8 +59,8 @@ const isFlyerImg = (url, ct) => /^image\//.test(ct || "") && /shopfully|page_ass
 
 for (const n of CFG.negozi || []) {
   if (!n.attivo) continue;
+  if (disponibile(n.url) && !tutti) { L("== " + n.nome + ": già disponibile, salto"); continue }
   const rec = { nome: n.nome, regione: n.regione || "", citta: n.citta || ((n.url.match(/doveconviene\.it\/([^/]+)\/volantino/) || [])[1] || ""), url: n.url, volantini: [] };
-  index.negozi.push(rec);
   L("== " + n.nome + " " + n.url);
   try {
     const lp = await ctx.newPage();
@@ -151,13 +158,64 @@ for (const n of CFG.negozi || []) {
         imgs.clear(); for (const [u, v] of final) imgs.set(u, v);
         if (imgs.size < 2) L("  ATTENZIONE: poche immagini catturate (" + imgs.size + "): serve guardare la pagina del volantino");
         const val = (f.testo.match(/(valid[oi]|scad[ea]|dal|fino)[^|]{0,40}/i) || [""])[0];
-        rec.volantini.push({ id: f.id, nome: f.testo.slice(0, 80) || ("Volantino " + f.id), url: f.href, validita: val, pagine });
+        rec.volantini.push({ salvato: new Date().toISOString(), id: f.id, nome: f.testo.slice(0, 80) || ("Volantino " + f.id), url: f.href, validita: val, pagine });
       } catch (e) { L("  errore volantino", f.id, String(e.message).slice(0, 200)) }
       await page.close();
     }
   } catch (e) { L("  errore negozio", n.nome, String(e.message).slice(0, 200)) }
+  if (rec.volantini.length) {
+    const k = index.negozi.findIndex(x => x.url === rec.url);
+    if (k >= 0) index.negozi[k] = rec; else index.negozi.push(rec);
+  } else L("  nessun volantino salvato per", n.nome, "- non cambia nulla");
+  for (const id of mappa[n.url] || []) daCancellare.push(id);   // richiesta evasa (o tentata): esce dalla coda
 }
 await br.close();
+// Pulizia della coda: le richieste evase vengono cancellate da Supabase.
+if (daCancellare.length && process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_KEY) {
+  const U = process.env.SUPABASE_URL.trim().replace(/\/+$/, ""), K = process.env.SUPABASE_SERVICE_KEY.trim();
+  try {
+    const ids = [...new Set(daCancellare.filter(x => x != null))];
+    const r = await fetch(U + "/rest/v1/richieste_volantini?id=in.(" + ids.join(",") + ")", { method: "DELETE", headers: K.startsWith("sb_") ? { apikey: K } : { apikey: K, authorization: "Bearer " + K } });
+    L(r.ok ? "Richieste eliminate dalla coda: " + ids.length : "Eliminazione richieste: errore HTTP " + r.status);
+  } catch (e) { L("Eliminazione richieste: errore", String(e.message).slice(0, 120)) }
+}
+
+// Pulizia dei volantini scaduti: tolgo dall'elenco e cancello le immagini.
+// Scadenza = ultima data trovata nella validità (es. "dal 20 ottobre al 2 novembre"); se non c'è una data
+// leggibile, il volantino viene tolto dopo "giorni_conservazione" giorni dal salvataggio (predefinito 14).
+const MESI = ["gen", "feb", "mar", "apr", "mag", "giu", "lug", "ago", "set", "ott", "nov", "dic"];
+function scadenza(t) {
+  const re = /(\d{1,2})\s+(gen|feb|mar|apr|mag|giu|lug|ago|set|ott|nov|dic)[a-z]*(?:\s+(\d{4}))?/gi;
+  let m, ultima = null; const ora = new Date();
+  const anniEspliciti = (String(t || "").match(/\b(20\d{2})\b/g) || []).map(Number);
+  const annoFisso = anniEspliciti.length ? Math.max(...anniEspliciti) : 0;   // se c'è un anno scritto, vale per tutte le date
+  while ((m = re.exec(String(t || "")))) {
+    const mese = MESI.indexOf(m[2].toLowerCase());
+    let anno = m[3] ? +m[3] : (annoFisso || ora.getFullYear());
+    let d = new Date(anno, mese, +m[1], 23, 59, 59);
+    if (!m[3] && !annoFisso && d < new Date(ora.getTime() - 180 * 864e5)) d = new Date(anno + 1, mese, +m[1], 23, 59, 59);
+    if (!ultima || d > ultima) ultima = d;
+  }
+  return ultima;
+}
+{
+  const GG = +CFG.giorni_conservazione || 14, ora = Date.now();
+  for (const n of index.negozi) {
+    n.volantini = (n.volantini || []).filter(v => {
+      if (!v.salvato) v.salvato = new Date().toISOString();       // volantini vecchi senza data: parte ora il conto
+      const sc = scadenza(v.validita);
+      const scaduto = sc ? sc.getTime() < ora : (ora - Date.parse(v.salvato)) > GG * 864e5;
+      if (scaduto) {
+        L("Volantino scaduto, lo elimino:", n.nome, v.id, v.validita || "(senza data, salvato " + v.salvato.slice(0, 10) + ")");
+        try { fs.rmSync(path.join(OUT, slug(n.nome), String(v.id)), { recursive: true, force: true }) } catch {}
+      }
+      return !scaduto;
+    });
+  }
+  for (const n of index.negozi.filter(x => !x.volantini.length)) try { fs.rmdirSync(path.join(OUT, slug(n.nome))) } catch {}   // solo se vuota (può servire ad altre città)
+  index.negozi = index.negozi.filter(x => x.volantini.length);
+}
+index.aggiornato = new Date().toISOString();
 fs.writeFileSync(path.join(OUT, "index.json"), JSON.stringify(index, null, 1));
 fs.writeFileSync(path.join(OUT, "_debug.txt"), log.join("\n") + "\n");
 console.log("Fatto: " + index.negozi.map(n => n.nome + " " + n.volantini.reduce((a, v) => a + v.pagine.length, 0) + " pagine").join(" | "));
