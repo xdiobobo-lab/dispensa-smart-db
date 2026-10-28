@@ -9,7 +9,7 @@ Richieste dall'app: 1
   pubblicazione 953360 pagine: 5 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953360/1/page_1_level_4_1618497500.webp 75626B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953360/2/page_2_level_4_604577613.webp 108542B
-  volantino 1716772 giri: 4 immagini: 13
+  volantino 1716772 giri: 3 immagini: 13
   pubblicazione 950170 pagine: 2 (altre pubblicazioni viste: 0) numeri: 1,2
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/950170/1/page_1_level_4_996480027.webp 58568B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/950170/2/page_2_level_4_1691241270.webp 45896B
@@ -19,16 +19,18 @@ Richieste dall'app: 1
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/957979/2/page_2_level_4_1946785120.webp 78132B
 == Lidl https://www.doveconviene.it/roma/volantino/lidl
   volantini trovati: 2 1728838,1722393
-  volantino 1728838 giri: 32 immagini: 72
-  pagine mancanti: 1,2,3 - le riapro
+  volantino 1728838 giri: 32 immagini: 75
   pubblicazione 960784 pagine: 61 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/960784/1/page_1_level_4_314785863.webp 131010B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/960784/2/page_2_level_4_214737871.webp 81878B
+  errore volantino 1728838 upload 520 <!DOCTYPE html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en-US"> <![endif]-->
+<!--[if I
   volantino 1722393 giri: 30 immagini: 71
   pubblicazione 959595 pagine: 57 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/959595/1/page_1_level_4_900095506.webp 122726B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/959595/2/page_2_level_4_722150540.webp 64880B
-== Sigma https://www.doveconviene.it/salerno/volantino/sigma
+== Sigma https://www.doveconviene.it/napoli/volantino/sigma
   volantini trovati: 0 
   nessun volantino salvato per Sigma - non cambia nulla
 Richieste eliminate dalla coda: 1
