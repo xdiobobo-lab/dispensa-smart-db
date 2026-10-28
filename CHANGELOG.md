@@ -11,6 +11,8 @@ Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) e il n
 - Richiede di eseguire di nuovo `supabase-setup.sql` (nuove tabelle `miei_volantini` e `volantini_catalogo` e archivio `volantini`).
 
 ### Modificato
+- **"Aggiungi spesa" ora si chiama "Aggiungi prodotto"**.
+- Pulsante **Rimuovi** su ogni volantino: lo toglie dal tuo elenco (serve rieseguire `supabase-setup.sql`).
 - Lo scaricatore cerca solo i volantini richiesti e non ancora presenti, elimina le richieste evase e cancella i volantini scaduti (con le immagini) e quelli che nessuno ha più nel proprio elenco.
 - I volantini richiedono l'accesso all'account.
 

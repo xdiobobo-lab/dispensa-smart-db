@@ -38,7 +38,7 @@ function helpTog(t){const m=hcGet();m[t]=m[t]?0:1;lss("hc",JSON.stringify(m));re
 function helpBox(t){const x=HELP[t];if(!x)return"";
  return hcGet()[t]?`<div style="margin:0 0 6px"><button class="btn g" ${BS} onclick="helpTog('${t}')">ℹ️ Cosa puoi fare qui</button></div>`:`<div class="card" style="padding:12px 20px;margin-top:0"><div class="row"><b>ℹ️ ${x[0]}</b><button class="x" onclick="helpTog('${t}')" aria-label="Nascondi la spiegazione">✕</button></div><div class="mu" style="margin-top:4px">${x[1]}</div></div>`}
 function render(){if(S.tab!=="nuova")S.edId=null;
- const tabs=[["oggi","🏠 Oggi"],["dispensa","Dispensa"],["add","Aggiungi spesa"],["ricette","Ricette AI"],["cerca","Cerca online"],["nuova","Nuova ricetta"],["ricettario","Ricettario"],["lista","Lista spesa"+(S.shop.filter(x=>!x.done).length?" ("+S.shop.filter(x=>!x.done).length+")":"")],["negozi","📍 Dove comprare"],["pref","Preferiti"],["cron","Cronologia"]];
+ const tabs=[["oggi","🏠 Oggi"],["dispensa","Dispensa"],["add","Aggiungi prodotto"],["ricette","Ricette AI"],["cerca","Cerca online"],["nuova","Nuova ricetta"],["ricettario","Ricettario"],["lista","Lista spesa"+(S.shop.filter(x=>!x.done).length?" ("+S.shop.filter(x=>!x.done).length+")":"")],["negozi","📍 Dove comprare"],["pref","Preferiti"],["cron","Cronologia"]];
  drawNav();try{cookSync()}catch(e){}try{drawThemePanel()}catch(e){}try{drawAccount()}catch(e){}
  $("v").innerHTML=(S.tab==="ricette"&&S.cur?"":helpBox(S.tab))+({oggi:vOggi,dispensa:vDisp,add:vAdd,ricette:vRic,cerca:vSearch,nuova:vNew,ricettario:vBook,lista:vShop,negozi:vStores,piano:vPlan,colori:vTheme,guida:vGuida,pref:vPref,cron:vHist})[S.tab]()+(S.tab==="dispensa"?vBackup()+bkCard()+(window.setKey&&!sbOn()?ghCard():""):"");
 }
@@ -54,7 +54,7 @@ function undoable(label,snap,restore){UNDO={snap,restore};toast(`${label} <a hre
 function doUndo(){if(!UNDO)return;const u=UNDO;UNDO=null;try{u.restore(u.snap)}catch(e){}save();render();toast("↩️ Ripristinato")}
 async function aiJson(p){const sm=await claude.use("sample");if(!sm)throw new Error("L’agente AI non è disponibile in questa vista.");return sm.json(p,{modelTier:"default"})}
 const aiErr=e=>e.code==="not_granted"?"Permesso AI negato.":(e.message||"Errore, riprova.");
-const GR=[["🏠","Oggi",[["oggi","Oggi"],["guida","ℹ️ Cosa puoi fare"]]],["🥫","Dispensa",[["dispensa","Dispensa"],["add","Aggiungi spesa"]]],["🍽️","Ricette",[["ricette","Consigliate AI"],["cerca","Cerca online"],["nuova","Nuova ricetta"],["ricettario","Ricettario"],["pref","Preferiti"],["cron","Cronologia"]]],["📅","Piano",[["piano","Settimana"]]],["🛒","Spesa",[["lista","Lista della spesa"],["negozi","Negozi e offerte"]]]];
+const GR=[["🏠","Oggi",[["oggi","Oggi"],["guida","ℹ️ Cosa puoi fare"]]],["🥫","Dispensa",[["dispensa","Dispensa"],["add","Aggiungi prodotto"]]],["🍽️","Ricette",[["ricette","Consigliate AI"],["cerca","Cerca online"],["nuova","Nuova ricetta"],["ricettario","Ricettario"],["pref","Preferiti"],["cron","Cronologia"]]],["📅","Piano",[["piano","Settimana"]]],["🛒","Spesa",[["lista","Lista della spesa"],["negozi","Negozi e offerte"]]]];
 function drawNav(){const gi=Math.max(0,GR.findIndex(g=>g[2].some(t=>t[0]===S.tab))),g=GR[gi],n=S.shop.filter(x=>!x.done).length;S.gt=S.gt||{};S.gt[gi]=S.tab;
  $("nav").innerHTML=g[2].length>1?g[2].map(([k,t])=>`<button class="${S.tab===k?"on":""}" onclick="S.tab='${k}';render()">${t}</button>`).join(""):"";
  $("nav").style.display=g[2].length>1?"flex":"none";
@@ -132,7 +132,7 @@ function welcomeHtml(){if(!window.setKey)return"";const done=lsg("welcomed","");
  <div class="mu">Quattro passi per partire:</div>
  <div style="margin-top:10px"><b>1. 📲 Mettila sul telefono</b><div class="mu" style="margin-top:4px">iPhone: apri il sito con Safari, tocca Condividi e poi “Aggiungi alla schermata Home”.<br>Android: apri il sito con Chrome, tocca ⋮ e poi “Installa app” o “Aggiungi a schermata Home”.</div></div>
  <div style="margin-top:10px"><b>2. 🔑 Attiva l’AI</b>${ai}</div>
- <div style="margin-top:10px"><b>3. 🥫 Riempi la dispensa</b><div class="mu" style="margin-top:4px">In “Aggiungi spesa” inserisci i prodotti uno a uno, oppure scansiona uno scontrino. Poi vai su Ricette per farti suggerire cosa cucinare.</div></div>
+ <div style="margin-top:10px"><b>3. 🥫 Riempi la dispensa</b><div class="mu" style="margin-top:4px">In “Aggiungi prodotto” inserisci i prodotti uno a uno, oppure scansiona uno scontrino. Poi vai su Ricette per farti suggerire cosa cucinare.</div></div>
  <div style="margin-top:10px"><b>4. 💾 I tuoi dati</b><div class="mu" style="margin-top:4px">Restano su questo dispositivo. In “Dispensa” trovi le copie di sicurezza automatiche e “Salva file JSON” per un backup.</div></div>
  <button class="btn" style="margin-top:14px" onclick="wDone()">Ho capito, iniziamo</button></div>`}
 function wDone(){lss("welcomed","1");S.guide=false;render()}

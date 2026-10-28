@@ -204,3 +204,19 @@ create policy "volantini: leggo i miei" on storage.objects for select to authent
     select 1 from public.miei_volantini m
     where m.user_id = auth.uid() and replace(m.chiave, '|', '__') = (storage.foldername(name))[1]));
 notify pgrst, 'reload schema';
+
+-- Volantini che ho rimosso a mano dal mio elenco (valgono solo per il mio account)
+create table if not exists public.volantini_nascosti (
+  user_id uuid not null default auth.uid() references auth.users(id) on delete cascade,
+  chiave  text not null check (char_length(chiave) <= 160),      -- catena|città#id volantino
+  creata  timestamptz not null default now(),
+  primary key (user_id, chiave)
+);
+alter table public.volantini_nascosti enable row level security;
+revoke all on public.volantini_nascosti from anon;
+drop policy if exists "nascosti: leggere" on public.volantini_nascosti;
+create policy "nascosti: leggere" on public.volantini_nascosti for select to authenticated using (user_id = auth.uid());
+drop policy if exists "nascosti: aggiungere" on public.volantini_nascosti;
+create policy "nascosti: aggiungere" on public.volantini_nascosti for insert to authenticated with check (user_id = auth.uid());
+grant select, insert on public.volantini_nascosti to authenticated;
+notify pgrst, 'reload schema';
