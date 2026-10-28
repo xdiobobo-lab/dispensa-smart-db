@@ -9,11 +9,11 @@ Richieste dall'app: 1
   pubblicazione 953360 pagine: 5 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953360/1/page_1_level_4_1618497500.webp 75626B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953360/2/page_2_level_4_604577613.webp 108542B
-  volantino 1716772 giri: 3 immagini: 13
+  volantino 1716772 giri: 6 immagini: 13
   pubblicazione 950170 pagine: 2 (altre pubblicazioni viste: 0) numeri: 1,2
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/950170/1/page_1_level_4_996480027.webp 58568B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/950170/2/page_2_level_4_1691241270.webp 45896B
-  volantino 1725968 giri: 8 immagini: 20
+  volantino 1725968 giri: 6 immagini: 20
   pubblicazione 957979 pagine: 8 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/957979/1/page_1_level_4_1079671682.webp 67138B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/957979/2/page_2_level_4_1946785120.webp 78132B
@@ -23,29 +23,29 @@ Richieste dall'app: 1
   pubblicazione 960784 pagine: 61 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/960784/1/page_1_level_4_314785863.webp 131010B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/960784/2/page_2_level_4_214737871.webp 81878B
-  volantino 1722393 giri: 30 immagini: 71
+  volantino 1722393 giri: 30 immagini: 70
+  pagine mancanti: 1 - le riapro
   pubblicazione 959595 pagine: 57 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/959595/1/page_1_level_4_900095506.webp 122726B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/959595/2/page_2_level_4_722150540.webp 64880B
-== Despar https://www.doveconviene.it/salerno/volantino/despar
-  volantini trovati: 52 1727817,1719262,1732735,1703403,1703495,1720446,1716744,1720432,1720438,1716787,1719407,1725981,1719426,1726948,1725961,1719500,1725965,1719386,1728244,1725104,1728215,1730319,1729433,1727226,1728214,1733222,1720479,1732025,1722418,1713937,1728681,1577679,1730479,1727703,1719029,1718187,1723957,1726117,1732009,1709251,1666356,1486566,1719332,1648599,1624075,1471487,1731998,1731997,1709267,1731744,1720508,1274995
-  volantino 1727817 giri: 19 immagini: 42
-  pubblicazione 959827 pagine: 27 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27
-    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/959827/1/page_1_level_4_965213056.webp 71808B
-    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/959827/2/page_2_level_4_354237667.webp 61420B
-  volantino 1719262 giri: 6 immagini: 21
-  pubblicazione 952344 pagine: 6 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6
-    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/952344/1/page_1_level_4_1470971149.webp 57258B
-    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/952344/2/page_2_level_4_528921544.webp 66756B
-  volantino 1732735 giri: 7 immagini: 19
-  pagine mancanti: 1,2,3 - le riapro
-  pubblicazione 964424 pagine: 8 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8
-    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/964424/1/page_1_level_4_1702046448.webp 71252B
-    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/964424/2/page_2_level_4_1579576485.webp 66114B
-  volantino 1703403 giri: 8 immagini: 24
+== Conad https://www.doveconviene.it/salerno/volantino/conad
+  volantini trovati: 5 1703403,1720446,1716744,1725981,1719426
+  volantino 1703403 giri: 8 immagini: 25
   pubblicazione 937183 pagine: 12 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/937183/1/page_1_level_4_408253823.webp 77288B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/937183/2/page_2_level_4_1545084826.webp 79310B
+  volantino 1720446 giri: 7 immagini: 17
+  pubblicazione 953349 pagine: 5 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953349/1/page_1_level_4_473690698.webp 75626B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953349/2/page_2_level_4_2004167255.webp 102818B
+  volantino 1716744 giri: 4 immagini: 14
+  pubblicazione 950213 pagine: 2 (altre pubblicazioni viste: 0) numeri: 1,2
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/950213/1/page_1_level_4_1353225239.webp 58906B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/950213/2/page_2_level_4_1788022866.webp 43630B
+  volantino 1725981 giri: 6 immagini: 21
+  pubblicazione 958013 pagine: 8 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/958013/1/page_1_level_4_601986870.webp 64620B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/958013/2/page_2_level_4_661099173.webp 76218B
 Richieste eliminate dalla coda: 1
 Nessuno ha più questo supermercato, lo elimino: Conad roma
 Nessuno ha più questo supermercato, lo elimino: Lidl roma
