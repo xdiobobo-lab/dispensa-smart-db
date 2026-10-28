@@ -3,6 +3,11 @@
 Tutte le modifiche importanti a **Dispensa Smart** sono annotate qui.
 Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) e il numero di versione, mostrato in basso nelle Impostazioni (⚙️), segue il [versionamento semantico](https://semver.org/lang/it/).
 
+## [2.4.1] – 2026-10-28
+
+### Aggiunto
+- **Piano senza dispensa**: nella schermata prima di generare puoi scegliere "Non usare la dispensa: scegli le ricette e compro tutto". L'AI propone ricette varie senza guardare cosa hai in casa e, con la casella 🛒, aggiunge subito tutti gli ingredienti alla lista della spesa (per il piano mensile somma le quantità delle 4 settimane). Funziona anche con il piano dalle offerte dei volantini.
+
 ## [2.4.0] – 2026-10-28
 
 ### Aggiunto
