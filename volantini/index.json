@@ -1,5 +1,5 @@
 {
- "aggiornato": "2026-10-27T21:47:58.042Z",
+ "aggiornato": "2026-10-28T07:31:41.392Z",
  "negozi": [
   {
    "nome": "Conad",
@@ -29,7 +29,7 @@
     },
     {
      "id": "1720420",
-     "nome": "IN ARRIVO",
+     "nome": "NUOVO",
      "url": "https://www.doveconviene.it/roma/iper-e-super/conad/volantino/ultime-offerte-conad?flyerId=1720420&flyerPage=1&utm_medium=rfg&origin_retailer_id=102",
      "validita": "",
      "pagine": [
@@ -42,7 +42,7 @@
     },
     {
      "id": "1716772",
-     "nome": "-5 GIORNI",
+     "nome": "-4 GIORNI",
      "url": "https://www.doveconviene.it/roma/iper-e-super/conad/volantino/ultime-offerte-conad?flyerId=1716772&flyerPage=1&utm_medium=rfg&origin_retailer_id=102",
      "validita": "",
      "pagine": [
@@ -52,7 +52,7 @@
     },
     {
      "id": "1725968",
-     "nome": "IN ARRIVO",
+     "nome": "NUOVO",
      "url": "https://www.doveconviene.it/roma/iper-e-super/conad/volantino/ultime-offerte-conad?flyerId=1725968&flyerPage=1&utm_medium=rfg&origin_retailer_id=102",
      "validita": "",
      "pagine": [
@@ -119,35 +119,14 @@
       "lidl/1728838/p37.webp",
       "lidl/1728838/p38.webp",
       "lidl/1728838/p39.webp",
-      "lidl/1728838/p40.webp",
-      "lidl/1728838/p41.webp",
-      "lidl/1728838/p42.webp",
-      "lidl/1728838/p43.webp",
-      "lidl/1728838/p44.webp",
-      "lidl/1728838/p45.webp",
-      "lidl/1728838/p46.webp",
-      "lidl/1728838/p47.webp",
-      "lidl/1728838/p48.webp",
-      "lidl/1728838/p49.webp",
-      "lidl/1728838/p50.webp",
-      "lidl/1728838/p51.webp",
-      "lidl/1728838/p52.webp",
-      "lidl/1728838/p53.webp",
-      "lidl/1728838/p54.webp",
-      "lidl/1728838/p55.webp",
-      "lidl/1728838/p56.webp",
-      "lidl/1728838/p57.webp",
-      "lidl/1728838/p58.webp",
-      "lidl/1728838/p59.webp",
-      "lidl/1728838/p60.webp",
-      "lidl/1728838/p61.webp"
+      "lidl/1728838/p40.webp"
      ]
     },
     {
      "id": "1722393",
-     "nome": "-1 GIORNO",
+     "nome": "SCADE OGGI",
      "url": "https://www.doveconviene.it/roma/discount/lidl/volantino/ultime-offerte-lidl?flyerId=1722393&flyerPage=1&utm_medium=rfg&origin_retailer_id=31",
-     "validita": "",
+     "validita": "SCADE OGGI",
      "pagine": [
       "lidl/1722393/p01.webp",
       "lidl/1722393/p02.webp",
@@ -260,38 +239,12 @@
      "url": "https://www.doveconviene.it/roma/iper-e-super/coop/volantino/ultime-offerte-coop?flyerId=1726853&flyerPage=1&utm_medium=rsv&origin_retailer_id=962",
      "validita": "",
      "pagine": [
-      "coop/1726853/p01.webp",
-      "coop/1726853/p02.webp",
-      "coop/1726853/p03.webp",
-      "coop/1726853/p04.webp",
-      "coop/1726853/p05.webp",
-      "coop/1726853/p06.webp",
-      "coop/1726853/p07.webp",
-      "coop/1726853/p08.webp",
-      "coop/1726853/p09.webp",
-      "coop/1726853/p10.webp",
-      "coop/1726853/p11.webp",
-      "coop/1726853/p12.webp",
-      "coop/1726853/p13.webp",
-      "coop/1726853/p14.webp",
-      "coop/1726853/p15.webp",
-      "coop/1726853/p16.webp",
-      "coop/1726853/p17.webp",
-      "coop/1726853/p18.webp",
-      "coop/1726853/p19.webp",
-      "coop/1726853/p20.webp",
-      "coop/1726853/p21.webp",
-      "coop/1726853/p22.webp",
-      "coop/1726853/p23.webp",
-      "coop/1726853/p24.webp",
-      "coop/1726853/p25.webp",
-      "coop/1726853/p26.webp",
-      "coop/1726853/p27.webp",
-      "coop/1726853/p28.webp",
-      "coop/1726853/p29.webp",
-      "coop/1726853/p30.webp",
-      "coop/1726853/p31.webp",
-      "coop/1726853/p32.webp"
+      "coop/1726853/p01.jpg",
+      "coop/1726853/p02.jpg",
+      "coop/1726853/p03.jpg",
+      "coop/1726853/p04.jpg",
+      "coop/1726853/p05.jpg",
+      "coop/1726853/p06.jpg"
      ]
     },
     {
@@ -446,6 +399,96 @@
       "conad/1720690/p26.webp",
       "conad/1720690/p27.webp",
       "conad/1720690/p28.webp"
+     ]
+    }
+   ]
+  },
+  {
+   "nome": "Pewex",
+   "regione": "Lazio",
+   "citta": "Roma",
+   "url": "https://www.doveconviene.it/roma/volantino/pewex",
+   "volantini": [
+    {
+     "id": "1728251",
+     "nome": "Volantino 1728251",
+     "url": "https://www.doveconviene.it/roma/iper-e-super/pewex/volantino/ultime-offerte-pewex?flyerId=1728251&flyerPage=1&utm_medium=rsv&origin_retailer_id=563",
+     "validita": "",
+     "pagine": [
+      "pewex/1728251/p01.webp",
+      "pewex/1728251/p02.webp",
+      "pewex/1728251/p03.webp",
+      "pewex/1728251/p04.webp",
+      "pewex/1728251/p05.webp",
+      "pewex/1728251/p06.webp",
+      "pewex/1728251/p07.webp",
+      "pewex/1728251/p08.webp",
+      "pewex/1728251/p09.webp",
+      "pewex/1728251/p10.webp",
+      "pewex/1728251/p11.webp",
+      "pewex/1728251/p12.webp",
+      "pewex/1728251/p13.webp",
+      "pewex/1728251/p14.webp",
+      "pewex/1728251/p15.webp",
+      "pewex/1728251/p16.webp",
+      "pewex/1728251/p17.webp",
+      "pewex/1728251/p18.webp",
+      "pewex/1728251/p19.webp",
+      "pewex/1728251/p20.webp"
+     ]
+    },
+    {
+     "id": "1703398",
+     "nome": "-3 GIORNI",
+     "url": "https://www.doveconviene.it/iper-e-super/conad/volantino/ultime-offerte-conad?flyerId=1703398&flyerPage=1&utm_medium=csr&origin_retailer_id=563&destination_retailer_id=102",
+     "validita": "",
+     "pagine": [
+      "pewex/1703398/p01.webp",
+      "pewex/1703398/p02.webp",
+      "pewex/1703398/p03.webp",
+      "pewex/1703398/p04.webp",
+      "pewex/1703398/p05.webp",
+      "pewex/1703398/p06.webp",
+      "pewex/1703398/p07.webp",
+      "pewex/1703398/p08.webp",
+      "pewex/1703398/p09.webp",
+      "pewex/1703398/p10.webp",
+      "pewex/1703398/p11.webp",
+      "pewex/1703398/p12.webp"
+     ]
+    },
+    {
+     "id": "1703490",
+     "nome": "-3 GIORNI",
+     "url": "https://www.doveconviene.it/iper-e-super/conad-superstore/volantino/ultime-offerte-conad-superstore?flyerId=1703490&flyerPage=1&utm_medium=csr&origin_retailer_id=563&destination_retailer_id=134",
+     "validita": "",
+     "pagine": [
+      "pewex/1703490/p02.webp",
+      "pewex/1703490/p01.webp",
+      "pewex/1703490/p03.webp",
+      "pewex/1703490/p04.webp",
+      "pewex/1703490/p05.webp",
+      "pewex/1703490/p06.webp"
+     ]
+    },
+    {
+     "id": "1703435",
+     "nome": "-3 GIORNI",
+     "url": "https://www.doveconviene.it/iper-e-super/spazio-conad/volantino/ultime-offerte-spazio-conad?flyerId=1703435&flyerPage=1&utm_medium=csr&origin_retailer_id=563&destination_retailer_id=3911",
+     "validita": "",
+     "pagine": [
+      "pewex/1703435/p01.webp",
+      "pewex/1703435/p02.webp",
+      "pewex/1703435/p03.webp",
+      "pewex/1703435/p04.webp",
+      "pewex/1703435/p05.webp",
+      "pewex/1703435/p06.webp",
+      "pewex/1703435/p07.webp",
+      "pewex/1703435/p08.webp",
+      "pewex/1703435/p09.webp",
+      "pewex/1703435/p10.webp",
+      "pewex/1703435/p11.webp",
+      "pewex/1703435/p12.webp"
      ]
     }
    ]
