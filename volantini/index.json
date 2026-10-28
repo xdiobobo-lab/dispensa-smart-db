@@ -1,5 +1,5 @@
 {
- "aggiornato": "2026-10-28T10:44:05.606Z",
+ "aggiornato": "2026-10-28T17:27:55.581Z",
  "negozi": [
   {
    "nome": "Conad",
@@ -153,7 +153,59 @@
       "lidl/1722393/p02.webp",
       "lidl/1722393/p03.webp",
       "lidl/1722393/p04.webp",
-      "lidl/1722393/p05.webp"
+      "lidl/1722393/p05.webp",
+      "lidl/1722393/p06.webp",
+      "lidl/1722393/p07.webp",
+      "lidl/1722393/p08.webp",
+      "lidl/1722393/p09.webp",
+      "lidl/1722393/p10.webp",
+      "lidl/1722393/p11.webp",
+      "lidl/1722393/p12.webp",
+      "lidl/1722393/p13.webp",
+      "lidl/1722393/p14.webp",
+      "lidl/1722393/p15.webp",
+      "lidl/1722393/p16.webp",
+      "lidl/1722393/p17.webp",
+      "lidl/1722393/p18.webp",
+      "lidl/1722393/p19.webp",
+      "lidl/1722393/p20.webp",
+      "lidl/1722393/p21.webp",
+      "lidl/1722393/p22.webp",
+      "lidl/1722393/p23.webp",
+      "lidl/1722393/p24.webp",
+      "lidl/1722393/p25.webp",
+      "lidl/1722393/p26.webp",
+      "lidl/1722393/p27.webp",
+      "lidl/1722393/p28.webp",
+      "lidl/1722393/p29.webp",
+      "lidl/1722393/p30.webp",
+      "lidl/1722393/p31.webp",
+      "lidl/1722393/p32.webp",
+      "lidl/1722393/p33.webp",
+      "lidl/1722393/p34.webp",
+      "lidl/1722393/p35.webp",
+      "lidl/1722393/p36.webp",
+      "lidl/1722393/p37.webp",
+      "lidl/1722393/p38.webp",
+      "lidl/1722393/p39.webp",
+      "lidl/1722393/p40.webp",
+      "lidl/1722393/p41.webp",
+      "lidl/1722393/p42.webp",
+      "lidl/1722393/p43.webp",
+      "lidl/1722393/p44.webp",
+      "lidl/1722393/p45.webp",
+      "lidl/1722393/p46.webp",
+      "lidl/1722393/p47.webp",
+      "lidl/1722393/p48.webp",
+      "lidl/1722393/p49.webp",
+      "lidl/1722393/p50.webp",
+      "lidl/1722393/p51.webp",
+      "lidl/1722393/p52.webp",
+      "lidl/1722393/p53.webp",
+      "lidl/1722393/p54.webp",
+      "lidl/1722393/p55.webp",
+      "lidl/1722393/p56.webp",
+      "lidl/1722393/p57.webp"
      ]
     }
    ]
@@ -335,14 +387,12 @@
      "url": "https://www.doveconviene.it/roma/iper-e-super/esselunga/volantino/ultime-offerte-esselunga?flyerId=1596886&flyerPage=1&utm_medium=rfg&origin_retailer_id=43",
      "validita": "",
      "pagine": [
-      "esselunga/1596886/p01.webp",
-      "esselunga/1596886/p02.webp",
-      "esselunga/1596886/p03.webp",
-      "esselunga/1596886/p04.webp",
-      "esselunga/1596886/p05.webp",
-      "esselunga/1596886/p06.webp",
-      "esselunga/1596886/p07.webp",
-      "esselunga/1596886/p08.webp"
+      "esselunga/1596886/p01.jpg",
+      "esselunga/1596886/p02.jpg",
+      "esselunga/1596886/p03.jpg",
+      "esselunga/1596886/p04.jpg",
+      "esselunga/1596886/p05.jpg",
+      "esselunga/1596886/p06.jpg"
      ]
     }
    ]
@@ -420,16 +470,7 @@
       "pewex/1728251/p08.webp",
       "pewex/1728251/p09.webp",
       "pewex/1728251/p10.webp",
-      "pewex/1728251/p11.webp",
-      "pewex/1728251/p12.webp",
-      "pewex/1728251/p13.webp",
-      "pewex/1728251/p14.webp",
-      "pewex/1728251/p15.webp",
-      "pewex/1728251/p16.webp",
-      "pewex/1728251/p17.webp",
-      "pewex/1728251/p18.webp",
-      "pewex/1728251/p19.webp",
-      "pewex/1728251/p20.webp"
+      "pewex/1728251/p11.webp"
      ]
     },
     {
@@ -467,9 +508,7 @@
       "pewex/1703490/p07.webp",
       "pewex/1703490/p08.webp",
       "pewex/1703490/p09.webp",
-      "pewex/1703490/p10.webp",
-      "pewex/1703490/p11.webp",
-      "pewex/1703490/p12.webp"
+      "pewex/1703490/p10.webp"
      ]
     },
     {
@@ -561,6 +600,99 @@
    "citta": "Salerno",
    "url": "https://www.doveconviene.it/salerno/volantino/conad-eurospin-despar-sigma-qui",
    "volantini": []
+  },
+  {
+   "nome": ", despar",
+   "regione": "Campania",
+   "citta": "Salerno",
+   "url": "https://www.doveconviene.it/salerno/volantino/despar",
+   "volantini": [
+    {
+     "id": "1727817",
+     "nome": "Volantino 1727817",
+     "url": "https://www.doveconviene.it/salerno/iper-e-super/despar/volantino/ultime-offerte-despar?flyerId=1727817&flyerPage=1&utm_medium=rsv&origin_retailer_id=104",
+     "validita": "",
+     "pagine": [
+      "despar/1727817/p01.webp",
+      "despar/1727817/p02.webp",
+      "despar/1727817/p03.webp",
+      "despar/1727817/p04.webp",
+      "despar/1727817/p05.webp",
+      "despar/1727817/p06.webp",
+      "despar/1727817/p07.webp",
+      "despar/1727817/p08.webp",
+      "despar/1727817/p09.webp",
+      "despar/1727817/p10.webp",
+      "despar/1727817/p11.webp",
+      "despar/1727817/p12.webp",
+      "despar/1727817/p13.webp",
+      "despar/1727817/p14.webp",
+      "despar/1727817/p15.webp",
+      "despar/1727817/p16.webp",
+      "despar/1727817/p17.webp",
+      "despar/1727817/p18.webp",
+      "despar/1727817/p19.webp",
+      "despar/1727817/p20.webp",
+      "despar/1727817/p21.webp",
+      "despar/1727817/p22.webp",
+      "despar/1727817/p23.webp",
+      "despar/1727817/p24.webp",
+      "despar/1727817/p25.webp",
+      "despar/1727817/p26.webp",
+      "despar/1727817/p27.webp"
+     ]
+    },
+    {
+     "id": "1719262",
+     "nome": "-4 GIORNI",
+     "url": "https://www.doveconviene.it/salerno/iper-e-super/despar/volantino/ultime-offerte-despar?flyerId=1719262&flyerPage=1&utm_medium=rfg&origin_retailer_id=104",
+     "validita": "",
+     "pagine": [
+      "despar/1719262/p01.webp",
+      "despar/1719262/p02.webp",
+      "despar/1719262/p03.webp",
+      "despar/1719262/p04.webp",
+      "despar/1719262/p05.webp",
+      "despar/1719262/p06.webp"
+     ]
+    },
+    {
+     "id": "1732735",
+     "nome": "NUOVO",
+     "url": "https://www.doveconviene.it/salerno/iper-e-super/despar/volantino/ultime-offerte-despar?flyerId=1732735&flyerPage=1&utm_medium=rfg&origin_retailer_id=104",
+     "validita": "",
+     "pagine": [
+      "despar/1732735/p01.webp",
+      "despar/1732735/p02.webp",
+      "despar/1732735/p03.webp",
+      "despar/1732735/p04.webp",
+      "despar/1732735/p05.webp",
+      "despar/1732735/p06.webp",
+      "despar/1732735/p07.webp",
+      "despar/1732735/p08.webp"
+     ]
+    },
+    {
+     "id": "1703403",
+     "nome": "-3 GIORNI",
+     "url": "https://www.doveconviene.it/iper-e-super/conad/volantino/ultime-offerte-conad?flyerId=1703403&flyerPage=1&utm_medium=csr&origin_retailer_id=104&destination_retailer_id=102",
+     "validita": "",
+     "pagine": [
+      "despar/1703403/p01.webp",
+      "despar/1703403/p02.webp",
+      "despar/1703403/p03.webp",
+      "despar/1703403/p04.webp",
+      "despar/1703403/p05.webp",
+      "despar/1703403/p06.webp",
+      "despar/1703403/p07.webp",
+      "despar/1703403/p08.webp",
+      "despar/1703403/p09.webp",
+      "despar/1703403/p10.webp",
+      "despar/1703403/p11.webp",
+      "despar/1703403/p12.webp"
+     ]
+    }
+   ]
   }
  ]
 }
