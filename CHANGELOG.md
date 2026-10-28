@@ -3,6 +3,19 @@
 Tutte le modifiche importanti a **Dispensa Smart** sono annotate qui.
 Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) e il numero di versione, mostrato in basso nelle Impostazioni (⚙️), segue il [versionamento semantico](https://semver.org/lang/it/).
 
+## [2.4.0] – 2026-10-28
+
+### Aggiunto
+- **Diete e persone con esigenze particolari** (Piano → 🥗 Diete): carichi la dieta del dietologo (foto, PDF o testo), l'AI la legge e la riassume; puoi correggerla a mano.
+- **Piani per una persona o per la famiglia**: prima di generare scegli per chi (famiglia che mangia normale oppure una persona a dieta), la durata (settimana o mese) e, per pranzo e cena, se vuoi solo primi, solo secondi, primo + secondo o misto.
+- **Piano mensile** (4 settimane, senza ripetizioni) e **📚 I miei piani**: i piani si salvano nel tuo account e si modificano a mano (cambia il nome del piatto, scegli dal ricettario, nuovo piatto dall'AI, svuota). Dal piano salvato puoi riempire la lista della spesa.
+- **Aggiungi prodotto con una foto**: fotografi il prodotto con la data di scadenza e l'AI legge nome, quantità e scadenza; se la data non si legge ti avvisa.
+- **Scheda ⭐ Offerte** nel menu in basso, con tutte le offerte dei volantini, i prodotti usati più spesso (con tasto per chiudere l'elenco) e i preferiti.
+- **Prodotti preferiti** (cuoricino in dispensa o aggiunta a mano) e **stellina in dispensa** quando il prodotto è in offerta, con le alternative e varianti segnalate come tali (es. burro → burro di soia, margarina).
+
+### Modificato
+- "Spesa → Negozi e offerte" diventa "Volantini e negozi": qui si sfogliano i volantini; le offerte lette dall'AI vanno nella scheda ⭐ Offerte.
+
 ## [2.3.0] – 2026-10-28
 
 ### Aggiunto

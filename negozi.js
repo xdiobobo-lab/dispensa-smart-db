@@ -26,7 +26,7 @@ function vStores(){const g=S.geo,stores=g.stores,open=S.shop.filter(x=>!x.done),
  stores.forEach(s=>{const it=open.filter(x=>x.store===s);if(it.length)h+=`<div class="card"><div class="row"><b>🏪 ${esc(s)}</b><a href="${esc(gl(s))}" target="_blank" rel="noopener noreferrer">Volantino ↗</a></div>${it.map(row).join("")}</div>`});
  const un=open.filter(x=>!x.store||!stores.includes(x.store));
  if(un.length)h+=`<div class="card"><b>❔ Senza negozio</b>${un.map(row).join("")}</div>`;
- return vFlyers()+h}
+ return vSfoglia()+h}
 function offerFor(name){const qt=toks(name,1);if(!qt.length)return null;let best=null;
  S.fly.filter(flyAct).forEach(f=>f.offers.forEach((o,ix)=>{const to=offTo(o,f);if(to&&to<today())return;if(!offMatch(qt,o))return;const pr=pNum(o.price);if(!best||(pr!=null&&(best.pr==null||pr<best.pr)))best={o,f,ix,to,pr}}));return best}
 function unitPrice(o){const p=pNum(o.price);if(p==null)return null;const t=String((o.item||"")+" "+(o.offer||"")).toLowerCase().replace(/,/g,".");
@@ -191,14 +191,35 @@ function offShop(fid,ix){const f=S.fly.find(x=>x.id===fid),o=f&&f.offers[ix];if(
 const PRES=/(?:^|\s)(?:all|alla|alle|ai|al|in|con|sott|sotto|nel|nello|senza)(?:['’]|\s)/i;
 function offHead(o){const t=String(o.item||o.offer||""),m=t.match(PRES),h=m&&m.index>0?t.slice(0,m.index):t;return toks(o.main||h,1)}
 function offMatch(qt,o){const ot=toks(o.item||o.offer||"",1);return !!qt.length&&qt.every(t=>ot.includes(t))&&!ot.some(t=>VAR.has(t)&&!qt.includes(t))&&qt.some(t=>offHead(o).includes(t))}
-function freqIng(){const m={};const add=(r,use)=>{const seen=new Set(),t=String(r.title||"").toLowerCase();(r.ingredients||[]).forEach(g=>{if(BASIC.test(g.name||""))return;const tk=toks(g.name,1),k=tk.join(" ");if(!k||seen.has(k))return;seen.add(k);const e=m[k]=m[k]||{name:g.name,toks:tk,rec:new Set(),use:0};e.rec.add(t);if(use)e.use++})};
+function freqIng0(){const m={};const add=(r,use)=>{const seen=new Set(),t=String(r.title||"").toLowerCase();(r.ingredients||[]).forEach(g=>{if(BASIC.test(g.name||""))return;const tk=toks(g.name,1),k=tk.join(" ");if(!k||seen.has(k))return;seen.add(k);const e=m[k]=m[k]||{name:g.name,toks:tk,rec:new Set(),use:0};e.rec.add(t);if(use)e.use++})};
  S.mine.forEach(r=>add(r,0));S.hist.forEach(h=>h.r&&add(h.r,1));
  return Object.values(m).map(e=>({name:e.name,toks:e.toks,n:e.rec.size,use:e.use,score:e.rec.size+e.use})).filter(e=>e.n>=2||e.use>=3).sort((a,b)=>b.score-a.score).slice(0,40)}
+const isFav=n=>S.pfav.some(x=>nm(x)===nm(n));
+const favIng=()=>S.pfav.map(n=>({name:n,toks:toks(n,1),n:0,use:0,score:999,fav:true})).filter(e=>e.toks.length);
+const topIng=()=>{const f=freqIng0(),fav=favIng(),ks=new Set(fav.map(e=>e.toks.join(" ")));return [...fav,...f.filter(e=>!ks.has(e.toks.join(" "))).map(e=>({...e,fav:false}))]};
+const freqIng=topIng;
 function offHits(){const act=S.fly.filter(flyAct);if(!act.length)return[];const out=[];
- freqIng().forEach(q=>{const hits=[];act.forEach(f=>f.offers.forEach((o,ix)=>{const to=offTo(o,f);if(to&&to<today())return;if(offMatch(q.toks,o))hits.push({o,store:f.store,to,fid:f.id,ix})}));if(hits.length)out.push({q,hits:hits.slice(0,3)})});return out}
-function offAlertHtml(){const hs=offHits();if(!hs.length)return"";
- return `<div class="al">🔥 <b>Ingredienti che usi spesso, ora in offerta</b>${hs.map(x=>`<div style="margin-top:8px">${emo(x.q.name)} <b>${esc(x.q.name)}</b> <span class="mu">(in ${x.q.n} ricett${x.q.n===1?"a":"e"}${x.q.use?", cucinato "+x.q.use+" volt"+(x.q.use===1?"a":"e"):""})</span><br>${x.hits.map(h=>`<div style="margin-top:4px">${esc(h.o.item)}${h.o.price?" · <b>"+esc(h.o.price)+"</b>":""}${h.store?" · "+esc(h.store):""}${h.to?" · "+untilTxt(h.to):""} <button class="btn g" ${BS} onclick="offShop('${h.fid}',${h.ix})">🛒 Aggiungi</button></div>`).join("")}</div>`).join("")}</div>`}
-function offBanner(){const hs=offHits();if(!hs.length)return"";return `<div class="al" style="cursor:pointer" onclick="S.tab='negozi';render()">🔥 In offerta ciò che usi spesso: <b>${hs.slice(0,4).map(x=>esc(x.q.name)).join(", ")}</b> — tocca per i dettagli</div>`}
+ topIng().forEach(q=>{const hits=[];act.forEach(f=>f.offers.forEach((o,ix)=>{const to=offTo(o,f);if(to&&to<today())return;if(offMatch(q.toks,o))hits.push({o,store:f.store,to,fid:f.id,ix})}));if(hits.length)out.push({q,hits:hits.slice(0,3)})});return out}
+function offAlertHtml(){const hs=offHits();if(!hs.length)return"";const op=S.hot!==false;
+ return `<div class="al"><div class="row" style="cursor:pointer;gap:8px" onclick="hotTog()"><b>🔥 In offerta tra i tuoi prodotti più usati e preferiti (${hs.length})</b><span class="mu">${op?"▲ Chiudi":"▼ Apri"}</span></div>${op?hs.map(x=>`<div style="margin-top:8px">${emo(x.q.name)} <b>${esc(x.q.name)}</b> <span class="mu">(${x.q.fav?"❤️ preferito":"in "+x.q.n+" ricett"+(x.q.n===1?"a":"e")+(x.q.use?", cucinato "+x.q.use+" volt"+(x.q.use===1?"a":"e"):"")})</span><br>${x.hits.map(h=>`<div style="margin-top:4px">${esc(h.o.item)}${h.o.price?" · <b>"+esc(h.o.price)+"</b>":""}${h.store?" · "+esc(h.store):""}${h.to?" · "+untilTxt(h.to):""} <button class="btn g" ${BS} onclick="offShop('${h.fid}',${h.ix})">🛒 Aggiungi</button></div>`).join("")}</div>`).join("")+`<button class="btn g" style="margin-top:10px" ${BS} onclick="S.fo='mine';render()">⭐ Mostra solo le offerte utili per me</button>`:""}</div>`}
+function offerAlts(name){const qt=toks(name,1);if(!qt.length)return{ex:null,part:[],alt:[]};let ex=null;const part=[],alt=[];
+ const alts=altOf({name}).map(a=>({a,t:toks(a,1)})).filter(x=>x.t.length);
+ S.fly.filter(flyAct).forEach(f=>f.offers.forEach((o,ix)=>{const to=offTo(o,f);if(to&&to<today())return;const ot=toks(o.item||o.offer||"",1),pr=pNum(o.price),rec={o,f,ix,to,pr},cov=t=>t.every(k=>ot.includes(k))&&t.some(k=>offHead(o).includes(k));
+  if(offMatch(qt,o)){if(!ex||(pr!=null&&(ex.pr==null||pr<ex.pr)))ex=rec;return}
+  if(cov(qt)){part.push({...rec,why:""});return}
+  for(const x of alts){if(offMatch(x.t,o)||cov(x.t)){alt.push({...rec,why:x.a});return}}}));
+ return{ex,part:part.slice(0,2),alt:alt.slice(0,2)}}
+function offStarHtml(name){if(!S.fly.length)return"";const r=offerAlts(name);if(!r.ex&&!r.part.length&&!r.alt.length)return"";
+ const line=(x,lab)=>`<div style="margin-top:4px;font-size:13px">${lab} <b>${esc(x.o.item)}</b>${x.o.price?" · <b>"+esc(x.o.price)+"</b>":""}${x.f.store?" · "+esc(x.f.store):""}${x.to?" · "+untilTxt(x.to):""} <button class="btn g" ${BS} onclick="offShop('${x.f.id}',${x.ix})">🛒</button></div>`;
+ let h="";if(r.ex)h+=line(r.ex,`⭐ <span class="bd ok">In offerta</span>`);
+ r.part.concat(r.alt).slice(0,2).forEach(x=>{h+=line(x,`🔸 <span class="bd">Alternativa in offerta</span><span class="mu"> non è il tuo prodotto, ma è ${x.why?"un’alternativa valida ("+esc(x.why)+")":"una variante simile"}:</span>`)});return h}
+function pfavTog(id){const i=S.items.find(x=>x.id===id);if(!i)return;const k=S.pfav.findIndex(x=>nm(x)===nm(i.name));if(k>=0){S.pfav.splice(k,1);toast("Tolto dai preferiti.")}else{S.pfav.push(i.name);toast("❤️ Aggiunto ai preferiti: ti avviso quando è in offerta.")}save();render()}
+function pfavAdd(){const e=$("pfn"),n=e?e.value.trim().slice(0,50):"";if(!n)return toast("Scrivi il nome del prodotto.");if(isFav(n))return toast("È già tra i preferiti.");S.pfav.push(n);save();render();toast("❤️ Aggiunto ai preferiti.")}
+function pfavRem(i){if(i>=0&&i<S.pfav.length){S.pfav.splice(i,1);save();render()}}
+function hotTog(){S.hot=S.hot===false;render()}
+function vMiei(){return `<div class="card"><b>❤️ I miei prodotti preferiti</b><div class="mu">Aggiungili qui o con il cuoricino in dispensa: se sono in offerta te lo segnalo, anche nelle alternative simili.</div>${S.pfav.length?`<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px">${S.pfav.map((n,i)=>`<span class="bd" style="display:inline-flex;gap:6px;align-items:center">❤️ ${esc(n)} <button class="x" style="padding:0 2px" onclick="pfavRem(${i})" aria-label="Togli dai preferiti">✕</button></span>`).join("")}</div>`:`<div class="mu" style="margin-top:8px">Nessun preferito ancora.</div>`}<div class="row" style="gap:8px;margin-top:10px"><input id="pfn" placeholder="Es. Tonno in scatola" style="flex:1" onkeydown="if(event.key==='Enter')pfavAdd()"><button class="btn" onclick="pfavAdd()">＋ Aggiungi</button></div></div>`}
+function vOfferte(){const act=S.fly.filter(flyAct);return `<div class="card"><b>⭐ Offerte</b><div class="mu">Qui trovi tutte le offerte lette dai volantini: quelle utili per te, i prodotti che usi più spesso e i tuoi preferiti. ${S.fly.length?"":"Per averle, apri un volantino in “Spesa → Volantini e negozi” e tocca “🤖 Leggi le offerte”, oppure caricane uno qui sotto."}</div><div class="mu" style="margin-top:6px">${act.length} volantin${act.length===1?"o valido":"i validi"} · <a href="#" onclick="S.tab='negozi';render();return false">📚 Sfoglia i volantini</a></div></div>`+vMiei()+vFlyers()}
+function offBanner(){const hs=offHits();if(!hs.length)return"";return `<div class="al" style="cursor:pointer" onclick="S.tab='offerte';render()">🔥 In offerta ciò che usi spesso o preferisci: <b>${hs.slice(0,4).map(x=>esc(x.q.name)).join(", ")}</b> — tocca per i dettagli</div>`}
 async function flyIdx(){
  if(!sbOn()){S.fidx=false;S.fno="login";if(S.tab==="negozi"&&!S.fb&&!S.fv)render();return}
  try{const r=await sbRest("volantini_catalogo?select=chiave,nome,regione,citta,url,volantini,aggiornato&order=nome.asc");
@@ -302,12 +323,13 @@ async function flyAiRead(si,fi){const n=S.fidx&&S.fidx.negozi[si],v=n&&n.volanti
  try{const lista=v.pagine.slice(0,24),files=[];await vcSign(lista);
   for(const [i,pg] of lista.entries()){const r=await fetch(vcImg(pg),{cache:"force-cache"});if(!r.ok)throw new Error("Non riesco a scaricare la pagina "+(i+1)+".");const b=await r.blob();files.push(new File([b],"p"+(i+1)+"."+(pg.split(".").pop()||"jpg"),{type:b.type||"image/webp"}))}
   if(v.pagine.length>24)toast("Leggo le prime 24 pagine su "+v.pagine.length+".");
-  await flyVision({files},null,n.nome,{nome:v.nome||("Volantino "+n.nome),regione:n.regione||""})
+  await flyVision({files},null,n.nome,{nome:v.nome||("Volantino "+n.nome),regione:n.regione||""});
+  if(!S.ferr&&S.fly.length){S.tab="offerte";S.fo="all";render();window.scrollTo(0,0)}
  }catch(e){S.fb=0;S.ferr=aiErr?aiErr(e):String(e.message||e);render()}}
 function vFlyers(){
  const stores=S.geo.stores,ta="width:100%;margin-top:8px;padding:10px;border:1px solid var(--bd);border-radius:22px;background:var(--card);color:var(--tx);font:inherit";
  const V=!!(window.claude&&claude.vision),dis=S.fb?"opacity:.5;pointer-events:none":"",bt="display:block;text-align:center;margin-top:8px;cursor:pointer;"+dis;
- let h=vSfoglia()+`<div class="card"><b>🏷️ Offerte dei volantini</b><div class="mu">Carica il volantino del tuo supermercato: l’app trova le offerte, i prezzi e le date di scadenza, e ti mostra quali ti servono davvero.</div>
+ let h=`<div class="card"><b>🏷️ Carica un volantino e trova le offerte</b><div class="mu">Carica il volantino del tuo supermercato: l’app trova le offerte, i prezzi e le date di scadenza, e ti mostra quali ti servono davvero.</div>
  <div style="margin-top:14px"><b>1. Scegli il negozio</b><select id="of" style="margin-top:6px" onchange="S.ofs=this.value;render()"><option value="">Quale negozio?</option>${stores.map(s=>`<option ${S.ofs===s?"selected":""}>${esc(s)}</option>`).join("")}</select>${stores.length?"":`<div class="mu" style="margin-top:4px">Aggiungi prima i tuoi supermercati nella sezione “I tuoi supermercati” qui sotto.</div>`}</div>
  ${S.ofs?`<div style="margin-top:14px"><b>2. Procurati il volantino</b><div class="mu" style="margin-top:2px">Cercalo online e scaricalo (PDF), oppure fai uno screenshot delle pagine.</div><a class="btn g" style="display:block;text-align:center;margin-top:8px;text-decoration:none" target="_blank" rel="noopener" href="https://www.google.com/search?q=${encodeURIComponent("volantino "+S.ofs+" "+(S.geo.city||"")+" pdf")}">🔎 Cerca il volantino di ${esc(S.ofs)}</a><a class="btn g" style="display:block;text-align:center;margin-top:8px;text-decoration:none" target="_blank" rel="noopener" href="https://www.doveconviene.it/volantino/${encodeURIComponent(nm(S.ofs).replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''))}">🛍️ Apri su DoveConviene</a></div>`:""}
  <div style="margin-top:14px"><b>${S.ofs?"3":"2"}. Caricalo qui</b><label class="btn" style="${bt}">📄 Carica PDF del volantino<input type="file" accept=".pdf,application/pdf" hidden onchange="${V?"flyVision":"flyPdf"}(this)"></label><label class="btn g" style="${bt}">🖼️ Oppure carica le foto delle pagine<input type="file" accept="image/*" multiple hidden onchange="${V?"flyVision":"flyImg"}(this)"></label><div class="mu" style="margin-top:6px">${V?"L’app legge le pagine una alla volta (fino a 24) e ti dice a che punto è. Per un volantino lungo servono alcuni minuti: non chiudere la pagina finché non ha finito.":"Le pagine vengono convertite in immagini e lette con il riconoscimento del testo (qualche secondo a pagina)."}</div></div>
@@ -316,7 +338,7 @@ function vFlyers(){
 
  if(S.ferr)h+=`<div class="al">${esc(S.ferr)}</div>`;
  h+=offAlertHtml();
- if(!S.fly.length)return h+`<p class="mu">Nessun volantino caricato.</p>`;
+ if(!S.fly.length)return h+`<p class="mu">Nessuna offerta ancora. <a href="#" onclick="S.tab='negozi';render();return false">Sfoglia i volantini disponibili</a> e tocca “🤖 Leggi le offerte”.</p>`;
  const mine=S.fo==="mine",qs=nm(S.fsr||""),lst=S.shop.filter(x=>!x.done).map(x=>toks(x.name,1)),fq=freqIng(),cmp=lsg("fcmp","")==="1",srt=lsg("fsort",""),sf=lsg("fstore",""),
   cmpRows=(a,b)=>srt==="priceD"?((b.pr==null?-1:b.pr)-(a.pr==null?-1:a.pr)):srt==="price"?((a.pr==null?1e9:a.pr)-(b.pr==null?1e9:b.pr)):srt==="name"?nm(a.o.item).localeCompare(nm(b.o.item)):srt==="exp"?((a.to||"9")<(b.to||"9")?-1:(a.to||"9")>(b.to||"9")?1:0):0,
   so=[["","Come nel volantino"],["price","Prezzo: dal più basso"],["priceD","Prezzo: dal più alto"],["exp","Scadenza più vicina"],["name","Nome A–Z"],...(cmp?[["save","Risparmio maggiore"]]:[])];

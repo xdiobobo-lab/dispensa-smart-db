@@ -7,7 +7,7 @@ function cloudOn(){return sbOn()||ghOn()}
 let sbVer=null,sbT,sbBusy=false,sbAgain=false,sbRef=null,sbPulling=false,sbVis=false;
 function sbStore(j){const u=j.user||{},old=sbSess()||{},s={at:j.access_token,rt:j.refresh_token,exp:j.expires_at||Math.floor(Date.now()/1000)+(+j.expires_in||3600),uid:u.id||old.uid,email:u.email||old.email};try{localStorage.setItem("sbs",JSON.stringify(s))}catch(e){}return s}
 function sbClear(){localStorage.removeItem("sbs");localStorage.removeItem("sbsynced");sbVer=null;S.sbst=null}
-function sbWipe(){["items","lib","hist","ph","mine","shop","plan","pold","geo","recs","coll","cdel","fly","ftx","lm","synced","ghsynced","sbsynced","ghbk","sbbk","fam","fbase"].forEach(k=>localStorage.removeItem(k));try{Object.keys(localStorage).filter(k=>k.startsWith("snap_")).forEach(k=>localStorage.removeItem(k))}catch(e){}}
+function sbWipe(){["items","lib","hist","ph","mine","shop","plan","pold","geo","recs","coll","cdel","fly","ftx","lm","synced","ghsynced","sbsynced","ghbk","sbbk","fam","fbase","prof","plans","pfav","pdel"].forEach(k=>localStorage.removeItem(k));try{Object.keys(localStorage).filter(k=>k.startsWith("snap_")).forEach(k=>localStorage.removeItem(k))}catch(e){}}
 function sbMsg(j,st){const c=(j&&(j.error_code||j.code))||"",m=String((j&&(j.msg||j.message||j.error_description||j.error))||"").toLowerCase();
  if(c==="invalid_credentials"||m.includes("invalid login"))return "Email o password non corretti.";
  if(c==="user_already_exists"||m.includes("already registered")||m.includes("already been registered"))return "Esiste già un account con questa email: accedi.";
