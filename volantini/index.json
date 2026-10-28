@@ -1,5 +1,5 @@
 {
- "aggiornato": "2026-10-28T08:42:38.784Z",
+ "aggiornato": "2026-10-28T10:44:05.606Z",
  "negozi": [
   {
    "nome": "Conad",
@@ -153,59 +153,7 @@
       "lidl/1722393/p02.webp",
       "lidl/1722393/p03.webp",
       "lidl/1722393/p04.webp",
-      "lidl/1722393/p05.webp",
-      "lidl/1722393/p06.webp",
-      "lidl/1722393/p07.webp",
-      "lidl/1722393/p08.webp",
-      "lidl/1722393/p09.webp",
-      "lidl/1722393/p10.webp",
-      "lidl/1722393/p11.webp",
-      "lidl/1722393/p12.webp",
-      "lidl/1722393/p13.webp",
-      "lidl/1722393/p14.webp",
-      "lidl/1722393/p15.webp",
-      "lidl/1722393/p16.webp",
-      "lidl/1722393/p17.webp",
-      "lidl/1722393/p18.webp",
-      "lidl/1722393/p19.webp",
-      "lidl/1722393/p20.webp",
-      "lidl/1722393/p21.webp",
-      "lidl/1722393/p22.webp",
-      "lidl/1722393/p23.webp",
-      "lidl/1722393/p24.webp",
-      "lidl/1722393/p25.webp",
-      "lidl/1722393/p26.webp",
-      "lidl/1722393/p27.webp",
-      "lidl/1722393/p28.webp",
-      "lidl/1722393/p29.webp",
-      "lidl/1722393/p30.webp",
-      "lidl/1722393/p31.webp",
-      "lidl/1722393/p32.webp",
-      "lidl/1722393/p33.webp",
-      "lidl/1722393/p34.webp",
-      "lidl/1722393/p35.webp",
-      "lidl/1722393/p36.webp",
-      "lidl/1722393/p37.webp",
-      "lidl/1722393/p38.webp",
-      "lidl/1722393/p39.webp",
-      "lidl/1722393/p40.webp",
-      "lidl/1722393/p41.webp",
-      "lidl/1722393/p42.webp",
-      "lidl/1722393/p43.webp",
-      "lidl/1722393/p44.webp",
-      "lidl/1722393/p45.webp",
-      "lidl/1722393/p46.webp",
-      "lidl/1722393/p47.webp",
-      "lidl/1722393/p48.webp",
-      "lidl/1722393/p49.webp",
-      "lidl/1722393/p50.webp",
-      "lidl/1722393/p51.webp",
-      "lidl/1722393/p52.webp",
-      "lidl/1722393/p53.webp",
-      "lidl/1722393/p54.webp",
-      "lidl/1722393/p55.webp",
-      "lidl/1722393/p56.webp",
-      "lidl/1722393/p57.webp"
+      "lidl/1722393/p05.webp"
      ]
     }
    ]
@@ -268,7 +216,30 @@
       "coop/1726853/p06.webp",
       "coop/1726853/p07.webp",
       "coop/1726853/p08.webp",
-      "coop/1726853/p09.webp"
+      "coop/1726853/p09.webp",
+      "coop/1726853/p10.webp",
+      "coop/1726853/p11.webp",
+      "coop/1726853/p12.webp",
+      "coop/1726853/p13.webp",
+      "coop/1726853/p14.webp",
+      "coop/1726853/p15.webp",
+      "coop/1726853/p16.webp",
+      "coop/1726853/p17.webp",
+      "coop/1726853/p18.webp",
+      "coop/1726853/p19.webp",
+      "coop/1726853/p20.webp",
+      "coop/1726853/p21.webp",
+      "coop/1726853/p22.webp",
+      "coop/1726853/p23.webp",
+      "coop/1726853/p24.webp",
+      "coop/1726853/p25.webp",
+      "coop/1726853/p26.webp",
+      "coop/1726853/p27.webp",
+      "coop/1726853/p28.webp",
+      "coop/1726853/p29.webp",
+      "coop/1726853/p30.webp",
+      "coop/1726853/p31.webp",
+      "coop/1726853/p32.webp"
      ]
     },
     {
@@ -364,15 +335,14 @@
      "url": "https://www.doveconviene.it/roma/iper-e-super/esselunga/volantino/ultime-offerte-esselunga?flyerId=1596886&flyerPage=1&utm_medium=rfg&origin_retailer_id=43",
      "validita": "",
      "pagine": [
-      "esselunga/1596886/p01.jpg",
-      "esselunga/1596886/p02.jpg",
-      "esselunga/1596886/p03.jpg",
-      "esselunga/1596886/p04.jpg",
-      "esselunga/1596886/p05.jpg",
-      "esselunga/1596886/p06.jpg",
+      "esselunga/1596886/p01.webp",
+      "esselunga/1596886/p02.webp",
+      "esselunga/1596886/p03.webp",
+      "esselunga/1596886/p04.webp",
+      "esselunga/1596886/p05.webp",
+      "esselunga/1596886/p06.webp",
       "esselunga/1596886/p07.webp",
-      "esselunga/1596886/p08.webp",
-      "esselunga/1596886/p09.webp"
+      "esselunga/1596886/p08.webp"
      ]
     }
    ]
@@ -416,7 +386,14 @@
       "conad/1720690/p18.webp",
       "conad/1720690/p19.webp",
       "conad/1720690/p20.webp",
-      "conad/1720690/p21.webp"
+      "conad/1720690/p21.webp",
+      "conad/1720690/p22.webp",
+      "conad/1720690/p23.webp",
+      "conad/1720690/p24.webp",
+      "conad/1720690/p25.webp",
+      "conad/1720690/p26.webp",
+      "conad/1720690/p27.webp",
+      "conad/1720690/p28.webp"
      ]
     }
    ]
@@ -481,12 +458,18 @@
      "url": "https://www.doveconviene.it/iper-e-super/conad-superstore/volantino/ultime-offerte-conad-superstore?flyerId=1703490&flyerPage=1&utm_medium=csr&origin_retailer_id=563&destination_retailer_id=134",
      "validita": "",
      "pagine": [
-      "pewex/1703490/p02.jpg",
-      "pewex/1703490/p01.jpg",
-      "pewex/1703490/p03.jpg",
-      "pewex/1703490/p04.jpg",
-      "pewex/1703490/p05.jpg",
-      "pewex/1703490/p06.jpg"
+      "pewex/1703490/p01.webp",
+      "pewex/1703490/p02.webp",
+      "pewex/1703490/p03.webp",
+      "pewex/1703490/p04.webp",
+      "pewex/1703490/p05.webp",
+      "pewex/1703490/p06.webp",
+      "pewex/1703490/p07.webp",
+      "pewex/1703490/p08.webp",
+      "pewex/1703490/p09.webp",
+      "pewex/1703490/p10.webp",
+      "pewex/1703490/p11.webp",
+      "pewex/1703490/p12.webp"
      ]
     },
     {
@@ -559,12 +542,8 @@
      "url": "https://www.doveconviene.it/bologna/iper-e-super/conad/volantino/ultime-offerte-conad?flyerId=1720669&flyerPage=1&utm_medium=rfg&origin_retailer_id=102",
      "validita": "",
      "pagine": [
-      "conad/1720669/p01.jpg",
-      "conad/1720669/p02.jpg",
-      "conad/1720669/p03.jpg",
-      "conad/1720669/p04.jpg",
-      "conad/1720669/p05.jpg",
-      "conad/1720669/p06.jpg"
+      "conad/1720669/p01.webp",
+      "conad/1720669/p02.webp"
      ]
     }
    ]
