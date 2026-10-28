@@ -1,6 +1,5 @@
-Richieste dall'app: 6
+Richieste dall'app: 7
 == Conad https://www.doveconviene.it/roma/volantino/conad
-  consenso cliccato /accetta/i
   volantini trovati: 7 1703398,1720420,1716772,1725968,1719418,1720680,1724618
   volantino 1703398 giri: 8 immagini: 24
   pubblicazione 937177 pagine: 12 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12
@@ -10,7 +9,7 @@ Richieste dall'app: 6
   pubblicazione 953360 pagine: 5 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953360/1/page_1_level_4_1618497500.webp 75626B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953360/2/page_2_level_4_604577613.webp 108542B
-  volantino 1716772 giri: 4 immagini: 13
+  volantino 1716772 giri: 5 immagini: 13
   pubblicazione 950170 pagine: 2 (altre pubblicazioni viste: 0) numeri: 1,2
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/950170/1/page_1_level_4_996480027.webp 58568B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/950170/2/page_2_level_4_1691241270.webp 45896B
@@ -20,8 +19,8 @@ Richieste dall'app: 6
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/957979/2/page_2_level_4_1946785120.webp 78132B
 == Lidl https://www.doveconviene.it/roma/volantino/lidl
   volantini trovati: 2 1728838,1722393
-  volantino 1728838 giri: 22 immagini: 54
-  pubblicazione 960784 pagine: 40 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40
+  volantino 1728838 giri: 32 immagini: 75
+  pubblicazione 960784 pagine: 61 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/960784/1/page_1_level_4_314785863.webp 131010B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/960784/2/page_2_level_4_214737871.webp 81878B
   volantino 1722393 giri: 30 immagini: 71
@@ -36,19 +35,10 @@ Richieste dall'app: 6
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/956521/2/page_2_level_4_451107733.webp 88908B
 == coop https://www.doveconviene.it/roma/volantino/coop
   volantini trovati: 2 1726853,1726851
-  volantino 1726853 giri: 3 immagini: 11
-  nessuna pagina riconosciuta: indirizzi visti:
-    ? https://it-it-media.shopfully.cloud/images/volantini/big_1703398.jpg
-    ? https://it-it-media.shopfully.cloud/images/catene/segnalino_conad@2x_webp.webp
-    ? https://it-it-media.shopfully.cloud/images/volantini/big_1722379.jpg
-    ? https://it-it-media.shopfully.cloud/images/catene/segnalino_barilla@2x_webp.webp
-    ? https://it-it-media.shopfully.cloud/images/volantini/big_1710420.jpg
-    ? https://it-it-media.shopfully.cloud/images/catene/segnalino_voiello@2x_webp.webp
-    ? https://it-it-media.shopfully.cloud/images/volantini/big_1703490.jpg
-    ? https://it-it-media.shopfully.cloud/images/catene/segnalino_conad-superstore@2x_webp.webp
-  secondo tentativo:  6 immagini
-    img https://it-it-media.shopfully.cloud/images/volantini/big_1703398.jpg 31437B
-    img https://it-it-media.shopfully.cloud/images/volantini/big_1722379.jpg 22460B
+  volantino 1726853 giri: 18 immagini: 46
+  pubblicazione 958739 pagine: 32 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/958739/1/page_1_level_4_1877883188.webp 66288B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/958739/2/page_2_level_4_1728627864.webp 64510B
   volantino 1726851 giri: 10 immagini: 30
   pubblicazione 958737 pagine: 16 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/958737/1/page_1_level_4_1154393714.webp 60996B
@@ -63,22 +53,30 @@ Richieste dall'app: 6
   pubblicazione 959537 pagine: 10 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/959537/1/page_1_level_4_980643718.webp 47780B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/959537/2/page_2_level_4_127327204.webp 60590B
-  volantino 1596886 giri: 7 immagini: 23
-  pubblicazione 846926 pagine: 8 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8
-    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/846926/1/page_1_level_4_1907393732.webp 39016B
-    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/846926/2/page_2_level_4_2030291659.webp 41632B
+  volantino 1596886 giri: 5 immagini: 14
+  nessuna pagina riconosciuta: indirizzi visti:
+    ? https://it-it-media.shopfully.cloud/images/volantini/big_1703398.jpg
+    ? https://it-it-media.shopfully.cloud/images/catene/segnalino_conad@2x_webp.webp
+    ? https://it-it-media.shopfully.cloud/images/volantini/big_1722379.jpg
+    ? https://it-it-media.shopfully.cloud/images/catene/segnalino_barilla@2x_webp.webp
+    ? https://it-it-media.shopfully.cloud/images/volantini/big_1710420.jpg
+    ? https://it-it-media.shopfully.cloud/images/catene/segnalino_voiello@2x_webp.webp
+    ? https://it-it-media.shopfully.cloud/images/volantini/big_1703490.jpg
+    ? https://it-it-media.shopfully.cloud/images/catene/segnalino_conad-superstore@2x_webp.webp
+  secondo tentativo:  6 immagini
+    img https://it-it-media.shopfully.cloud/images/volantini/big_1703398.jpg 31437B
+    img https://it-it-media.shopfully.cloud/images/volantini/big_1722379.jpg 22460B
 == Despar https://www.doveconviene.it/roma/volantino/despar
   volantini trovati: 0 
 == Conad https://www.doveconviene.it/firenze/volantino/conad
   volantini trovati: 1 1720690
-  volantino 1720690 giri: 16 immagini: 42
-  pubblicazione 953657 pagine: 28 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28
+  volantino 1720690 giri: 12 immagini: 35
+  pubblicazione 953657 pagine: 21 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953657/1/page_1_level_4_633224615.webp 60632B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953657/2/page_2_level_4_1118107858.webp 81650B
 == Pewex https://www.doveconviene.it/roma/volantino/pewex
   volantini trovati: 49 1728251,1703398,1703490,1703435,1722172,1715854,1722185,1719460,1720449,1720420,1716772,1720421,1716797,1720426,1716796,1722387,1722389,1720679,1725969,1719495,1726941,1720680,1725968,1719418,1725938,1719388,1727857,1716715,1716000,1727877,1720687,1713937,1730481,1486566,1732009,1709251,1731998,1731997,1709267,1719332,1666356,1471487,1648599,1624075,1730467,1725336,1731744,1720508,1274995
-  volantino 1728251 giri: 12 immagini: 33
-  pagine mancanti: 1 - le riapro
+  volantino 1728251 giri: 12 immagini: 34
   pubblicazione 960298 pagine: 20 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/960298/1/page_1_level_4_1389792078.webp 103936B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/960298/2/page_2_level_4_1259715304.webp 88600B
@@ -86,20 +84,30 @@ Richieste dall'app: 6
   pubblicazione 937177 pagine: 12 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/937177/1/page_1_level_4_1164641003.webp 88886B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/937177/2/page_2_level_4_575622485.webp 85300B
-  volantino 1703490 giri: 3 immagini: 9
-  nessuna pagina riconosciuta: indirizzi visti:
-    ? https://it-it-media.shopfully.cloud/images/volantini/big_1715376_webp.webp
-    ? https://it-it-media.shopfully.cloud/images/catene/segnalino_unieuro@2x_webp.webp
-    ? https://it-it-media.shopfully.cloud/images/volantini/big_1728838_webp.webp
-    ? https://it-it-media.shopfully.cloud/images/catene/segnalino_lidl@2x_webp.webp
-    ? https://it-it-media.shopfully.cloud/images/volantini/big_1712570_webp.webp
-    ? https://it-it-media.shopfully.cloud/images/catene/segnalino_prenatal@2x_webp.webp
-    ? https://it-it-media.shopfully.cloud/images/volantini/big_1719355_webp.webp
-    ? https://it-it-media.shopfully.cloud/images/volantini/big_1725848_webp.webp
-  secondo tentativo:  6 immagini
-    img https://it-it-media.shopfully.cloud/images/volantini/big_1728838_webp.webp 40340B
-    img https://it-it-media.shopfully.cloud/images/volantini/big_1715376_webp.webp 24886B
+  volantino 1703490 giri: 6 immagini: 20
+  pubblicazione 937218 pagine: 9 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/937218/1/page_1_level_4_1344416573.webp 88886B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/937218/2/page_2_level_4_1352779070.webp 85300B
   volantino 1703435 giri: 8 immagini: 24
   pubblicazione 937240 pagine: 12 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/937240/1/page_1_level_4_1167751197.webp 88886B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/937240/2/page_2_level_4_892844509.webp 85300B
+== Conad https://www.doveconviene.it/bologna/volantino/conad
+  volantini trovati: 2 1720697,1720669
+  volantino 1720697 giri: 3 immagini: 10
+  nessuna pagina riconosciuta: indirizzi visti:
+    ? https://it-it-media.shopfully.cloud/images/volantini/big_1715376.jpg
+    ? https://it-it-media.shopfully.cloud/images/catene/segnalino_unieuro@2x_webp.webp
+    ? https://it-it-media.shopfully.cloud/images/volantini/big_1722324.jpg
+    ? https://it-it-media.shopfully.cloud/images/catene/segnalino_comet@2x_webp.webp
+    ? https://it-it-media.shopfully.cloud/images/volantini/big_1713843.jpg
+    ? https://it-it-media.shopfully.cloud/images/catene/segnalino_euronics@2x_webp.webp
+    ? https://it-it-media.shopfully.cloud/images/volantini/big_1728838.jpg
+    ? https://it-it-media.shopfully.cloud/images/catene/segnalino_lidl@2x_webp.webp
+  secondo tentativo:  6 immagini
+    img https://it-it-media.shopfully.cloud/images/volantini/big_1728838.jpg 49152B
+    img https://it-it-media.shopfully.cloud/images/volantini/big_1715376.jpg 31824B
+  volantino 1720669 giri: 4 immagini: 15
+  pubblicazione 953571 pagine: 2 (altre pubblicazioni viste: 0) numeri: 1,2
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953571/1/page_1_level_4_348006159.webp 63156B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953571/2/page_2_level_4_414732447.webp 82892B
