@@ -3,6 +3,17 @@
 Tutte le modifiche importanti a **Dispensa Smart** sono annotate qui.
 Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) e il numero di versione, mostrato in basso nelle Impostazioni (⚙️), segue il [versionamento semantico](https://semver.org/lang/it/).
 
+## [2.3.0] – 2026-10-28
+
+### Aggiunto
+- **Volantini personali e privati**: ogni account vede solo i volantini dei propri supermercati. Le immagini stanno in un archivio privato di Supabase (non più nel repository pubblico) e sono salvate una sola volta, condivise solo con chi ha quel supermercato nel proprio elenco.
+- Pulsante "Togli dai miei volantini" per ogni supermercato.
+- Richiede di eseguire di nuovo `supabase-setup.sql` (nuove tabelle `miei_volantini` e `volantini_catalogo` e archivio `volantini`).
+
+### Modificato
+- Lo scaricatore cerca solo i volantini richiesti e non ancora presenti, elimina le richieste evase e cancella i volantini scaduti (con le immagini) e quelli che nessuno ha più nel proprio elenco.
+- I volantini richiedono l'accesso all'account.
+
 ## [2.2.1] – 2026-10-27
 
 ### Modificato

@@ -155,3 +155,52 @@ create policy "richieste: inserire" on public.richieste_volantini
 grant insert on public.richieste_volantini to authenticated;
 grant usage, select on sequence public.richieste_volantini_id_seq to authenticated;
 notify pgrst, 'reload schema';
+
+-- =====================================================================
+-- VOLANTINI PRIVATI (versione 2.3): ognuno vede solo i SUOI supermercati.
+-- Le immagini stanno in un archivio PRIVATO (Storage) e vengono salvate una sola volta;
+-- chi non ha aggiunto quel supermercato al proprio elenco non può leggerle.
+-- =====================================================================
+-- 1) Il mio elenco di supermercati
+create table if not exists public.miei_volantini (
+  user_id uuid not null default auth.uid() references auth.users(id) on delete cascade,
+  chiave  text not null check (char_length(chiave) <= 130),      -- catena|città
+  creata  timestamptz not null default now(),
+  primary key (user_id, chiave)
+);
+alter table public.miei_volantini enable row level security;
+revoke all on public.miei_volantini from anon;
+drop policy if exists "miei: leggere" on public.miei_volantini;
+create policy "miei: leggere" on public.miei_volantini for select to authenticated using (user_id = auth.uid());
+drop policy if exists "miei: aggiungere" on public.miei_volantini;
+create policy "miei: aggiungere" on public.miei_volantini for insert to authenticated with check (user_id = auth.uid());
+drop policy if exists "miei: togliere" on public.miei_volantini;
+create policy "miei: togliere" on public.miei_volantini for delete to authenticated using (user_id = auth.uid());
+grant select, insert, delete on public.miei_volantini to authenticated;
+
+-- 2) Catalogo dei volantini scaricati (lo scrive solo lo scaricatore con la chiave segreta)
+create table if not exists public.volantini_catalogo (
+  chiave     text primary key,
+  nome       text not null,
+  regione    text,
+  citta      text,
+  url        text,
+  volantini  jsonb not null default '[]'::jsonb,
+  aggiornato timestamptz not null default now()
+);
+alter table public.volantini_catalogo enable row level security;
+revoke all on public.volantini_catalogo from anon;
+drop policy if exists "catalogo: leggo i miei" on public.volantini_catalogo;
+create policy "catalogo: leggo i miei" on public.volantini_catalogo for select to authenticated
+  using (exists (select 1 from public.miei_volantini m where m.user_id = auth.uid() and m.chiave = volantini_catalogo.chiave));
+grant select on public.volantini_catalogo to authenticated;
+
+-- 3) Archivio privato delle immagini
+insert into storage.buckets (id, name, public) values ('volantini', 'volantini', false)
+  on conflict (id) do update set public = false;
+drop policy if exists "volantini: leggo i miei" on storage.objects;
+create policy "volantini: leggo i miei" on storage.objects for select to authenticated
+  using (bucket_id = 'volantini' and exists (
+    select 1 from public.miei_volantini m
+    where m.user_id = auth.uid() and replace(m.chiave, '|', '__') = (storage.foldername(name))[1]));
+notify pgrst, 'reload schema';

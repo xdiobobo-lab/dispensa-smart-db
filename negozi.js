@@ -199,19 +199,39 @@ function offHits(){const act=S.fly.filter(flyAct);if(!act.length)return[];const 
 function offAlertHtml(){const hs=offHits();if(!hs.length)return"";
  return `<div class="al">🔥 <b>Ingredienti che usi spesso, ora in offerta</b>${hs.map(x=>`<div style="margin-top:8px">${emo(x.q.name)} <b>${esc(x.q.name)}</b> <span class="mu">(in ${x.q.n} ricett${x.q.n===1?"a":"e"}${x.q.use?", cucinato "+x.q.use+" volt"+(x.q.use===1?"a":"e"):""})</span><br>${x.hits.map(h=>`<div style="margin-top:4px">${esc(h.o.item)}${h.o.price?" · <b>"+esc(h.o.price)+"</b>":""}${h.store?" · "+esc(h.store):""}${h.to?" · "+untilTxt(h.to):""} <button class="btn g" ${BS} onclick="offShop('${h.fid}',${h.ix})">🛒 Aggiungi</button></div>`).join("")}</div>`).join("")}</div>`}
 function offBanner(){const hs=offHits();if(!hs.length)return"";return `<div class="al" style="cursor:pointer" onclick="S.tab='negozi';render()">🔥 In offerta ciò che usi spesso: <b>${hs.slice(0,4).map(x=>esc(x.q.name)).join(", ")}</b> — tocca per i dettagli</div>`}
-function flyIdx(){fetch("volantini/index.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(j=>{S.fidx=j&&Array.isArray(j.negozi)?j:false;if(S.tab==="negozi"&&!S.fb&&!S.fv)render()}).catch(()=>{S.fidx=false})}
+async function flyIdx(){
+ if(!sbOn()){S.fidx=false;S.fno="login";if(S.tab==="negozi"&&!S.fb&&!S.fv)render();return}
+ try{const r=await sbRest("volantini_catalogo?select=chiave,nome,regione,citta,url,volantini,aggiornato&order=nome.asc");
+  if(!r.ok)throw new Error("HTTP "+r.status);const a=await r.json();
+  S.fidx={aggiornato:a.reduce((m,x)=>x.aggiornato>m?x.aggiornato:m,""),negozi:a.map(x=>({chiave:x.chiave,nome:x.nome,regione:x.regione||"",citta:x.citta||"",url:x.url,volantini:Array.isArray(x.volantini)?x.volantini:[]}))};S.fno="";
+  try{await vcSign(S.fidx.negozi.flatMap(n=>n.volantini.map(v=>v.pagine&&v.pagine[0]).filter(Boolean)))}catch(e){}
+ }catch(e){S.fidx=false;S.fno="err"}
+ if(S.tab==="negozi"&&!S.fb&&!S.fv)render()}
+async function vcSign(ps){S.sig=S.sig||{};ps=[...new Set(ps)].filter(p=>p&&!(S.sig[p]&&S.sig[p].e>Date.now()));if(!ps.length)return;
+ const c=sbCfg(),t=await sbToken();
+ for(let i=0;i<ps.length;i+=100){const r=await fetch(c.url+"/storage/v1/object/sign/volantini",{method:"POST",headers:{apikey:c.key,authorization:"Bearer "+t,"content-type":"application/json"},body:JSON.stringify({expiresIn:3600,paths:ps.slice(i,i+100)})});
+  if(!r.ok)throw new Error("Non riesco ad aprire le immagini (HTTP "+r.status+").");
+  for(const x of await r.json())if(x.signedURL&&!x.error)S.sig[x.path]={u:c.url+"/storage/v1"+x.signedURL,e:Date.now()+3000000}}}
+function vcImg(p){const s=S.sig&&S.sig[p];return s?s.u:""}
+async function vcTogli(k){if(S.vdel!==k){S.vdel=k;setTimeout(()=>{if(S.vdel===k){S.vdel=null;render()}},6000);render();return toast("Premi di nuovo per togliere questo supermercato dai tuoi volantini.")}
+ S.vdel=null;try{const r=await sbRest("miei_volantini?chiave=eq."+encodeURIComponent(k),{method:"DELETE"});if(!r.ok)throw new Error("x");S.vcf="";S.vcr=null;await flyIdx();toast("Tolto dai tuoi volantini.")}catch(e){toast("Non riesco a toglierlo: riprova.")}}
 const VC_REG={"Abruzzo":"Pescara","Basilicata":"Potenza","Calabria":"Catanzaro","Campania":"Napoli","Emilia-Romagna":"Bologna","Friuli-Venezia Giulia":"Trieste","Lazio":"Roma","Liguria":"Genova","Lombardia":"Milano","Marche":"Ancona","Molise":"Campobasso","Piemonte":"Torino","Puglia":"Bari","Sardegna":"Cagliari","Sicilia":"Palermo","Toscana":"Firenze","Trentino-Alto Adige":"Trento","Umbria":"Perugia","Valle d'Aosta":"Aosta","Veneto":"Venezia"};
 const VC_CAT=["Conad","Lidl","Eurospin","Coop","Carrefour","Esselunga","MD","Pam","Tigros","Despar","Iper","Penny","Aldi","Bennet","Famila"];
 const vcSlug=s=>String(s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
 function vcSet(k,v){S.vc={...(S.vc||{}),[k]:v};if(k==="regione")S.vc.citta=S.vc.citta||"";try{localStorage.setItem("vc",JSON.stringify({regione:S.vc.regione||"",catena:S.vc.catena||"",citta:S.vc.citta||""}))}catch(e){}}
 function vcPick(r,c,ci){S.vc={regione:r,catena:c,citta:ci||""};S.vcr=null;vcCerca()}
-function vcFind(){const j=S.fidx,q=S.vc||{};if(!j||!q.catena)return[];const ci=vcSlug(q.citta);
- return j.negozi.map((n,si)=>({n,si,v:(n.volantini||[]).map((v,fi)=>({v,fi})).filter(x=>x.v.pagine&&x.v.pagine.length)})).filter(x=>x.v.length&&vcSlug(x.n.nome)===vcSlug(q.catena)&&(!q.regione||!x.n.regione||x.n.regione===q.regione)&&(!ci||!x.n.citta||vcSlug(x.n.citta)===ci))}
+function vcFind(){const j=S.fidx,q=S.vc||{};if(!j||!q.catena)return[];const ci=vcSlug(q.citta),key=vcSlug(q.catena)+"|"+vcSlug(q.citta||VC_REG[q.regione]||"");
+ return j.negozi.map((n,si)=>({n,si,v:(n.volantini||[]).map((v,fi)=>({v,fi})).filter(x=>x.v.pagine&&x.v.pagine.length)})).filter(x=>x.v.length&&(x.n.chiave?x.n.chiave===key:(vcSlug(x.n.nome)===vcSlug(q.catena)&&(!q.regione||!x.n.regione||x.n.regione===q.regione)&&(!ci||!x.n.citta||vcSlug(x.n.citta)===ci))))}
 async function vcCerca(){const f=S.vc||{};
  for(const [id,k] of [["vc_r","regione"],["vc_c","catena"],["vc_t","citta"]]){const e=$(id);if(e)f[k]=e.value.trim()}S.vc=f;
  try{localStorage.setItem("vc",JSON.stringify({regione:f.regione||"",catena:f.catena||"",citta:f.citta||""}))}catch(e){}
  if(!f.catena)return toast("Scrivi il nome del supermercato.");if(!f.regione)return toast("Scegli la regione.");
- S.vcr={q:1};if(!S.fidx)await new Promise(r=>{flyIdx();setTimeout(r,900)});
+ if(!sbOn()){S.vcr={n:0,login:1};return render()}
+ S.vcr={q:1};render();
+ try{const r0=await sbRest("miei_volantini",{method:"POST",headers:{Prefer:"return=minimal"},body:JSON.stringify({chiave:vcSlug(f.catena)+"|"+vcSlug(f.citta||VC_REG[f.regione]||"")})});
+  if(!r0.ok&&r0.status!==409){S.vcr={n:0,err:(r0.status===404?"I volantini privati non sono ancora attivi: esegui di nuovo supabase-setup.sql in Supabase.":"Non riesco ad aggiungere il supermercato: "+sbBad(r0))};return render()}
+ }catch(e){S.vcr={n:0,err:e.message};return render()}
+ await flyIdx();
  const trov=vcFind();S.vcr={n:trov.length};if(trov.length)S.vcf=trov[0].n.nome;
  if(!trov.length){const citta=f.citta||VC_REG[f.regione]||"";
   if(sbOn()){try{const r=await sbRest("richieste_volantini",{method:"POST",headers:{Prefer:"return=minimal"},body:JSON.stringify({catena:f.catena,regione:f.regione,citta,chiave:vcSlug(f.catena)+"|"+vcSlug(citta)})});
@@ -228,7 +248,7 @@ async function vcPoll(t){const R=S.vcr;if(!R||!R.att)return;
  try{const j=await vcApi("stato"),u=j.ultima;
   if(u&&u.stato==="completed"&&(R.gia||new Date(u.creata).getTime()>=R.t0)){
    if(R.again){R.again=false;R.gia=false;const k=await vcApi("avvia","POST");R.t0=(k.t||Date.now())-15000;R.gia=!!k.gia;R.again=!!k.gia;render();return setTimeout(()=>vcPoll(t),8000)}
-   await new Promise(r=>{flyIdx();setTimeout(r,1500)});const trov=vcFind();R.fin=(R.fin||0)+1;
+   await flyIdx();const trov=vcFind();R.fin=(R.fin||0)+1;
    if(trov.length){S.vcr={n:trov.length};S.vcf=trov[0].n.nome;return render()}
    if(R.fin<10&&u.conclusione==="success"){R.pub=1;render();return setTimeout(()=>vcPoll(t),20000)}
    R.att=0;R.fine=1;R.ok=u.conclusione==="success";return render()}
@@ -236,7 +256,7 @@ async function vcPoll(t){const R=S.vcr;if(!R||!R.att)return;
  if(S.vcr===R){render();setTimeout(()=>vcPoll(t),8000)}}
 function vcChip(n){S.vcf=n;if(S.vcr&&S.vcr.n)S.vcr=null;render()}
 function vcCard(x,y){const v=y.v,n=x.n,np=v.pagine.length,sub=[n.nome,n.citta||n.regione].filter(Boolean).join(" · ");
- return `<div style="background:var(--card);border:1px solid var(--bd);border-radius:16px;overflow:hidden;display:flex;flex-direction:column"><div onclick="flyOpen(${x.si},${y.fi})" style="position:relative;aspect-ratio:3/4;background:var(--bd);cursor:pointer;display:flex;align-items:center;justify-content:center"><img src="volantini/${esc(v.pagine[0])}" alt="Copertina di ${esc(v.nome||n.nome)}" loading="lazy" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div style="display:none;flex-direction:column;align-items:center;gap:6px;padding:10px;text-align:center"><span style="font-size:36px">🛒</span><b>${esc(n.nome)}</b><span class="mu" style="font-size:12px">Anteprima non disponibile</span></div><span style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,.65);color:#fff;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600">${np} pagin${np===1?"a":"e"}</span></div>
+ return `<div style="background:var(--card);border:1px solid var(--bd);border-radius:16px;overflow:hidden;display:flex;flex-direction:column"><div onclick="flyOpen(${x.si},${y.fi})" style="position:relative;aspect-ratio:3/4;background:var(--bd);cursor:pointer;display:flex;align-items:center;justify-content:center"><img src="${esc(vcImg(v.pagine[0]))}" alt="Copertina di ${esc(v.nome||n.nome)}" loading="lazy" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div style="display:none;flex-direction:column;align-items:center;gap:6px;padding:10px;text-align:center"><span style="font-size:36px">🛒</span><b>${esc(n.nome)}</b><span class="mu" style="font-size:12px">Anteprima non disponibile</span></div><span style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,.65);color:#fff;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:600">${np} pagin${np===1?"a":"e"}</span></div>
 <div style="padding:10px;display:flex;flex-direction:column;gap:6px;flex:1"><div style="font-weight:600;font-size:14px;line-height:1.25">${esc(v.nome||"Volantino")}</div><div class="mu" style="font-size:12px">${esc(sub)}${v.validita?" · "+esc(v.validita):""}</div><div style="margin-top:auto;display:flex;flex-direction:column;gap:6px"><button class="btn" style="width:100%;padding:10px;font-size:14px" onclick="flyOpen(${x.si},${y.fi})">📖 Sfoglia</button><button class="btn g" style="width:100%;padding:9px;font-size:13px;${S.fb?"opacity:.5;pointer-events:none":""}" onclick="flyAiRead(${x.si},${y.fi})">🤖 Leggi le offerte</button></div></div></div>`}
 function vcFlyers(trov){return `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(125px,1fr));gap:12px;margin-top:12px">${trov.map(x=>x.v.map(y=>vcCard(x,y)).join("")).join("")}</div>`}
 function vSfoglia(){if(S.fidx===undefined){S.fidx=null;flyIdx()}
@@ -255,14 +275,14 @@ function vSfoglia(){if(S.fidx===undefined){S.fidx=null;flyIdx()}
  const inp="width:100%;margin-top:4px",ag=j&&j.aggiornato?new Date(j.aggiornato).toLocaleDateString("it-IT",{day:"numeric",month:"long"}):"";
  const lista=(r&&r.n)?vcFind():(S.vcf?all.filter(x=>x.n.nome===S.vcf):all);
  const chip=(n,l)=>`<button class="btn ${(S.vcf||"")===n?"":"g"}" style="padding:8px 14px;font-size:14px;white-space:nowrap" onclick="vcChip('${esc(n).replace(/'/g,"\\'")}')">${esc(l)}</button>`;
- return `<div class="card"><b>📚 Volantini disponibili</b><div class="mu">${tot?tot+" volantin"+(tot===1?"o":"i")+" già pronti"+(ag?" (aggiornati il "+ag+")":"")+". Scegli il supermercato, tocca un volantino per sfogliarlo oppure fai leggere le offerte all’intelligenza artificiale.":(j===null?"Carico i volantini…":"Non ci sono ancora volantini scaricati: cerca il tuo supermercato qui sotto.")}</div>
-${tot?`<div style="display:flex;gap:8px;overflow-x:auto;padding:12px 0 2px">${chip("","Tutti")}${nomi.map(n=>chip(n,n)).join("")}</div>${vcFlyers(lista)}`:""}</div>
+ return `<div class="card"><b>📚 Volantini disponibili</b><div class="mu">${tot?tot+" volantin"+(tot===1?"o":"i")+" nei tuoi supermercati"+(ag?" (aggiornati il "+ag+")":"")+". Scegli il supermercato, tocca un volantino per sfogliarlo oppure fai leggere le offerte all’intelligenza artificiale.":(S.fno==="login"?"I volantini sono personali: accedi al tuo account (⚙️ Impostazioni) per vederli e cercarli.":S.fno==="err"?"Non riesco a caricare i tuoi volantini: se non l’hai già fatto, esegui di nuovo supabase-setup.sql in Supabase.":j===null?"Carico i volantini…":"Non hai ancora supermercati: cerca il tuo qui sotto.")}</div>
+${tot?`<div style="display:flex;gap:8px;overflow-x:auto;padding:12px 0 2px">${chip("","Tutti")}${nomi.map(n=>chip(n,n)).join("")}</div>${vcFlyers(lista)}${S.vcf?[...new Map(lista.filter(x=>x.n.chiave).map(x=>[x.n.chiave,x.n])).values()].map(n=>`<button class="btn g" style="width:100%;margin-top:10px;font-size:13px" onclick="vcTogli('${esc(n.chiave)}')">${S.vdel===n.chiave?"Premi di nuovo per confermare":"🗑️ Togli "+esc(n.nome)+(n.citta?" ("+esc(n.citta)+")":"")+" dai miei volantini"}</button>`).join(""):""}`:""}</div>
 <div class="card"><b>🔎 Cerca i volantini nella tua zona!</b><div class="mu">Non trovi il tuo supermercato? Scegli la regione e scrivi il nome: lo cerco e lo aggiungo all’elenco.</div>
 <div style="margin-top:10px"><div class="mu" style="font-size:12px">Regione</div><select id="vc_r" style="${inp}" onchange="vcSet('regione',this.value)"><option value="">Scegli la regione</option>${Object.keys(VC_REG).map(x=>`<option ${f.regione===x?"selected":""}>${esc(x)}</option>`).join("")}</select></div>
 <div style="margin-top:8px"><div class="mu" style="font-size:12px">Supermercato</div><input id="vc_c" list="vc_l" style="${inp}" placeholder="Es. Conad, Lidl, Eurospin…" value="${esc(f.catena||"")}" oninput="vcSet('catena',this.value)"><datalist id="vc_l">${VC_CAT.map(x=>`<option value="${x}">`).join("")}</datalist></div>
 <div style="margin-top:8px"><div class="mu" style="font-size:12px">Città (facoltativa)</div><input id="vc_t" style="${inp}" placeholder="Se vuota uso il capoluogo della regione" value="${esc(f.citta||"")}" oninput="vcSet('citta',this.value)"></div>
 <button class="btn" style="width:100%;margin-top:10px" onclick="vcCerca()">🔎 Cerca i volantini</button>${res}</div>`}
-function flyOpen(si,fi){const v=S.fidx&&S.fidx.negozi[si]&&S.fidx.negozi[si].volantini[fi];if(!v||!v.pagine.length)return;S.fv={si,fi,p:0};drawFv();if(!window.__fvk){window.__fvk=1;document.addEventListener("keydown",e=>{if(!S.fv)return;if(e.key==="ArrowRight")flyPg(1);else if(e.key==="ArrowLeft")flyPg(-1);else if(e.key==="Escape")flyClose()})}}
+async function flyOpen(si,fi){const v=S.fidx&&S.fidx.negozi[si]&&S.fidx.negozi[si].volantini[fi];if(!v||!v.pagine.length)return;try{await vcSign(v.pagine)}catch(e){return toast(e.message)}S.fv={si,fi,p:0};drawFv();if(!window.__fvk){window.__fvk=1;document.addEventListener("keydown",e=>{if(!S.fv)return;if(e.key==="ArrowRight")flyPg(1);else if(e.key==="ArrowLeft")flyPg(-1);else if(e.key==="Escape")flyClose()})}}
 function flyPg(d){const f=S.fv;if(!f)return;const v=S.fidx.negozi[f.si].volantini[f.fi],n=v.pagine.length;f.p=Math.max(0,Math.min(n-1,f.p+d));drawFv()}
 function flyClose(){S.fv=null;drawFv()}
 function drawFv(){let p=$("fv");if(!S.fv){if(p){p.style.display="none";p.innerHTML=""}document.body.style.overflow="";return}
@@ -270,14 +290,14 @@ function drawFv(){let p=$("fv");if(!S.fv){if(p){p.style.display="none";p.innerHT
  const f=S.fv,n0=S.fidx.negozi[f.si],v=n0.volantini[f.fi],n=v.pagine.length,bt="border:0;border-radius:12px;padding:12px 18px;font:600 16px system-ui;background:#a78bfa;color:#15111f";
  p.style.cssText="position:fixed;inset:0;z-index:50;background:#111;color:#fff;display:flex;flex-direction:column";document.body.style.overflow="hidden";
  p.innerHTML=`<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:calc(env(safe-area-inset-top,0px) + 10px) 12px 8px"><div style="min-width:0"><div style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(n0.nome)} · ${esc(v.nome||"Volantino")}</div><div style="opacity:.7;font-size:13px">Pagina ${f.p+1} di ${n}</div></div><button style="${bt}" onclick="flyClose()" aria-label="Chiudi">✕ Chiudi</button></div>
-<div id="fvi" style="flex:1;min-height:0;overflow:auto;display:flex;align-items:flex-start;justify-content:center;touch-action:pan-x pan-y pinch-zoom"><img src="volantini/${esc(v.pagine[f.p])}" alt="Pagina ${f.p+1}" style="max-width:100%;max-height:100%;object-fit:contain;margin:auto"></div>
+<div id="fvi" style="flex:1;min-height:0;overflow:auto;display:flex;align-items:flex-start;justify-content:center;touch-action:pan-x pan-y pinch-zoom"><img src="${esc(vcImg(v.pagine[f.p]))}" alt="Pagina ${f.p+1}" style="max-width:100%;max-height:100%;object-fit:contain;margin:auto"></div>
 <div style="display:flex;gap:10px;justify-content:space-between;align-items:center;padding:10px 12px calc(env(safe-area-inset-bottom,0px) + 12px)"><button style="${bt};${f.p?"":"opacity:.35"}" ${f.p?"":"disabled"} onclick="flyPg(-1)">← Indietro</button><button style="${bt};background:#2b2540;color:#fff" onclick="flyClose();flyAiRead(${f.si},${f.fi})">🤖 Leggi le offerte</button><button style="${bt};${f.p<n-1?"":"opacity:.35"}" ${f.p<n-1?"":"disabled"} onclick="flyPg(1)">Avanti →</button></div>`;
  p.style.display="flex";const im=$("fvi");let x0=null;im.ontouchstart=e=>{x0=e.touches.length===1?e.touches[0].clientX:null};im.ontouchend=e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0;x0=null;if(Math.abs(dx)>70)flyPg(dx<0?1:-1)}}
 async function flyAiRead(si,fi){const n=S.fidx&&S.fidx.negozi[si],v=n&&n.volantini[fi];if(!v||S.fb)return;
  if(!(window.claude&&claude.vision))return toast("La lettura con AI non è attiva su questo dispositivo.");
  S.fb=1;S.ferr="";S.fp=null;S.fmsg="Scarico le pagine del volantino…";render();
- try{const lista=v.pagine.slice(0,24),files=[];
-  for(const [i,pg] of lista.entries()){const r=await fetch("volantini/"+pg,{cache:"force-cache"});if(!r.ok)throw new Error("Non riesco a scaricare la pagina "+(i+1)+".");const b=await r.blob();files.push(new File([b],"p"+(i+1)+"."+(pg.split(".").pop()||"jpg"),{type:b.type||"image/webp"}))}
+ try{const lista=v.pagine.slice(0,24),files=[];await vcSign(lista);
+  for(const [i,pg] of lista.entries()){const r=await fetch(vcImg(pg),{cache:"force-cache"});if(!r.ok)throw new Error("Non riesco a scaricare la pagina "+(i+1)+".");const b=await r.blob();files.push(new File([b],"p"+(i+1)+"."+(pg.split(".").pop()||"jpg"),{type:b.type||"image/webp"}))}
   if(v.pagine.length>24)toast("Leggo le prime 24 pagine su "+v.pagine.length+".");
   await flyVision({files},null,n.nome,{nome:v.nome||("Volantino "+n.nome),regione:n.regione||""})
  }catch(e){S.fb=0;S.ferr=aiErr?aiErr(e):String(e.message||e);render()}}
