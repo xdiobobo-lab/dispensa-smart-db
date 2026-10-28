@@ -1,5 +1,5 @@
 {
- "aggiornato": "2026-10-28T07:56:40.228Z",
+ "aggiornato": "2026-10-28T08:34:54.490Z",
  "negozi": [
   {
    "nome": "Conad",
@@ -46,8 +46,12 @@
      "url": "https://www.doveconviene.it/roma/iper-e-super/conad/volantino/ultime-offerte-conad?flyerId=1716772&flyerPage=1&utm_medium=rfg&origin_retailer_id=102",
      "validita": "",
      "pagine": [
-      "conad/1716772/p01.webp",
-      "conad/1716772/p02.webp"
+      "conad/1716772/p02.jpg",
+      "conad/1716772/p01.jpg",
+      "conad/1716772/p03.jpg",
+      "conad/1716772/p04.jpg",
+      "conad/1716772/p05.jpg",
+      "conad/1716772/p06.jpg"
      ]
     },
     {
@@ -84,63 +88,7 @@
       "lidl/1728838/p02.webp",
       "lidl/1728838/p03.webp",
       "lidl/1728838/p04.webp",
-      "lidl/1728838/p05.webp",
-      "lidl/1728838/p06.webp",
-      "lidl/1728838/p07.webp",
-      "lidl/1728838/p08.webp",
-      "lidl/1728838/p09.webp",
-      "lidl/1728838/p10.webp",
-      "lidl/1728838/p11.webp",
-      "lidl/1728838/p12.webp",
-      "lidl/1728838/p13.webp",
-      "lidl/1728838/p14.webp",
-      "lidl/1728838/p15.webp",
-      "lidl/1728838/p16.webp",
-      "lidl/1728838/p17.webp",
-      "lidl/1728838/p18.webp",
-      "lidl/1728838/p19.webp",
-      "lidl/1728838/p20.webp",
-      "lidl/1728838/p21.webp",
-      "lidl/1728838/p22.webp",
-      "lidl/1728838/p23.webp",
-      "lidl/1728838/p24.webp",
-      "lidl/1728838/p25.webp",
-      "lidl/1728838/p26.webp",
-      "lidl/1728838/p27.webp",
-      "lidl/1728838/p28.webp",
-      "lidl/1728838/p29.webp",
-      "lidl/1728838/p30.webp",
-      "lidl/1728838/p31.webp",
-      "lidl/1728838/p32.webp",
-      "lidl/1728838/p33.webp",
-      "lidl/1728838/p34.webp",
-      "lidl/1728838/p35.webp",
-      "lidl/1728838/p36.webp",
-      "lidl/1728838/p37.webp",
-      "lidl/1728838/p38.webp",
-      "lidl/1728838/p39.webp",
-      "lidl/1728838/p40.webp",
-      "lidl/1728838/p41.webp",
-      "lidl/1728838/p42.webp",
-      "lidl/1728838/p43.webp",
-      "lidl/1728838/p44.webp",
-      "lidl/1728838/p45.webp",
-      "lidl/1728838/p46.webp",
-      "lidl/1728838/p47.webp",
-      "lidl/1728838/p48.webp",
-      "lidl/1728838/p49.webp",
-      "lidl/1728838/p50.webp",
-      "lidl/1728838/p51.webp",
-      "lidl/1728838/p52.webp",
-      "lidl/1728838/p53.webp",
-      "lidl/1728838/p54.webp",
-      "lidl/1728838/p55.webp",
-      "lidl/1728838/p56.webp",
-      "lidl/1728838/p57.webp",
-      "lidl/1728838/p58.webp",
-      "lidl/1728838/p59.webp",
-      "lidl/1728838/p60.webp",
-      "lidl/1728838/p61.webp"
+      "lidl/1728838/p05.webp"
      ]
     },
     {
@@ -260,38 +208,12 @@
      "url": "https://www.doveconviene.it/roma/iper-e-super/coop/volantino/ultime-offerte-coop?flyerId=1726853&flyerPage=1&utm_medium=rsv&origin_retailer_id=962",
      "validita": "",
      "pagine": [
-      "coop/1726853/p01.webp",
-      "coop/1726853/p02.webp",
-      "coop/1726853/p03.webp",
-      "coop/1726853/p04.webp",
-      "coop/1726853/p05.webp",
-      "coop/1726853/p06.webp",
-      "coop/1726853/p07.webp",
-      "coop/1726853/p08.webp",
-      "coop/1726853/p09.webp",
-      "coop/1726853/p10.webp",
-      "coop/1726853/p11.webp",
-      "coop/1726853/p12.webp",
-      "coop/1726853/p13.webp",
-      "coop/1726853/p14.webp",
-      "coop/1726853/p15.webp",
-      "coop/1726853/p16.webp",
-      "coop/1726853/p17.webp",
-      "coop/1726853/p18.webp",
-      "coop/1726853/p19.webp",
-      "coop/1726853/p20.webp",
-      "coop/1726853/p21.webp",
-      "coop/1726853/p22.webp",
-      "coop/1726853/p23.webp",
-      "coop/1726853/p24.webp",
-      "coop/1726853/p25.webp",
-      "coop/1726853/p26.webp",
-      "coop/1726853/p27.webp",
-      "coop/1726853/p28.webp",
-      "coop/1726853/p29.webp",
-      "coop/1726853/p30.webp",
-      "coop/1726853/p31.webp",
-      "coop/1726853/p32.webp"
+      "coop/1726853/p01.jpg",
+      "coop/1726853/p02.jpg",
+      "coop/1726853/p03.jpg",
+      "coop/1726853/p04.jpg",
+      "coop/1726853/p05.jpg",
+      "coop/1726853/p06.jpg"
      ]
     },
     {
@@ -436,7 +358,14 @@
       "conad/1720690/p18.webp",
       "conad/1720690/p19.webp",
       "conad/1720690/p20.webp",
-      "conad/1720690/p21.webp"
+      "conad/1720690/p21.webp",
+      "conad/1720690/p22.webp",
+      "conad/1720690/p23.webp",
+      "conad/1720690/p24.webp",
+      "conad/1720690/p25.webp",
+      "conad/1720690/p26.webp",
+      "conad/1720690/p27.webp",
+      "conad/1720690/p28.webp"
      ]
     }
    ]
@@ -509,7 +438,10 @@
       "pewex/1703490/p06.webp",
       "pewex/1703490/p07.webp",
       "pewex/1703490/p08.webp",
-      "pewex/1703490/p09.webp"
+      "pewex/1703490/p09.webp",
+      "pewex/1703490/p10.webp",
+      "pewex/1703490/p11.webp",
+      "pewex/1703490/p12.webp"
      ]
     },
     {
@@ -546,12 +478,34 @@
      "url": "https://www.doveconviene.it/bologna/iper-e-super/conad/volantino/ultime-offerte-conad?flyerId=1720697&flyerPage=1&utm_medium=rsv&origin_retailer_id=102",
      "validita": "",
      "pagine": [
-      "conad/1720697/p04.jpg",
-      "conad/1720697/p01.jpg",
-      "conad/1720697/p02.jpg",
-      "conad/1720697/p03.jpg",
-      "conad/1720697/p05.jpg",
-      "conad/1720697/p06.jpg"
+      "conad/1720697/p01.webp",
+      "conad/1720697/p02.webp",
+      "conad/1720697/p03.webp",
+      "conad/1720697/p04.webp",
+      "conad/1720697/p05.webp",
+      "conad/1720697/p06.webp",
+      "conad/1720697/p07.webp",
+      "conad/1720697/p08.webp",
+      "conad/1720697/p09.webp",
+      "conad/1720697/p10.webp",
+      "conad/1720697/p11.webp",
+      "conad/1720697/p12.webp",
+      "conad/1720697/p13.webp",
+      "conad/1720697/p14.webp",
+      "conad/1720697/p15.webp",
+      "conad/1720697/p16.webp",
+      "conad/1720697/p17.webp",
+      "conad/1720697/p18.webp",
+      "conad/1720697/p19.webp",
+      "conad/1720697/p20.webp",
+      "conad/1720697/p21.webp",
+      "conad/1720697/p22.webp",
+      "conad/1720697/p23.webp",
+      "conad/1720697/p24.webp",
+      "conad/1720697/p25.webp",
+      "conad/1720697/p26.webp",
+      "conad/1720697/p27.webp",
+      "conad/1720697/p28.webp"
      ]
     },
     {
@@ -565,6 +519,13 @@
      ]
     }
    ]
+  },
+  {
+   "nome": "Conad, eurospin, despar, sigma, qui",
+   "regione": "Campania",
+   "citta": "Napoli",
+   "url": "https://www.doveconviene.it/napoli/volantino/conad-eurospin-despar-sigma-qui",
+   "volantini": []
   }
  ]
 }
