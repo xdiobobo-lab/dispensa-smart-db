@@ -1,7 +1,7 @@
 name: Scarica volantini
 on:
   schedule:
-    - cron: "30 4 * * *"   # ogni giorno alle 04:30 UTC
+    - cron: "15 */3 * * *"   # ogni 3 ore (lavora solo se ci sono richieste nuove)
   workflow_dispatch: {}     # anche a mano dalla scheda Actions
 permissions:
   contents: write
