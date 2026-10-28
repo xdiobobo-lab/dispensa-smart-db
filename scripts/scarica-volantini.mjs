@@ -1,6 +1,6 @@
 // Apre le pagine dei volantini su DoveConviene con un browser vero, sfoglia ogni volantino
-// e salva le immagini delle pagine in volantini/<negozio>/<id>/pNN.jpg.
-// Scrive anche volantini/index.json (elenco) e volantini/_debug.txt (cosa è successo).
+// e salva le immagini nell'archivio PRIVATO di Supabase (bucket "volantini", cartella <catena>__<città>/<id>/pNN.webp)
+// e l'elenco nella tabella volantini_catalogo. Nel repository resta solo volantini/_debug.txt (il diario).
 import fs from "node:fs";
 import path from "node:path";
 
@@ -36,8 +36,19 @@ const base0 = (process.env.VOL_BASE || "https://www.doveconviene.it").replace(/\
 const reqs = await richieste();
 const daCancellare = [];                                   // id delle richieste da togliere dalla coda
 const mappa = {};                                          // url -> id richieste
-const esistente = (() => { try { return JSON.parse(fs.readFileSync(path.join(OUT, "index.json"), "utf8")) } catch { return { negozi: [] } } })();
-const disponibile = url => (esistente.negozi || []).some(n => n.url === url && (n.volantini || []).length);
+const SU = (process.env.SUPABASE_URL || "").trim().replace(/\/+$/, ""), SK = (process.env.SUPABASE_SERVICE_KEY || "").trim();
+if (!SU || !SK) { L("ERRORE: servono SUPABASE_URL e SUPABASE_SERVICE_KEY nei Secrets: i volantini ora vengono salvati in Supabase."); fs.writeFileSync(path.join(OUT, "_debug.txt"), log.join("\n") + "\n"); await br.close(); process.exit(1) }
+const SH = SK.startsWith("sb_") ? { apikey: SK } : { apikey: SK, authorization: "Bearer " + SK };
+const BUCKET = "volantini";
+const chiaveDa = url => { const m = String(url).match(/\/([^/]+)\/volantino\/([^/?#]+)/); return m ? urlSlug(m[2]) + "|" + urlSlug(m[1]) : "" };
+const cartella = k => k.replace("|", "__");
+async function sbj(p, opt) { return await fetch(SU + p, { ...(opt || {}), headers: { ...SH, ...((opt && opt.headers) || {}) } }) }
+async function leggi(tab, q) { try { const r = await sbj("/rest/v1/" + tab + "?" + q); if (!r.ok) { L("Lettura " + tab + ": HTTP " + r.status + " (hai eseguito di nuovo supabase-setup.sql?)"); return null } return await r.json() } catch (e) { L("Lettura " + tab + ": errore", String(e.message).slice(0, 100)); return null } }
+async function carica(pth, buf, ct) { const r = await sbj("/storage/v1/object/" + BUCKET + "/" + pth, { method: "POST", headers: { "content-type": ct || "image/webp", "x-upsert": "true" }, body: buf }); if (!r.ok) throw new Error("upload " + r.status + " " + (await r.text()).slice(0, 100)) }
+async function rimuovi(paths) { for (let i = 0; i < paths.length; i += 100) { const r = await sbj("/storage/v1/object/" + BUCKET, { method: "DELETE", headers: { "content-type": "application/json" }, body: JSON.stringify({ prefixes: paths.slice(i, i + 100) }) }); if (!r.ok) L("Cancellazione immagini: HTTP " + r.status) } }
+const cat0 = await leggi("volantini_catalogo", "select=*");
+const catalogo = new Map((cat0 || []).map(r => [r.chiave, r]));
+const disponibile = url => { const r = catalogo.get(chiaveDa(url)); return !!(r && (r.volantini || []).length) };
 const tutti = process.env.VOL_TUTTI === "1";               // VOL_TUTTI=1: riscarica anche i negozi già presenti
 for (const q of reqs) {
   const citta = urlSlug(q.citta || ""), cat = urlSlug(q.catena || "");
@@ -48,7 +59,7 @@ for (const q of reqs) {
   if ((CFG.negozi || []).some(n => n.url === url)) continue;
   (CFG.negozi = CFG.negozi || []).push({ nome: String(q.catena).trim().slice(0, 40), regione: String(q.regione || "").slice(0, 40), citta: String(q.citta || "").slice(0, 40), url, attivo: true });
 }
-const index = { aggiornato: new Date().toISOString(), negozi: (esistente.negozi || []).slice() };
+const index = { negozi: [] };   // solo i negozi (ri)scaricati in questa esecuzione
 
 async function consenso(page) {
   for (const t of [/accetta/i, /accetto/i, /consenti/i, /^ok$/i, /agree/i]) {
@@ -66,7 +77,6 @@ for (const n of CFG.negozi || []) {
     const lp = await ctx.newPage();
     await lp.goto(n.url, { waitUntil: "domcontentloaded", timeout: 45000 });
     await consenso(lp); await sleep(1500);
-    try { await lp.screenshot({ path: path.join(OUT, "_lista-" + slug(n.nome) + ".png") }) } catch {}
     const links = await lp.$$eval("a[href*='flyerId=']", as => as.map(a => ({ href: a.href, testo: (a.innerText || a.getAttribute("aria-label") || a.title || "").replace(/\s+/g, " ").trim() })));
     await lp.close();
     const seen = new Set(), flyers = [];
@@ -101,7 +111,7 @@ for (const n of CFG.negozi || []) {
         L("  volantino", f.id, "giri:", giri, "immagini:", imgs.size);
         
         
-        const dir = path.join(OUT, slug(n.nome), f.id); fs.mkdirSync(dir, { recursive: true });
+        const ck = chiaveDa(n.url) || (urlSlug(n.nome) + "|" + urlSlug(rec.citta)), folder = cartella(ck);
         // Le pagine arrivano in più risoluzioni (page_N_level_L): per ogni pagina tengo la più grande,
         // e solo del volantino con più pagine (il visualizzatore carica anche altri volantini consigliati).
         const PA = /page_assets\/(\d+)\/(\d+)\/page_\d+_level_(\d+)_/;
@@ -154,7 +164,7 @@ for (const n of CFG.negozi || []) {
           L("  secondo tentativo: ", final.size, "immagini");
         }
         const pagine = [];
-        for (const [u, v] of final) { const ext = /png/.test(v.ct) ? "png" : /webp/.test(v.ct) ? "webp" : "jpg"; const fn = "p" + String(v.n).padStart(2, "0") + "." + ext; fs.writeFileSync(path.join(dir, fn), v.b); pagine.push(slug(n.nome) + "/" + f.id + "/" + fn); if (pagine.length <= 2) L("    img", u.slice(0, 140), v.b.length + "B") }
+        for (const [u, v] of final) { const ext = /png/.test(v.ct) ? "png" : /webp/.test(v.ct) ? "webp" : "jpg"; const fn = "p" + String(v.n).padStart(2, "0") + "." + ext; await carica(folder + "/" + f.id + "/" + fn, v.b, v.ct); pagine.push(folder + "/" + f.id + "/" + fn); if (pagine.length <= 2) L("    img", u.slice(0, 140), v.b.length + "B") }
         imgs.clear(); for (const [u, v] of final) imgs.set(u, v);
         if (imgs.size < 2) L("  ATTENZIONE: poche immagini catturate (" + imgs.size + "): serve guardare la pagina del volantino");
         const val = (f.testo.match(/(valid[oi]|scad[ea]|dal|fino)[^|]{0,40}/i) || [""])[0];
@@ -164,8 +174,15 @@ for (const n of CFG.negozi || []) {
     }
   } catch (e) { L("  errore negozio", n.nome, String(e.message).slice(0, 200)) }
   if (rec.volantini.length) {
-    const k = index.negozi.findIndex(x => x.url === rec.url);
-    if (k >= 0) index.negozi[k] = rec; else index.negozi.push(rec);
+    const ck = chiaveDa(n.url) || (urlSlug(n.nome) + "|" + urlSlug(rec.citta));
+    const riga = { chiave: ck, nome: rec.nome, regione: rec.regione, citta: rec.citta, url: rec.url, volantini: rec.volantini, aggiornato: new Date().toISOString() };
+    try {
+      const vecchi = ((catalogo.get(ck) || {}).volantini || []).flatMap(v => v.pagine || []), nuovi = new Set(rec.volantini.flatMap(v => v.pagine));
+      const r = await sbj("/rest/v1/volantini_catalogo?on_conflict=chiave", { method: "POST", headers: { "content-type": "application/json", Prefer: "resolution=merge-duplicates,return=minimal" }, body: JSON.stringify(riga) });
+      if (!r.ok) throw new Error("catalogo HTTP " + r.status + " " + (await r.text()).slice(0, 120));
+      await rimuovi(vecchi.filter(x => !nuovi.has(x)));
+      catalogo.set(ck, riga); index.negozi.push(rec);
+    } catch (e) { L("  errore nel salvataggio del catalogo:", String(e.message).slice(0, 200)) }
   } else L("  nessun volantino salvato per", n.nome, "- non cambia nulla");
   for (const id of mappa[n.url] || []) daCancellare.push(id);   // richiesta evasa (o tentata): esce dalla coda
 }
@@ -200,22 +217,30 @@ function scadenza(t) {
 }
 {
   const GG = +CFG.giorni_conservazione || 14, ora = Date.now();
-  for (const n of index.negozi) {
-    n.volantini = (n.volantini || []).filter(v => {
-      if (!v.salvato) v.salvato = new Date().toISOString();       // volantini vecchi senza data: parte ora il conto
+  const miei = await leggi("miei_volantini", "select=chiave");
+  const usate = miei ? new Set(miei.map(x => x.chiave)) : null;     // se non riesco a leggerle, non cancello nulla "per abbandono"
+  const fissi = new Set((CFG.negozi || []).filter(n => n.fisso).map(n => chiaveDa(n.url)));
+  for (const [ck, riga] of [...catalogo]) {
+    const vol = riga.volantini || [];
+    if (usate && !usate.has(ck) && !fissi.has(ck)) {
+      L("Nessuno ha più questo supermercato, lo elimino:", riga.nome, riga.citta);
+      await rimuovi(vol.flatMap(v => v.pagine || []));
+      await sbj("/rest/v1/volantini_catalogo?chiave=eq." + encodeURIComponent(ck), { method: "DELETE" });
+      catalogo.delete(ck); continue;
+    }
+    const tieni = [], via = [];
+    for (const v of vol) {
+      if (!v.salvato) v.salvato = new Date().toISOString();          // volantini vecchi senza data: parte ora il conto
       const sc = scadenza(v.validita);
       const scaduto = sc ? sc.getTime() < ora : (ora - Date.parse(v.salvato)) > GG * 864e5;
-      if (scaduto) {
-        L("Volantino scaduto, lo elimino:", n.nome, v.id, v.validita || "(senza data, salvato " + v.salvato.slice(0, 10) + ")");
-        try { fs.rmSync(path.join(OUT, slug(n.nome), String(v.id)), { recursive: true, force: true }) } catch {}
-      }
-      return !scaduto;
-    });
+      if (scaduto) { L("Volantino scaduto, lo elimino:", riga.nome, v.id, v.validita || "(senza data, salvato " + v.salvato.slice(0, 10) + ")"); via.push(v) } else tieni.push(v);
+    }
+    if (!via.length) continue;
+    await rimuovi(via.flatMap(v => v.pagine || []));
+    const f = "/rest/v1/volantini_catalogo?chiave=eq." + encodeURIComponent(ck);
+    if (tieni.length) await sbj(f, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ volantini: tieni }) });
+    else await sbj(f, { method: "DELETE" });
   }
-  for (const n of index.negozi.filter(x => !x.volantini.length)) try { fs.rmdirSync(path.join(OUT, slug(n.nome))) } catch {}   // solo se vuota (può servire ad altre città)
-  index.negozi = index.negozi.filter(x => x.volantini.length);
 }
-index.aggiornato = new Date().toISOString();
-fs.writeFileSync(path.join(OUT, "index.json"), JSON.stringify(index, null, 1));
 fs.writeFileSync(path.join(OUT, "_debug.txt"), log.join("\n") + "\n");
-console.log("Fatto: " + index.negozi.map(n => n.nome + " " + n.volantini.reduce((a, v) => a + v.pagine.length, 0) + " pagine").join(" | "));
+console.log("Fatto. Scaricati ora: " + index.negozi.map(n => n.nome + " " + n.volantini.reduce((a, v) => a + v.pagine.length, 0) + " pagine").join(" | "));
