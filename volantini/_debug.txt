@@ -13,19 +13,10 @@ Richieste dall'app: 0
   pubblicazione 950170 pagine: 2 (altre pubblicazioni viste: 0) numeri: 1,2
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/950170/1/page_1_level_4_996480027.webp 58568B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/950170/2/page_2_level_4_1691241270.webp 45896B
-  volantino 1725968 giri: 3 immagini: 9
-  nessuna pagina riconosciuta: indirizzi visti:
-    ? https://it-it-media.shopfully.cloud/images/volantini/big_1715376.jpg
-    ? https://it-it-media.shopfully.cloud/images/catene/segnalino_unieuro@2x_webp.webp
-    ? https://it-it-media.shopfully.cloud/images/volantini/big_1728838.jpg
-    ? https://it-it-media.shopfully.cloud/images/catene/segnalino_lidl@2x_webp.webp
-    ? https://it-it-media.shopfully.cloud/images/volantini/big_1712570.jpg
-    ? https://it-it-media.shopfully.cloud/images/volantini/big_1719355.jpg
-    ? https://it-it-media.shopfully.cloud/images/volantini/big_1726848.jpg
-    ? https://it-it-media.shopfully.cloud/images/catene/segnalino_medi-market@2x_webp.webp
-  secondo tentativo:  6 immagini
-    img https://it-it-media.shopfully.cloud/images/volantini/big_1728838.jpg 49152B
-    img https://it-it-media.shopfully.cloud/images/volantini/big_1715376.jpg 31824B
+  volantino 1725968 giri: 6 immagini: 20
+  pubblicazione 957979 pagine: 8 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/957979/1/page_1_level_4_1079671682.webp 67138B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/957979/2/page_2_level_4_1946785120.webp 78132B
 == Lidl https://www.doveconviene.it/roma/volantino/lidl
   volantini trovati: 1 1728838
   volantino 1728838 giri: 33 immagini: 77
