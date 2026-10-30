@@ -9,7 +9,7 @@ Richieste dall'app: 0
   pubblicazione 953360 pagine: 5 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953360/1/page_1_level_4_1618497500.webp 75626B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953360/2/page_2_level_4_604577613.webp 108542B
-  volantino 1716772 giri: 3 immagini: 13
+  volantino 1716772 giri: 5 immagini: 13
   pubblicazione 950170 pagine: 2 (altre pubblicazioni viste: 0) numeri: 1,2
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/950170/1/page_1_level_4_996480027.webp 58568B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/950170/2/page_2_level_4_1691241270.webp 45896B
