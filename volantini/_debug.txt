@@ -1,4 +1,4 @@
-Richieste dall'app: 1
+Richieste dall'app: 2
 == Conad https://www.doveconviene.it/roma/volantino/conad
   volantini trovati: 7 1703398,1720420,1716772,1725968,1719418,1720680,1724618
   volantino 1703398 giri: 8 immagini: 25
@@ -13,17 +13,13 @@ Richieste dall'app: 1
   pubblicazione 950170 pagine: 2 (altre pubblicazioni viste: 0) numeri: 1,2
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/950170/1/page_1_level_4_996480027.webp 58568B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/950170/2/page_2_level_4_1691241270.webp 45896B
-  volantino 1725968 giri: 6 immagini: 20
+  volantino 1725968 giri: 6 immagini: 21
   pubblicazione 957979 pagine: 8 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/957979/1/page_1_level_4_1079671682.webp 67138B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/957979/2/page_2_level_4_1946785120.webp 78132B
 == Lidl https://www.doveconviene.it/roma/volantino/lidl
   volantini trovati: 2 1735279,1728838
-  volantino 1735279 giri: 27 immagini: 63
-  pubblicazione 966566 pagine: 50 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50
-    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/966566/1/page_1_level_4_1400816899.webp 135890B
-    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/966566/2/page_2_level_4_1781830044.webp 88238B
-  volantino 1728838 giri: 3 immagini: 10
+  volantino 1735279 giri: 3 immagini: 10
   nessuna pagina riconosciuta: indirizzi visti:
     ? https://it-it-media.shopfully.cloud/images/volantini/big_1730923_webp.webp
     ? https://it-it-media.shopfully.cloud/images/catene/segnalino_unieuro@2x_webp.webp
@@ -36,9 +32,16 @@ Richieste dall'app: 1
   secondo tentativo:  6 immagini
     img https://it-it-media.shopfully.cloud/images/volantini/big_1730923_webp.webp 28440B
     img https://it-it-media.shopfully.cloud/images/volantini/big_1703398_webp.webp 26486B
-== Qui https://www.doveconviene.it/salerno/volantino/qui
+  volantino 1728838 giri: 17 immagini: 43
+  pubblicazione 965715 pagine: 30 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/965715/1/page_1_level_4_1085347258.webp 131010B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/965715/2/page_2_level_4_142728438.webp 81878B
+== Conad, Eurospin, Despar, Sigma,Qui https://www.doveconviene.it/napoli/volantino/conad-eurospin-despar-sigma-qui
   volantini trovati: 0 
-  nessun volantino salvato per Qui - non cambia nulla
-Richieste eliminate dalla coda: 1
+  nessun volantino salvato per Conad, Eurospin, Despar, Sigma,Qui - non cambia nulla
+== Conad, Eurospin, Despar, Sigma,Qui https://www.doveconviene.it/salerno/volantino/conad-eurospin-despar-sigma-qui
+  volantini trovati: 0 
+  nessun volantino salvato per Conad, Eurospin, Despar, Sigma,Qui - non cambia nulla
+Richieste eliminate dalla coda: 2
 Nessuno ha più questo supermercato, lo elimino: Conad roma
 Nessuno ha più questo supermercato, lo elimino: Lidl roma
