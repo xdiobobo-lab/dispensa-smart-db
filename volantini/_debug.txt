@@ -1,29 +1,30 @@
 Richieste dall'app: 1
-Già disponibile, non lo cerco: , Eurospin Salerno
 == Conad https://www.doveconviene.it/roma/volantino/conad
   volantini trovati: 4 1720420,1725968,1720680,1724618
   volantino 1720420 giri: 4 immagini: 16
   pubblicazione 953360 pagine: 5 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953360/1/page_1_level_4_1618497500.webp 75626B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953360/2/page_2_level_4_604577613.webp 108542B
-  volantino 1725968 giri: 3 immagini: 11
+  volantino 1725968 giri: 6 immagini: 19
+  pagine mancanti: 1 - le riapro
+  pubblicazione 957979 pagine: 8 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/957979/1/page_1_level_4_1079671682.webp 67138B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/957979/2/page_2_level_4_1946785120.webp 78132B
+  volantino 1720680 giri: 3 immagini: 11
   nessuna pagina riconosciuta: indirizzi visti:
-    ? https://it-it-media.shopfully.cloud/images/volantini/big_1730923_webp.webp
+    ? https://it-it-media.shopfully.cloud/images/volantini/big_1730923.jpg
     ? https://it-it-media.shopfully.cloud/images/catene/segnalino_unieuro@2x_webp.webp
+    ? https://it-it-media.shopfully.cloud/images/volantini/big_1734039.jpg
     ? https://it-it-media.shopfully.cloud/images/catene/segnalino_kik@2x_webp.webp
+    ? https://it-it-media.shopfully.cloud/images/volantini/big_1735047.jpg
     ? https://it-it-media.shopfully.cloud/images/catene/segnalino_md@2x_webp.webp
-    ? https://it-it-media.shopfully.cloud/images/volantini/big_1731982_webp.webp
-    ? https://it-it-media.shopfully.cloud/images/volantini/big_1734039_webp.webp
-    ? https://it-it-media.shopfully.cloud/images/volantini/big_1735047_webp.webp
-    ? https://it-it-media.shopfully.cloud/images/volantini/big_1719355_webp.webp
-  secondo tentativo:  5 immagini
-    img https://it-it-media.shopfully.cloud/images/volantini/big_1730923_webp.webp 28440B
-    img https://it-it-media.shopfully.cloud/images/volantini/big_1731982_webp.webp 18950B
-  volantino 1720680 giri: 16 immagini: 39
-  pubblicazione 953579 pagine: 28 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28
-    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953579/1/page_1_level_4_8638671.webp 55080B
-    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953579/2/page_2_level_4_1060731161.webp 76814B
-  volantino 1724618 giri: 6 immagini: 21
+    ? https://it-it-media.shopfully.cloud/images/volantini/big_1719355.jpg
+    ? https://it-it-media.shopfully.cloud/images/volantini/big_1731982.jpg
+  secondo tentativo:  6 immagini
+    img https://it-it-media.shopfully.cloud/images/volantini/big_1730923.jpg 35833B
+    img https://it-it-media.shopfully.cloud/images/volantini/big_1734039.jpg 31358B
+  volantino 1724618 giri: 6 immagini: 20
+  pagine mancanti: 1 - le riapro
   pubblicazione 956806 pagine: 8 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/956806/1/page_1_level_4_1733046721.webp 54596B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/956806/2/page_2_level_4_1253800085.webp 73230B
@@ -33,10 +34,16 @@ Già disponibile, non lo cerco: , Eurospin Salerno
   pubblicazione 966566 pagine: 50 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/966566/1/page_1_level_4_1400816899.webp 135890B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/966566/2/page_2_level_4_1781830044.webp 88238B
-  volantino 1728838 giri: 33 immagini: 76
-  pubblicazione 965715 pagine: 63 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63
+  volantino 1728838 giri: 22 immagini: 53
+  pubblicazione 965715 pagine: 40 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/965715/1/page_1_level_4_1085347258.webp 131010B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/965715/2/page_2_level_4_142728438.webp 81878B
+== Eurospin https://www.doveconviene.it/roma/volantino/eurospin
+  volantini trovati: 1 1736778
+  volantino 1736778 giri: 13 immagini: 34
+  pubblicazione 968293 pagine: 22 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/968293/1/page_1_level_4_1022507757.webp 91208B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/968293/2/page_2_level_4_102522131.webp 88152B
 Richieste eliminate dalla coda: 1
 Nessuno ha più questo supermercato, lo elimino: Conad roma
 Nessuno ha più questo supermercato, lo elimino: Lidl roma
