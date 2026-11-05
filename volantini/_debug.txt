@@ -5,21 +5,11 @@ Richieste dall'app: 0
   pubblicazione 962331 pagine: 20 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/962331/1/page_1_level_4_86749469.webp 78382B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/962331/2/page_2_level_4_1068300810.webp 93500B
-  volantino 1731877 giri: 3 immagini: 12
-  nessuna pagina riconosciuta: indirizzi visti:
-    ? https://it-it-media.shopfully.cloud/images/volantini/big_1732059_webp.webp
-    ? https://it-it-media.shopfully.cloud/images/catene/segnalino_unieuro@2x_webp.webp
-    ? https://it-it-media.shopfully.cloud/images/catene/segnalino_pampers@2x_webp.webp
-    ? https://it-it-media.shopfully.cloud/images/catene/segnalino_expert@2x_webp.webp
-    ? https://it-it-media.shopfully.cloud/images/catene/segnalino_arcaplanet@2x_webp.webp
-    ? https://it-it-media.shopfully.cloud/images/volantini/big_1734319_webp.webp
-    ? https://it-it-media.shopfully.cloud/images/volantini/big_1719355_webp.webp
-    ? https://it-it-media.shopfully.cloud/images/volantini/big_1726516_webp.webp
-  secondo tentativo:  5 immagini
-    img https://it-it-media.shopfully.cloud/images/volantini/big_1732059_webp.webp 25984B
-    img https://it-it-media.shopfully.cloud/images/volantini/big_1734319_webp.webp 20948B
-  volantino 1731801 giri: 12 immagini: 31
-  pagine mancanti: 1 - le riapro
+  volantino 1731877 giri: 4 immagini: 14
+  pubblicazione 963598 pagine: 2 (altre pubblicazioni viste: 0) numeri: 1,2
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/963598/1/page_1_level_4_1862381389.webp 67530B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/963598/2/page_2_level_4_987462262.webp 57268B
+  volantino 1731801 giri: 12 immagini: 32
   pubblicazione 963508 pagine: 20 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/963508/1/page_1_level_4_1778489169.webp 108636B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/963508/2/page_2_level_4_948695531.webp 155708B
