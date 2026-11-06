@@ -1,8 +1,8 @@
 Richieste dall'app: 0
 == Conad https://www.doveconviene.it/roma/volantino/conad
   volantini trovati: 6 1730640,1731877,1731801,1720420,1730894,1730728
-  volantino 1730640 giri: 12 immagini: 32
-  pubblicazione 962331 pagine: 20 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20
+  volantino 1730640 giri: 7 immagini: 22
+  pubblicazione 962331 pagine: 10 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/962331/1/page_1_level_4_86749469.webp 78382B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/962331/2/page_2_level_4_1068300810.webp 93500B
   volantino 1731877 giri: 4 immagini: 14
@@ -13,7 +13,7 @@ Richieste dall'app: 0
   pubblicazione 963508 pagine: 20 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/963508/1/page_1_level_4_1778489169.webp 108636B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/963508/2/page_2_level_4_948695531.webp 155708B
-  volantino 1720420 giri: 5 immagini: 17
+  volantino 1720420 giri: 4 immagini: 17
   pubblicazione 953360 pagine: 5 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953360/1/page_1_level_4_1618497500.webp 75626B
     img https://it-it-media-publications.shopfully.cloud/publications/page_assets/953360/2/page_2_level_4_604577613.webp 108542B
