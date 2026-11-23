@@ -10,7 +10,8 @@ function vSearch(){
  if(S.serr)h+=`<div class="al">${esc(S.serr)}</div>`;
  return h+S.srch.map((r,i)=>`<div class="card"><div class="row" style="cursor:pointer" onclick="openS(${i})">${th(r)}<div style="flex:1"><b>${esc(r.title)}</b> ${srcB(r)}${r.course?` <span class="bd">${esc(r.course)}</span>`:""}<div class="mu">${r.time||""} · ${r.steps.length} step · ${ingList(r)}<br>${avTxt(r)}</div></div><span>›</span></div>${srcLinks(r)}<div style="margin-top:10px"><button class="btn g" onclick="toShop(S.srch[${i}])">🛒 Aggiungi alla lista della spesa</button> <button class="btn g" onclick="saveR(S.srch[${i}])">💾 Salva nel ricettario</button></div></div>`).join("")}
 async function srch(){const q=$("q2").value.trim();if(!q)return;S.q=q;S.sb=true;S.serr="";render();
- try{const sm=await claude.use("sample");if(!sm)throw new Error("L’agente AI non è disponibile in questa vista.");
+ try{const A=await artLoad().catch(()=>null),cs=A?artFind(A,q):[];
+  if(cs.length){S.srch=await artModern(cs,false,/senza/i.test(q)?q:"");S.sb=false;render();return}const sm=await claude.use("sample");if(!sm)throw new Error("L’agente AI non è disponibile in questa vista.");
   const r=await sm.json(`Sei uno chef italiano esperto di cucina tradizionale. ${REALP} L'utente cerca ricette per: "${q}". Proponi 3 ricette diverse e complete (versioni tradizionali o varianti note e pertinenti); se la richiesta non corrisponde a un piatto reale, proponi i piatti reali più vicini. Quantità per 2 persone. Ogni ingrediente: {"id":null,"name","amount","unit"} con unit solo "g","ml" o "pz" (converti kg in g e l in ml; amount 0 se q.b.). Rispondi SOLO con un array JSON: [{"title":"","emoji":"🍝","origin":"es. Tradizionale romana","course":"Antipasto|Primo|Secondo|Contorno|Dolce","time":"30 min","ingredients":[{"id":null,"name":"","amount":0,"unit":"g","alt":["alternativa"]}],"steps":["..."]}]. Da 4 a 8 step chiari, in italiano. In origin indica in poche parole la tradizione o la regione della ricetta; non inventare nomi di siti, libri o autori. Nei nomi degli ingredienti usa nomi generici senza marche e senza aggettivi di stato o temperatura (scrivi «latte», non «latte tiepido»), ma per le farine indica sempre il tipo (00, 0, manitoba, integrale…); indica in alt 1-2 alternative valide, tranne che per le farine.`,{modelTier:"default"});
   S.srch=(Array.isArray(r)?r:r.recipes||[]).filter(x=>x&&x.title&&x.steps&&x.ingredients).map(x=>({...x,src:"web",course:COURSES.includes(x.course)?x.course:""})).filter(recSane);
   if(!S.srch.length)throw new Error("Nessun risultato, riprova.")
@@ -146,9 +147,61 @@ function vRic(){
  const s=soon();
  let h=`<div class="card"><p style="margin:0 0 10px">${s.length?`⚠️ ${s.length} prodott${s.length>1?"i":"o"} in scadenza: le ricette che li usano compaiono per prime.`:"Ricette consigliate in base a ciò che hai in dispensa."}</p><div class="mu" style="margin-bottom:6px">Che portata vuoi?</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">${["",...COURSES].map(k=>`<button class="btn ${(S.gc||"")===k?"":"g"}" style="padding:6px 12px;font-size:14px" onclick="S.gc='${k}';render()">${k||"Qualsiasi"}</button>`).join(" ")}</div><button class="btn" ${S.busy||!S.items.length?"disabled":""} onclick="gen()">${S.busy?"Sto pensando…":"✨ Suggeriscimi ricette"}</button>${S.items.length?"":'<p class="mu">Aggiungi prima qualche prodotto.</p>'}</div>`;
  if(S.err)h+=`<div class="al">${esc(S.err)}</div>`;
+ if(S.note&&!S.err)h+=`<div class="mu" style="margin:8px 4px">${esc(S.note)}</div>`;
  return h+S.recs.map((r,i)=>card(r,i)).join("")+(S.recs.length?`<button class="btn g" style="width:100%;margin-top:6px" ${S.busy?"disabled":""} onclick="gen(true)">${S.busy?"Sto pensando…":"➕ Mostra altre ricette"}</button>`:"")}
 function card(r,i){return `<div class="card row" style="cursor:pointer" onclick="open_(${i})">${th(r)}<div style="flex:1"><b>${esc(r.title)}</b> ${srcB(r)}${r.course?` <span class="bd">${esc(r.course)}</span>`:""}${r.exp?` <span class="bd">usa prodotti in scadenza</span>`:""}<div class="mu">${r.time||""} · ${r.steps.length} step · ${ingList(r)}<br>${avTxt(r)}</div></div><span>›</span></div>`}
+const ART_BASIC=new Set(["olio","strutto","zucchero","farina","brodo","vino","senape","capperi","amido","pane"]);
+async function artLoad(){if(window.ARTUSI)return window.ARTUSI;
+ await new Promise((ok,ko)=>{const e=document.createElement("script");e.src="artusi-dati.js?v="+APP_VER;e.onload=ok;e.onerror=()=>ko(new Error("Non riesco a caricare l’archivio delle ricette di Artusi: controlla la connessione e riprova."));document.head.appendChild(e)});
+ return window.ARTUSI}
+function artRx(A){return A._rx||(A._rx=A.ing.map(([c,rx,mn])=>[c,new RegExp(rx,"i"),mn]))}
+function artCanon(name,A){const t=String(name||"").toLowerCase(),o=new Set();artRx(A).forEach(([c,rx,mn])=>{if(!mn&&rx.test(t))o.add(c)});return o}
+function artSuggest(A,course,skip,n){const have=new Set(),soonC=new Set();
+ S.items.forEach(i=>{if(!(+i.q>0))return;artCanon(i.name,A).forEach(c=>{have.add(c);if(i.exp&&days(i.exp)<=3)soonC.add(c)})});
+ const sc=[];
+ A.r.forEach(r=>{if(skip.has(r.n)||!r.i.length)return;if(course?r.c!==course:r.c==="Altro")return;
+  const hv=r.i.filter(c=>have.has(c)),miss=r.i.length-hv.length;
+  const tc=r._tc||(r._tc=[...artCanon(r.t,A)].filter(c=>!ART_BASIC.has(c)));if(tc.some(c=>!have.has(c)))return;
+  if(!hv.some(c=>!ART_BASIC.has(c)))return;
+  if(miss>Math.max(3,Math.ceil(r.i.length*0.3)))return;
+  const cov=hv.length/r.i.length,sn=hv.some(c=>soonC.has(c));
+  sc.push({r,v:cov*10+hv.length*0.6+(sn?3:0)-miss*0.4+Math.random()*1.2,sn})});
+ return sc.sort((a,b)=>b.v-a.v).slice(0,n)}
+const ART_STOP=new Set(["ricetta","ricette","come","fare","cucinare","preparare","con","senza","alla","allo","alle","agli","dei","del","della","delle","dello","per","una","uno","che","the","tipo","facile","veloce","classico","classica"]);
+function artFind(A,q){const t=String(q||"").toLowerCase().replace(/[^a-zàèéìòù0-9 ]/g," "),ws=t.split(/\s+/).filter(w=>w.length>2&&!ART_STOP.has(w)),
+ no=[...t.matchAll(/senza\s+([a-zàèéìòù]+)/g)].flatMap(m=>[...artCanon(m[1],A)]);if(!ws.length)return[];
+ const sc=[],wc=ws.map(w=>artCanon(w,A));
+ A.r.forEach(r=>{if(r.c==="Altro"&&!/salsa|sugo|brodo|besciamella|pasta|impasto/.test(t))return;if(no.some(c=>r.i.includes(c)))return;
+  const tt=r.t.toLowerCase();let v=0;ws.forEach((w,k)=>{const st=w.length>5?w.slice(0,-1):w;if(tt.includes(st))v+=3;else if(r.i.some(c=>wc[k].has(c)))v+=0.5});
+  if(tt.includes(ws.join(" ")))v+=3;if(v>=3)sc.push({r,v})});
+ return sc.sort((a,b)=>b.v-a.v||a.r.n-b.r.n).slice(0,3)}
+async function artModern(cs,usePantry,req){
+ const sm=await claude.use("sample");if(!sm)throw new Error("L’agente AI non è disponibile in questa vista.");
+ const A=window.ARTUSI,want=new Set(cs.flatMap(x=>x.r.i)),pantry=usePantry?S.items.filter(i=>+i.q>0&&[...artCanon(i.name,A)].some(c=>want.has(c))).map(i=>({id:i.id,nome:i.name,quantita:Math.round(i.q),unita:i.u,giorni_a_scadenza:i.exp?days(i.exp):null})):[];
+ const txt=cs.map(x=>`[n=${x.r.n}] ${x.r.t} (${x.r.c})\n${x.r.x.slice(0,3200)}`).join("\n\n");
+ const r=await sm.json(`Sei uno chef italiano. Qui sotto ci sono ricette originali di Pellegrino Artusi (1891), scritte in italiano antico. MODERNIZZALE per un cuoco di oggi SENZA cambiare il piatto: stessi ingredienti e stessa tecnica, nessun abbinamento nuovo. Regole: 1) dosi per 2 persone (scala quelle originali); 2) unità moderne soltanto g, ml o pz (converti libbre, once, cucchiaiate, tazze, bicchieri, «un pizzico» = 0 con q.b.); quantità q.b. = amount 0; 3) cotture con temperature e tempi chiari (es. forno a 180 °C, fiamma bassa) e tempo totale in time; 4) elenco ingredienti completo e da 4 a 8 passaggi numerati chiari: ignora aneddoti, digressioni e rimandi ad altre ricette (spiega in breve ciò che serve, per esempio «brodo di carne» o «besciamella»); 5) se un ingrediente di Artusi oggi non si trova facilmente o non è consigliabile (es. strutto), indica in alt un sostituto moderno; 6) ${pantry.length?"per ogni ingrediente presente nella dispensa dell'utente indica l'id esatto e la quantità nella stessa unità, senza superare quella disponibile; per tutti gli altri id null. DISPENSA (JSON): "+JSON.stringify(pantry):"usa id null per tutti gli ingredienti"}.${req?" L'utente ha chiesto: «"+req+"»: rispettalo (per esempio «senza uova» → ingrediente alternativo)":""}
+RICETTE ORIGINALI:
+${txt}
+Rispondi SOLO con un array JSON, una voce per ricetta, nello stesso ordine: [{"n":0,"title":"nome del piatto, in forma leggibile","emoji":"🍝","time":"40 min","ingredients":[{"id":"p123"|null,"name":"","amount":0,"unit":"g|ml|pz","alt":["alternativa"]}],"steps":["..."]}]. Nei nomi degli ingredienti usa nomi generici senza marche e senza aggettivi di stato (scrivi «latte», non «latte tiepido»), ma per le farine indica sempre il tipo (00, 0, manitoba, integrale, di mais…).`,{modelTier:"default"});
+ const arr=Array.isArray(r)?r:r.recipes||[],ids=new Set(soon().map(i=>i.id)),out=[];
+ cs.forEach((c,k)=>{const x=arr.find(y=>y&&+y.n===c.r.n)||arr[k];if(!x||!x.title||!Array.isArray(x.steps)||x.steps.length<2||!Array.isArray(x.ingredients)||!x.ingredients.length)return;
+  const ing=x.ingredients.filter(g=>g&&g.name).map(g=>{let a=+g.amount>0?+g.amount:0,u=g.unit;if(u==="kg"){a*=1000;u="g"}else if(u==="l"){a*=1000;u="ml"}else if(!["g","ml","pz"].includes(u))u="pz";return{...g,amount:Math.round(a*100)/100,unit:u}});
+  if(!ing.length)return;
+  out.push({...x,title:String(x.title).replace(/\s+(?:i|ii|iii|iv|v|vi)$/i,m=>" (variante "+m.trim().toUpperCase()+")").slice(0,80),ingredients:ing,src:"art",art:c.r.n,course:c.r.c==="Altro"?(COURSES.includes(x.course)?x.course:""):c.r.c,origin:`Pellegrino Artusi, «La scienza in cucina» (1891), ricetta n. ${c.r.n}`,exp:ing.some(g=>ids.has(g.id))})});
+ if(!out.length)throw new Error("L’AI non è riuscita a modernizzare le ricette: riprova.");
+ return out}
+async function artShow(n,el){const A=await artLoad(),r=A.r.find(x=>x.n===n),d=document.getElementById("artx");if(d&&r&&!d.textContent)d.textContent=r.t+"\n\n"+r.x}
 async function gen(more){
+ S.busy=true;S.err="";S.note="";render();
+ try{const A=await artLoad(),skip=new Set((more?S.recs:[]).map(x=>x.art).filter(Boolean)),cs=artSuggest(A,S.gc,skip,4);
+  if(!cs.length){S.note="📖 Nell’archivio di Artusi non ho trovato altri piatti adatti ai tuoi prodotti: ti propongo piatti tradizionali scelti dall’AI.";return genAi(more)}
+  const nr=await artModern(cs,true),have=new Set((more?S.recs:[]).map(x=>nm(x.title)));
+  const add=nr.filter(x=>!have.has(nm(x.title)));
+  S.recs=(more?S.recs:[]).concat(add).sort((a,b)=>b.exp-a.exp);W("recs",S.recs);
+  if(!add.length)throw new Error("Nessuna ricetta nuova: riprova.")
+ }catch(e){S.err=e.code==="not_granted"?"Permesso AI negato.":(e.message||"Errore, riprova.")}
+ S.busy=false;render()}
+async function genAi(more){
  S.busy=true;S.err="";render();
  try{const sm=await claude.use("sample");if(!sm)throw new Error("L’agente AI non è disponibile in questa vista.");
   const pantry=S.items.map(i=>({id:i.id,nome:i.name,cat:i.cat,quantita:Math.round(i.q),unita:i.u,giorni_a_scadenza:i.exp?days(i.exp):null,posizione:locOf(i)}));
@@ -167,7 +220,7 @@ Rispondi SOLO con un array JSON: [{"title":"nome vero del piatto","emoji":"🍝"
  S.busy=false;render()}
 function open_(i){S.cur=S.recs[i];S.step=0;S.done={};S.from="ricette";render()}
 function vCur(){const r=cr(),n=r.steps.length,last=S.step===n-1,l=S.lib[r.title]||{};
- return `<button class="btn g" onclick="S.cur=null;S.tab=S.from||'ricette';render()">← Indietro</button> <button class="btn ${isCook()?"":"g"}" style="float:right" onclick="cookTog()">${isCook()?"✅ Modalità cucina":"👨‍🍳 Modalità cucina"}</button><h2 style="font-size:20px">${esc(r.title)}</h2><div>${srcB(r)}${r.course?` <span class="bd">🍽️ ${esc(r.course)}</span>`:""}</div>${(r.time||r.cook)?`<div class="mu" style="margin-top:6px">${r.time?"⏱️ "+(r.cook?"Preparazione":"Tempo")+": "+esc(r.time):""}${r.time&&r.cook?" · ":""}${r.cook?"🔥 Cottura: "+esc(r.cook):""}</div>`:""}${r.src==="web"?srcLinks(r):""}${r.src==="ai"&&r.origin?`<div class="mu" style="margin-top:6px">📖 ${esc(r.origin)}</div>`:""}${r.src==="link"&&r.link?`<div class="mu" style="margin-top:6px;word-break:break-all">🔗 Fonte: <a href="${esc(r.link)}" target="_blank" rel="noopener noreferrer">${esc(r.link)}</a></div>`:""}${photoBlock(r)}
+ return `<button class="btn g" onclick="S.cur=null;S.tab=S.from||'ricette';render()">← Indietro</button> <button class="btn ${isCook()?"":"g"}" style="float:right" onclick="cookTog()">${isCook()?"✅ Modalità cucina":"👨‍🍳 Modalità cucina"}</button><h2 style="font-size:20px">${esc(r.title)}</h2><div>${srcB(r)}${r.course?` <span class="bd">🍽️ ${esc(r.course)}</span>`:""}</div>${(r.time||r.cook)?`<div class="mu" style="margin-top:6px">${r.time?"⏱️ "+(r.cook?"Preparazione":"Tempo")+": "+esc(r.time):""}${r.time&&r.cook?" · ":""}${r.cook?"🔥 Cottura: "+esc(r.cook):""}</div>`:""}${r.src==="web"?srcLinks(r):""}${(r.src==="ai"||r.src==="art")&&r.origin?`<div class="mu" style="margin-top:6px">📖 ${esc(r.origin)}</div>`:""}${r.art?`<details style="margin-top:8px"><summary class="mu" style="cursor:pointer" onclick="artShow(${r.art},this)">📜 Testo originale di Artusi</summary><div id="artx" class="mu" style="white-space:pre-wrap;margin-top:6px;max-height:320px;overflow:auto"></div></details>`:""}${r.src==="link"&&r.link?`<div class="mu" style="margin-top:6px;word-break:break-all">🔗 Fonte: <a href="${esc(r.link)}" target="_blank" rel="noopener noreferrer">${esc(r.link)}</a></div>`:""}${photoBlock(r)}
 ${porUI()}<div class="card"><b>Ingredienti</b><ul style="margin:6px 0 0;padding-left:18px">${r.ingredients.map((g,gi)=>{const a=avail(g),ok=a.st==="ok";return `<li style="${ok?"":"color:var(--mu);opacity:.7"}">${emo(g.name)} ${esc(g.name)} — ${g.amount?g.amount+" "+esc(g.unit):"q.b."}${g.id||(r.src&&r.src!=="ai")?"":' <span class="mu">(base)</span>'}${ok?(a.it&&(a.note||a.via||nm(a.it.name)!==nm(g.name))?` <span class="mu">(${a.via?"alternativa: ":"in dispensa: "}${esc(a.it.name)}, ${fmt(a.it.q,a.it.u)})</span>`:""):(a.st==="part"?` (hai solo ${fmt(a.it.q,a.it.u)})`:" (non disponibile)"+(altOf(g).length?" — oppure: "+altOf(g).slice(0,3).map(esc).join(", "):""))+" "+(inList(g)?`<span class="bd ok">✅ in lista</span>`:`<button class="btn g" style="padding:2px 10px;font-size:12px" onclick="shopOne(${gi})">🛒 Aggiungi alla lista</button>`)}</li>`}).join("")}</ul><button class="btn g" style="margin-top:10px" onclick="toShop(cr())">🛒 Aggiungi alla lista della spesa</button> <button class="btn g" style="margin-top:10px" onclick="saveR(S.cur)">${inBook(r)?"✅ Nel ricettario":"💾 Salva nel ricettario"}</button>${inBook(r)?` <button class="btn g" style="margin-top:10px" onclick="editM(S.mine.findIndex(m=>m.title===S.cur.title))">✏️ Modifica ricetta</button>`:""}</div>
 ${r.notes?`<div class="card"><b>📝 Note</b><div style="white-space:pre-wrap">${esc(r.notes)}</div></div>`:""}<div class="dots">${r.steps.map((_,i)=>`<button class="${i===S.step?"on":S.done[i]?"d":""}" onclick="S.step=${i};render()" aria-label="Step ${i+1}">${i+1}</button>`).join("")}</div>
 <div class="card"><div class="mu">STEP ${S.step+1} DI ${n}</div><p style="font-size:${isCook()?"28px;line-height:1.35":"18px"};margin:6px 0">${esc(r.steps[S.step])}</p></div>
