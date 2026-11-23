@@ -45,7 +45,7 @@ function render(){if(S.tab!=="nuova")S.edId=null;
 const EM=[["uov","🥚"],["pasta","🍝"],["spaghet","🍝"],["riso","🍚"],["farina","🌾"],["pane","🍞"],["latte","🥛"],["yogurt","🥛"],["panna","🥛"],["formagg","🧀"],["parmigiano","🧀"],["mozzarella","🧀"],["ricotta","🧀"],["burro","🧈"],["pollo","🍗"],["manzo","🥩"],["maiale","🥩"],["carne","🥩"],["prosciutto","🥓"],["salame","🥓"],["tonno","🐟"],["salmone","🐟"],["pesce","🐟"],["pomodor","🍅"],["passata","🍅"],["insalata","🥬"],["spinaci","🥬"],["zucchin","🥒"],["carot","🥕"],["patat","🥔"],["cipolla","🧅"],["aglio","🧄"],["limon","🍋"],["melanzan","🍆"],["mela","🍎"],["banana","🍌"],["arancia","🍊"],["fragol","🍓"],["uva","🍇"],["peperon","🫑"],["funghi","🍄"],["fagioli","🫘"],["ceci","🫘"],["lenticch","🫘"],["piselli","🌱"],["olio","🫒"],["sale","🧂"],["zucchero","🍬"],["miele","🍯"],["cioccolat","🍫"],["biscott","🍪"],["acqua","💧"],["succo","🧃"],["vino","🍷"],["birra","🍺"],["caffè","☕"]];
 const CE={"Cereali e derivati":"🌾","Latticini e uova":"🥛","Carne e pesce":"🥩","Frutta e verdura":"🥦","Legumi":"🫘","Condimenti e oli":"🫒","Dolci e snack":"🍪","Bevande":"🥤","Altro":"🛒"};
 const emo=(n,c)=>{n=(n||"").toLowerCase();const m=EM.find(([k])=>n.includes(k));return m?m[1]:CE[c||guess(n)]||"🛒"};
-const SRC={art:["📖","Ricetta di Artusi, modernizzata"],ai:["🤖","Consigliata dall’AI"],web:["🔎","Cercata online con l’AI"],manual:["✍️","Inserita manualmente"],link:["🔗","Importata da link"]};
+const SRC={ai:["🤖","Consigliata dall’AI"],web:["🔎","Cercata online con l’AI"],manual:["✍️","Inserita manualmente"],link:["🔗","Importata da link"]};
 const srcB=r=>{const s=SRC[r.src||"ai"]||SRC.ai;return `<span class="bd ok">${s[0]} ${s[1]}</span>`};
 const nm=s=>String(s||"").toLowerCase().trim();
 const eur=v=>"€ "+v.toFixed(2).replace(".",",");
@@ -94,7 +94,7 @@ function sx(k,v){S["sx_"+k]=v;render();const e=$("sx_"+k);if(e){e.focus();try{e.
 const sxBox=(k,ph)=>`<input id="sx_${k}" type="search" placeholder="🔎 ${ph}" value="${esc(S["sx_"+k]||"")}" oninput="sx('${k}',this.value)" style="margin:8px 0">`;
 const sxOk=(k,txt)=>{const q=nm(S["sx_"+k]||"");return !q||nm(txt).includes(q)};
 function fcSet(k,v){lss(k,v);render()}
-const APP_VER="2.8.0";
+const APP_VER="2.8.1";
 function drawThemePanel(){let p=$("thp");if(!p){p=document.createElement("div");p.id="thp";document.body.appendChild(p)}
  if(!S.thp){p.style.display="none";p.innerHTML="";return}
  p.style.cssText="position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.5);overflow:auto;padding:calc(env(safe-area-inset-top,0px) + 14px) 14px 40px";

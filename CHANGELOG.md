@@ -3,12 +3,10 @@
 Tutte le modifiche importanti a **Dispensa Smart** sono annotate qui.
 Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) e il numero di versione, mostrato in basso nelle Impostazioni (⚙️), segue il [versionamento semantico](https://semver.org/lang/it/).
 
-## [2.8.0] – 2026-11-24
+## [2.8.1] – 2026-11-24
 
-### Aggiunto
-- **Ricette vere da Artusi**: «Suggeriscimi ricette» e la ricerca per nome ora partono da «La scienza in cucina e l'arte di mangiar bene» di Pellegrino Artusi (790 ricette, 1891, di pubblico dominio). L'app sceglie i piatti che si fanno con la tua dispensa e l'AI li **modernizza** senza cambiarli: dosi per 2 persone, unità di oggi (g, ml, pezzi), temperature e tempi chiari, passaggi numerati, alternative per ciò che oggi non si trova.
-- In ogni ricetta compare «Pellegrino Artusi, ricetta n. X» e il **testo originale** da leggere (📜).
-- Se in Artusi non c'è nulla di adatto (per esempio la carbonara è postbellica), l'app usa come prima le ricette tradizionali dell'AI e lo dice.
+### Rimosso
+- L'archivio delle ricette di Artusi (provato brevemente come 2.8.0) è stato tolto: suggerimenti e ricerca tornano a funzionare come nella 2.7.0, con le regole sui piatti reali.
 
 ## [2.7.0] – 2026-11-23
 
