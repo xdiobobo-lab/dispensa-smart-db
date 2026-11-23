@@ -3,6 +3,17 @@
 Tutte le modifiche importanti a **Dispensa Smart** sono annotate qui.
 Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) e il numero di versione, mostrato in basso nelle Impostazioni (⚙️), segue il [versionamento semantico](https://semver.org/lang/it/).
 
+## [2.9.0] – 2026-11-24
+
+### Aggiunto
+- **Catalogo di 236 piatti classici italiani** (primi, secondi, contorni, antipasti, dolci) con ingredienti che li definiscono, regione e un riassunto del procedimento. «Suggeriscimi ricette» sceglie prima i piatti del catalogo che si fanno con la tua dispensa (o a cui manca un solo ingrediente) e l'AI ne scrive soltanto dosi e passaggi: se dimentica un ingrediente obbligatorio la ricetta viene scartata. Così non si inventano più piatti come il risotto al cacao.
+- Se nel catalogo non c'è abbastanza di compatibile, l'AI propone degli **abbinamenti** suoi, segnati come «Abbinamento proposto dall'AI», e l'app lo dice.
+- La ricerca per nome parte dal catalogo («carbonara», «torta senza uova»); se il piatto non c'è, risponde l'AI.
+- Nella scheda di ogni piatto classico: la regione e i link per confrontare con GialloZafferano e Benedetta Rossi (ricerca su Google, si apre il loro sito).
+
+### Corretto
+- Il badge delle ricette cercate ora dice «Proposta dall'AI» (prima diceva «Cercata online con l'AI», ma l'AI non cerca sul web).
+
 ## [2.8.1] – 2026-11-24
 
 ### Rimosso
