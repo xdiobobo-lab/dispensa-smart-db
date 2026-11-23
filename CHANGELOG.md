@@ -3,6 +3,13 @@
 Tutte le modifiche importanti a **Dispensa Smart** sono annotate qui.
 Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) e il numero di versione, mostrato in basso nelle Impostazioni (⚙️), segue il [versionamento semantico](https://semver.org/lang/it/).
 
+## [2.7.0] – 2026-11-23
+
+### Migliorato
+- **Ricette più vere**: l'AI deve proporre solo piatti realmente esistenti, con il loro nome e la tradizione o regione (mostrata nella ricetta). Non è più obbligata a usare solo la dispensa: può aggiungere 1-3 ingredienti da comprare se la ricetta autentica li richiede, e propone meno ricette invece di inventare abbinamenti.
+- **Controllo di coerenza**: le ricette incoerenti vengono scartate prima di mostrarle (per esempio risotto o primi con cacao, dolci con carne o aglio, un «risotto» senza riso, una «carbonara» senza pasta, un primo senza pasta, riso o zuppa).
+- Stessa regola nella ricerca di una ricetta e nei piani settimanali/mensili.
+
 ## [2.6.0] – 2026-11-23
 
 ### Aggiunto
