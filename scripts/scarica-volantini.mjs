@@ -27,7 +27,7 @@ async function richieste() {
   const U = (process.env.SUPABASE_URL || "").trim().replace(/\/+$/, ""), K = (process.env.SUPABASE_SERVICE_KEY || "").trim();
   if (!U || !K) { L("Richieste dall'app: non collegate (mancano SUPABASE_URL e SUPABASE_SERVICE_KEY nei Secrets)"); return [] }
   try {
-    const r = await fetch(U + "/rest/v1/richieste_volantini?select=id,catena,regione,citta&order=creata.asc&limit=" + (+CFG.max_richieste || 12), { headers: K.startsWith("sb_") ? { apikey: K } : { apikey: K, authorization: "Bearer " + K } });
+    const r = await fetch(U + "/rest/v1/richieste_volantini?select=id,chiave,catena,regione,citta&order=creata.asc&limit=" + (+CFG.max_richieste || 30), { headers: K.startsWith("sb_") ? { apikey: K } : { apikey: K, authorization: "Bearer " + K } });
     if (!r.ok) { L("Richieste dall'app: errore HTTP " + r.status + (r.status === 401 || r.status === 403 ? " (la chiave non è accettata: serve la chiave SEGRETA del progetto, non quella pubblica; tipo della chiave usata: " + (K.startsWith("sb_secret_") ? "sb_secret" : K.startsWith("sb_publishable_") ? "PUBBLICA (sbagliata)" : K.startsWith("eyJ") ? "JWT" : "non riconosciuto") + ")" : "")); return [] }
     const a = await r.json(); L("Richieste dall'app:", a.length); return a;
   } catch (e) { L("Richieste dall'app: errore", String(e.message).slice(0, 120)); return [] }
@@ -49,13 +49,19 @@ async function rimuovi(paths) { for (let i = 0; i < paths.length; i += 100) { co
 const cat0 = await leggi("volantini_catalogo", "select=*");
 const catalogo = new Map((cat0 || []).map(r => [r.chiave, r]));
 const disponibile = url => { const r = catalogo.get(chiaveDa(url)); return !!(r && (r.volantini || []).length) };
-const tutti = process.env.VOL_TUTTI === "1";               // VOL_TUTTI=1: riscarica anche i negozi già presenti
+const tutti = process.env.VOL_TUTTI === "1";
+const forza = new Set();                                   // negozi da riscaricare perché l'utente ha premuto "Aggiorna volantini"               // VOL_TUTTI=1: riscarica anche i negozi già presenti
 for (const q of reqs) {
   const citta = urlSlug(q.citta || ""), cat = urlSlug(q.catena || "");
   if (!citta || !cat) { if (q.id != null) daCancellare.push(q.id); continue }
   const url = base0 + "/" + citta + "/volantino/" + cat;
   (mappa[url] = mappa[url] || []).push(q.id);
-  if (disponibile(url) && !tutti) { L("Già disponibile, non lo cerco:", q.catena, q.citta); if (q.id != null) daCancellare.push(q.id); continue }
+  const agg = /\|agg$/.test(String(q.chiave || ""));                 // richiesta di aggiornamento (tasto "Aggiorna volantini")
+  if (agg && disponibile(url)) {
+    const rg = catalogo.get(chiaveDa(url)), eta = rg && rg.aggiornato ? Date.now() - Date.parse(rg.aggiornato) : 1e12;
+    if (eta < 12 * 36e5 && !tutti) { L("Già aggiornato da poco, non lo riscarico:", q.catena, q.citta); if (q.id != null) daCancellare.push(q.id); continue }
+    forza.add(url); L("Aggiornamento richiesto:", q.catena, q.citta);
+  } else if (disponibile(url) && !tutti) { L("Già disponibile, non lo cerco:", q.catena, q.citta); if (q.id != null) daCancellare.push(q.id); continue }
   if ((CFG.negozi || []).some(n => n.url === url)) continue;
   (CFG.negozi = CFG.negozi || []).push({ nome: String(q.catena).trim().slice(0, 40), regione: String(q.regione || "").slice(0, 40), citta: String(q.citta || "").slice(0, 40), url, attivo: true });
 }
@@ -70,7 +76,7 @@ const isFlyerImg = (url, ct) => /^image\//.test(ct || "") && /shopfully|page_ass
 
 for (const n of CFG.negozi || []) {
   if (!n.attivo) continue;
-  if (disponibile(n.url) && !tutti) { L("== " + n.nome + ": già disponibile, salto"); continue }
+  if (disponibile(n.url) && !tutti && !forza.has(n.url)) { L("== " + n.nome + ": già disponibile, salto"); continue }
   const rec = { nome: n.nome, regione: n.regione || "", citta: n.citta || ((n.url.match(/doveconviene\.it\/([^/]+)\/volantino/) || [])[1] || ""), url: n.url, volantini: [] };
   L("== " + n.nome + " " + n.url);
   try {

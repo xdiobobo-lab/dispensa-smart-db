@@ -1,0 +1,78 @@
+SCARICATORE DI VOLANTINI (prima prova)
+
+Cosa fa: ogni giorno apre su DoveConviene la pagina dei volantini di Conad e di
+Lidl (per Roma), sfoglia ogni volantino con un browser vero e salva le immagini
+delle pagine nel tuo repository, nella cartella "volantini".
+IMPORTANTE: metti questi file nello STESSO repository del sito (quello con
+index.html, per esempio dispensa-smart), non in un altro: l'app legge la
+cartella "volantini" dal sito. Dopo ogni giro il sito si aggiorna da solo
+(può servire circa un minuto). Nell'app: sezione Negozi > "Sfoglia i volantini".
+
+COME PROVARLO
+1. Nel repository del sito crea (Add file > Create new file) questi file, con
+   gli stessi nomi e lo stesso contenuto di quelli dello zip:
+     .github/workflows/volantini.yml
+     scripts/scarica-volantini.mjs
+     volantini-config.json
+   (Il nome ".github/workflows/volantini.yml" crea le cartelle da solo.)
+2. Repository > Settings > Actions > General > Workflow permissions:
+   scegli "Read and write permissions" e salva.
+3. Repository > Actions > "Scarica volantini" > Run workflow.
+   Aspetta 3-6 minuti.
+4. Apri la cartella "volantini" nel repository. Guarda:
+     volantini/_debug.txt     cosa è successo, passo per passo
+     volantini/index.json     elenco dei volantini trovati
+     volantini/conad/...      le immagini delle pagine
+5. Mandami il contenuto di _debug.txt: se qualcosa non ha funzionato dice dove.
+
+PER CAMBIARE CITTÀ O NEGOZIO
+Apri volantini-config.json e cambia l'indirizzo (es. .../milano/volantino/conad).
+"max_volantini": quanti volantini per negozio. "max_pagine": limite di pagine.
+
+LIMITI
+- DoveConviene potrebbe cambiare la pagina o bloccare i programmi automatici:
+  in quel caso _debug.txt lo mostra e il metodo va corretto.
+- Le immagini sono dei rispettivi proprietari: uso personale.
+- Un repository pubblico non ha limiti sulle azioni; uno privato ha circa 2.000
+  minuti al mese (basta un solo giro al giorno).
+
+RICHIESTE DALL'APP ("Cerca i volantini nella tua zona!")
+- In Supabase > SQL Editor riesegui supabase-setup.sql del sito (ora contiene anche
+  la tabella "richieste_volantini").
+- Su GitHub: repository > Settings > Secrets and variables > Actions > New repository
+  secret. Crea due segreti:
+    SUPABASE_URL          l'indirizzo del progetto (https://....supabase.co)
+    SUPABASE_SERVICE_KEY  la chiave "service_role" (Supabase > Project Settings > API)
+- ATTENZIONE: la chiave service_role è SEGRETA. Va solo nei Secrets di GitHub, mai
+  nel sito, in config.js o nel repository.
+- Ogni 3 ore lo scaricatore legge le richieste (massimo 12 in più rispetto al file di
+  configurazione, cambiabile con "max_richieste") e cerca i volantini della città
+  indicata. Se non scrivi la città, l'app usa il capoluogo della regione.
+- Il giorno dopo i volantini compaiono nella ricerca dell'app.
+
+NOVITÀ: RICERCA SNELLA
+- Lo script NON cancella più i volantini già salvati: cerca solo quelli richiesti e non ancora presenti.
+- Se un volantino richiesto è già disponibile, non viene cercato di nuovo.
+- Finito il lavoro, le richieste evase vengono eliminate dalla coda (tabella richieste_volantini).
+- Per riscaricare tutto di proposito: avvia il workflow a mano con la variabile VOL_TUTTI=1 (env nel workflow).
+- Volantini scaduti: a ogni esecuzione lo script legge la data di fine dalla validità (es. "dal 20 ottobre al 2 novembre")
+  e, se è passata, elimina il volantino dall'elenco e cancella le sue immagini.
+  Se la data non si legge ("Scade domenica"), il volantino viene eliminato dopo 14 giorni dal salvataggio
+  (cambialo con "giorni_conservazione" in volantini-config.json). Un negozio senza più volantini esce dall'elenco
+  e, se viene richiesto di nuovo, viene riscaricato.
+
+NOVITÀ 2.3: VOLANTINI PRIVATI (Supabase Storage)
+- Le immagini non vanno più nel repository: lo script le carica nell'archivio privato "volantini" di Supabase
+  e scrive l'elenco nella tabella volantini_catalogo. Servono quindi i due Secrets SUPABASE_URL e SUPABASE_SERVICE_KEY (già messi).
+- Prima di usarlo esegui di nuovo supabase-setup.sql in Supabase (crea miei_volantini, volantini_catalogo e l'archivio).
+- Ogni account vede solo i supermercati che ha aggiunto. Se nessun account ha più un supermercato nel proprio elenco,
+  lo script elimina i suoi volantini e le immagini.
+- Nel repository resta solo volantini/_debug.txt. Puoi cancellare le vecchie immagini e index.json dalla cartella volantini del repository
+  (erano pubbliche).
+- Spazio: il piano gratuito di Supabase ha 1 GB di archivio; un supermercato occupa in genere 20-100 MB. I volantini scaduti vengono tolti da soli.
+
+NOVITÀ 2.5: TASTO "AGGIORNA VOLANTINI"
+- Dall'app, il tasto crea per ogni supermercato dell'utente una richiesta di aggiornamento (chiave "catena|città|agg").
+- Lo script riscarica quel supermercato anche se già presente, ma solo se l'ultimo aggiornamento ha più di 12 ore,
+  sostituisce i volantini e cancella le immagini di quelli vecchi.
+- Il limite di richieste lette per esecuzione è ora 30 (cambialo con "max_richieste" in volantini-config.json).

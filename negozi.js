@@ -131,6 +131,10 @@ async function flyAI(id){const f=S.fly.find(x=>x.id===id),t=f&&FT[f.tid||f.id];i
 function flyRe(id){const f=S.fly.find(x=>x.id===id),t=f&&FT[f.tid||f.id];if(!t)return toast("Il testo di questo volantino non è salvato su questo dispositivo.");
  const L=flyLocal(t.text);f.offers=L.offers.map(o=>({item:o.item,offer:o.offer,price:o.price,from:null,to:null}));f.eng="local";if(L.dates){f.from=L.dates.from;f.to=L.dates.to}save();render();toast(`🔄 ${f.offers.length} offerte rielaborate dal testo salvato`)}
 async function pageJpg(pdf,p){const pg=await pdf.getPage(p),v0=pg.getViewport({scale:1}),sc=Math.min(2.2,1400/v0.width),vp=pg.getViewport({scale:sc}),cv=document.createElement("canvas");cv.width=Math.round(vp.width);cv.height=Math.round(vp.height);const g=cv.getContext("2d");g.fillStyle="#fff";g.fillRect(0,0,cv.width,cv.height);await pg.render({canvasContext:g,viewport:vp}).promise;const u=cv.toDataURL("image/jpeg",.82);cv.width=cv.height=1;return u}
+async function fileStrips(f){const bm=await createImageBitmap(f),W=Math.min(bm.width,1100),sc=W/bm.width,H=Math.round(bm.height*sc);
+ const cut=(y,h)=>{const cv=document.createElement("canvas");cv.width=W;cv.height=h;const g=cv.getContext("2d");g.fillStyle="#fff";g.fillRect(0,0,W,h);g.drawImage(bm,0,y/sc,bm.width,h/sc,0,0,W,h);const u=cv.toDataURL("image/jpeg",.85);cv.width=cv.height=1;return u};
+ const mx=Math.round(W*1.5);if(H<=mx*1.15)return[await fileJpg(f)];
+ const n=Math.ceil((H-80)/(mx-80)),st=(H-mx)/(n-1),o=[];for(let k=0;k<n;k++)o.push(cut(Math.round(k*st),mx));return o}
 async function fileJpg(f){const bm=await createImageBitmap(f),sc=Math.min(1,1600/Math.max(bm.width,bm.height)),cv=document.createElement("canvas");cv.width=Math.round(bm.width*sc);cv.height=Math.round(bm.height*sc);const g=cv.getContext("2d");g.fillStyle="#fff";g.fillRect(0,0,cv.width,cv.height);g.drawImage(bm,0,0,cv.width,cv.height);const u=cv.toDataURL("image/jpeg",.85);cv.width=cv.height=1;return u}
 async function flyVision(inp,retryId,so,meta){const fs=[...(inp.files||[])];if(!fs.length)return;const RF=retryId?S.fly.find(x=>x.id===retryId):null,store=RF?RF.store:(so!=null?so:($("of")?$("of").value:""));if(!RF)S.ofs=store;
  S.fb=1;S.ferr="";S.fp=null;S.fmsg="Preparo le pagine del volantino…";render();
@@ -264,6 +268,16 @@ async function vcCerca(){const f=S.vc||{};
  render();if(S.vcr&&S.vcr.ric)vcAvvia()}
 function vcPx(){try{const p=window.__PX&&window.__PX();if(p)return p;const A=window.AI_PROXY;return A&&A.u&&A.c?{u:String(A.u).trim(),c:String(A.c).trim()}:null}catch(e){return null}}
 async function vcApi(path,m){const p=vcPx();if(!p)throw new Error("Accesso all'AI non attivo su questo dispositivo.");const r=await fetch(p.u.replace(/\/+$/,"")+"/v1/volantini/"+path,{method:m||"GET",headers:{"x-access-code":p.c}});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error((j.error&&j.error.message)||"Errore "+r.status);return j}
+async function vcAggiorna(){if(!sbOn())return toast("Accedi al tuo account per aggiornare i volantini.");const j=S.fidx;
+ if(!j||!j.negozi.length)return toast("Non hai ancora supermercati: cercane uno qui sotto.");
+ if(S.vcr&&S.vcr.att)return;
+ let last=0;try{last=+localStorage.getItem("vagg")||0}catch(e){}
+ if(Date.now()-last<6*36e5)return toast("Hai già aggiornato da poco: riprova tra qualche ora.");
+ S.vcr={agg:1,att:0};render();let n=0,err="";
+ for(const x of j.negozi){if(!x.chiave)continue;try{const r=await sbRest("richieste_volantini",{method:"POST",headers:{Prefer:"return=minimal"},body:JSON.stringify({catena:x.nome,regione:x.regione||"",citta:x.citta||"",chiave:x.chiave+"|agg"})});if(r.ok||r.status===409)n++;else err=sbBad(r)}catch(e){err=e.message}}
+ if(!n){S.vcr={agg:1,fine:1,err:err||"Non riesco a inviare la richiesta."};return render()}
+ try{localStorage.setItem("vagg",String(Date.now()))}catch(e){}
+ S.vcr={agg:1,ric:1,n:n};render();vcAvvia()}
 async function vcAvvia(){const R=S.vcr;if(!R)return;if(!vcPx()){R.warn="Avvio immediato non disponibile: manca AI_PROXY in config.js.";return render()}R.att=1;render();
  try{const j=await vcApi("avvia","POST");R.t0=(j.t||Date.now())-15000;R.gia=!!j.gia;R.again=!!j.gia;vcPoll(Date.now())}
  catch(e){if(S.vcr===R){R.att=0;R.warn=e.message;render()}}}
@@ -272,7 +286,7 @@ async function vcPoll(t){const R=S.vcr;if(!R||!R.att)return;
  try{const j=await vcApi("stato"),u=j.ultima;
   if(u&&u.stato==="completed"&&(R.gia||new Date(u.creata).getTime()>=R.t0)){
    if(R.again){R.again=false;R.gia=false;const k=await vcApi("avvia","POST");R.t0=(k.t||Date.now())-15000;R.gia=!!k.gia;R.again=!!k.gia;render();return setTimeout(()=>vcPoll(t),8000)}
-   await flyIdx();const trov=vcFind();R.fin=(R.fin||0)+1;
+   await flyIdx();if(R.agg){S.vcr=u.conclusione==="success"?{agg:1,done:1}:{agg:1,fine:1,err:"L’aggiornamento non è andato a buon fine: riprova più tardi."};S.vcf="";return render()}const trov=vcFind();R.fin=(R.fin||0)+1;
    if(trov.length){S.vcr={n:trov.length};S.vcf=trov[0].n.nome;return render()}
    if(R.fin<10&&u.conclusione==="success"){R.pub=1;render();return setTimeout(()=>vcPoll(t),20000)}
    R.att=0;R.fine=1;R.ok=u.conclusione==="success";return render()}
@@ -289,7 +303,8 @@ function vSfoglia(){if(S.fidx===undefined){S.fidx=null;flyIdx()}
  const nomi=[...new Set(all.map(x=>x.n.nome))].sort((a,b)=>a.localeCompare(b));if(S.vcf&&!nomi.includes(S.vcf))S.vcf="";
  const tot=all.reduce((a,x)=>a+x.v.length,0);
  let res="";
- if(r&&r.q)res=`<div class="mu" style="margin-top:12px">Cerco…</div>`;
+ if(r&&r.agg){res=r.done?`<div style="margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--bd)">✅ Volantini aggiornati: ora vedi quelli di questo mese.</div>`:r.err?`<div class="al" style="margin-top:12px">${esc(r.err)}</div>`:r.fine?"":`<div class="card" style="margin-top:12px;border-color:var(--ac)"><b>⏳ Sto aggiornando i volantini…</b><div style="margin-top:4px">Scarico quelli di questo mese e tolgo i vecchi. Ci vogliono alcuni minuti: puoi restare qui.${r.warn?`<div class="mu" style="margin-top:6px">${esc(r.warn)}</div>`:""}</div></div>`}
+ else if(r&&r.q)res=`<div class="mu" style="margin-top:12px">Cerco…</div>`;
  else if(r&&r.n)res=`<div style="margin-top:12px;padding:10px 12px;border-radius:12px;background:var(--bd)">✅ Ho trovato i volantini di <b>${esc(f.catena)}</b>: li vedi qui sotto.</div>`;
  else if(r&&r.ric&&r.att)res=`<div class="card" style="margin-top:12px;border-color:var(--ac)"><b>⏳ ${r.pub?"Sto pubblicando i volantini di ":"Sto cercando i volantini di "}${esc(f.catena)}…</b><div style="margin-top:4px">${r.pub?"Li ho trovati: sul sito ci vuole ancora uno o due minuti perché compaiano.":"Ci vogliono circa 5 minuti. Puoi restare qui: appena li trovo compaiono."}${r.warn?`<div class="mu" style="margin-top:6px">${esc(r.warn)}</div>`:""}</div></div>`;
  else if(r&&r.ric&&r.fine)res=`<div class="al" style="margin-top:12px">${r.ok?"La ricerca è finita, ma non ho trovato volantini di <b>"+esc(f.catena)+"</b> per "+esc(r.citta)+". Controlla il nome del supermercato e la città (potrebbe non averli).":"La ricerca ha avuto un problema e non è andata a buon fine. Riprova più tardi."}</div>`;
@@ -300,12 +315,13 @@ function vSfoglia(){if(S.fidx===undefined){S.fidx=null;flyIdx()}
  const lista=(r&&r.n)?vcFind():(S.vcf?all.filter(x=>x.n.nome===S.vcf):all);
  const chip=(n,l)=>`<button class="btn ${(S.vcf||"")===n?"":"g"}" style="padding:8px 14px;font-size:14px;white-space:nowrap" onclick="vcChip('${esc(n).replace(/'/g,"\\'")}')">${esc(l)}</button>`;
  return `<div class="card"><b>📚 Volantini disponibili</b><div class="mu">${tot?tot+" volantin"+(tot===1?"o":"i")+" nei tuoi supermercati"+(ag?" (aggiornati il "+ag+")":"")+". Scegli il supermercato, tocca un volantino per sfogliarlo oppure fai leggere le offerte all’intelligenza artificiale.":(S.fno==="login"?"I volantini sono personali: accedi al tuo account (⚙️ Impostazioni) per vederli e cercarli.":S.fno==="err"?"Non riesco a caricare i tuoi volantini: se non l’hai già fatto, esegui di nuovo supabase-setup.sql in Supabase.":j===null?"Carico i volantini…":"Non hai ancora supermercati: cerca il tuo qui sotto.")}</div>
+<button class="btn g" style="margin-top:10px;width:100%" ${r&&r.agg&&!r.done&&!r.fine?"disabled":""} onclick="vcAggiorna()">🔄 Aggiorna volantini</button><div class="mu" style="margin-top:4px;font-size:12px">Scarica i volantini di questo mese per i tuoi supermercati e toglie quelli vecchi.</div>${r&&r.agg?res:""}
 ${tot?`<div style="display:flex;gap:8px;overflow-x:auto;padding:12px 0 2px">${chip("","Tutti")}${nomi.map(n=>chip(n,n)).join("")}</div>${vcFlyers(lista)}${S.vcf?[...new Map(lista.filter(x=>x.n.chiave).map(x=>[x.n.chiave,x.n])).values()].map(n=>`<button class="btn g" style="width:100%;margin-top:10px;font-size:13px" onclick="vcTogli('${esc(n.chiave)}')">${S.vdel===n.chiave?"Premi di nuovo per confermare":"🗑️ Togli "+esc(n.nome)+(n.citta?" ("+esc(n.citta)+")":"")+" dai miei volantini"}</button>`).join(""):""}`:""}</div>
 <div class="card"><b>🔎 Cerca i volantini nella tua zona!</b><div class="mu">Non trovi il tuo supermercato? Scegli la regione e scrivi il nome: lo cerco e lo aggiungo all’elenco.</div>
 <div style="margin-top:10px"><div class="mu" style="font-size:12px">Regione</div><select id="vc_r" style="${inp}" onchange="vcSet('regione',this.value)"><option value="">Scegli la regione</option>${Object.keys(VC_REG).map(x=>`<option ${f.regione===x?"selected":""}>${esc(x)}</option>`).join("")}</select></div>
 <div style="margin-top:8px"><div class="mu" style="font-size:12px">Supermercato</div><input id="vc_c" list="vc_l" style="${inp}" placeholder="Es. Conad, Lidl, Eurospin…" value="${esc(f.catena||"")}" oninput="vcSet('catena',this.value)"><datalist id="vc_l">${VC_CAT.map(x=>`<option value="${x}">`).join("")}</datalist></div>
 <div style="margin-top:8px"><div class="mu" style="font-size:12px">Città (facoltativa)</div><input id="vc_t" style="${inp}" placeholder="Se vuota uso il capoluogo della regione" value="${esc(f.citta||"")}" oninput="vcSet('citta',this.value)"></div>
-<button class="btn" style="width:100%;margin-top:10px" onclick="vcCerca()">🔎 Cerca i volantini</button>${res}</div>`}
+<button class="btn" style="width:100%;margin-top:10px" onclick="vcCerca()">🔎 Cerca i volantini</button>${r&&r.agg?"":res}</div>`}
 async function flyOpen(si,fi){const v=S.fidx&&S.fidx.negozi[si]&&S.fidx.negozi[si].volantini[fi];if(!v||!v.pagine.length)return;try{await vcSign(v.pagine)}catch(e){return toast(e.message)}S.fv={si,fi,p:0};drawFv();if(!window.__fvk){window.__fvk=1;document.addEventListener("keydown",e=>{if(!S.fv)return;if(e.key==="ArrowRight")flyPg(1);else if(e.key==="ArrowLeft")flyPg(-1);else if(e.key==="Escape")flyClose()})}}
 function flyPg(d){const f=S.fv;if(!f)return;const v=S.fidx.negozi[f.si].volantini[f.fi],n=v.pagine.length;f.p=Math.max(0,Math.min(n-1,f.p+d));drawFv()}
 function flyClose(){S.fv=null;drawFv()}

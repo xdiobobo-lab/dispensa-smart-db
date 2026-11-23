@@ -3,6 +3,21 @@
 Tutte le modifiche importanti a **Dispensa Smart** sono annotate qui.
 Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) e il numero di versione, mostrato in basso nelle Impostazioni (⚙️), segue il [versionamento semantico](https://semver.org/lang/it/).
 
+## [2.6.0] – 2026-11-23
+
+### Aggiunto
+- **Tasto ❄️ Congela** su ogni prodotto della dispensa: lo sposta nel congelatore e allunga la scadenza in base al tipo di alimento (carne 3 mesi, pesce e pane 2 mesi, verdura e frutta 6 mesi, ecc.). Se è già nel congelatore il tasto diventa 🔥 Scongela: va in frigo con 2 giorni di scadenza. Si può annullare.
+- Nella revisione dello scontrino la casella **❄️ congela** per ogni prodotto.
+
+### Migliorato
+- **Lettura degli scontrini lunghi**: la foto viene divisa in strisce sovrapposte e letta a pezzi più piccoli, così le righe non si confondono; le righe doppie ai bordi vengono tolte.
+- L'AI trascrive soltanto ciò che legge: sotto ogni prodotto compare la riga com'è scritta sullo scontrino, e le righe poco chiare sono segnate ⚠️ e deselezionate finché non le controlli.
+
+## [2.5.0] – 2026-11-02
+
+### Aggiunto
+- **Tasto "🔄 Aggiorna volantini"** (Spesa → Volantini e negozi): chiede lo scaricamento dei volantini di questo mese per tutti i tuoi supermercati; quelli del mese scorso vengono tolti, immagini comprese. Si può usare ogni 6 ore e lo scaricatore riscarica solo se l'ultimo aggiornamento ha più di 12 ore.
+
 ## [2.4.1] – 2026-10-28
 
 ### Aggiunto
