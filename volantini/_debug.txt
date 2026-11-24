@@ -1,1 +1,47 @@
-Richieste dall'app: 0
+Richieste dall'app: 2
+Aggiornamento richiesto: Conad Napoli
+Aggiornamento richiesto: Despar Napoli
+== Conad https://www.doveconviene.it/napoli/volantino/conad
+  volantini trovati: 3 1741643,1731847,1744299
+  volantino 1741643 giri: 3 immagini: 16
+  pubblicazione 972625 pagine: 3 (altre pubblicazioni viste: 0) numeri: 1,2,3
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/972625/1/page_1_level_4_2030488516.webp 57386B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/972625/2/page_2_level_4_626459591.webp 56442B
+  volantino 1731847 giri: 3 immagini: 13
+  nessuna pagina riconosciuta: indirizzi visti:
+    ? https://it-it-media.shopfully.cloud/images/volantini/big_1746553.jpg
+    ? https://it-it-media.shopfully.cloud/images/catene/segnalino_unieuro@2x_webp.webp
+    ? https://it-it-media.shopfully.cloud/images/volantini/big_1728796.jpg
+    ? https://it-it-media.shopfully.cloud/images/catene/segnalino_tecnomat@2x_webp.webp
+    ? https://it-it-media.shopfully.cloud/images/volantini/big_1748518.jpg
+    ? https://it-it-media.shopfully.cloud/images/catene/segnalino_bimbo-store@2x_webp.webp
+    ? https://it-it-media.shopfully.cloud/images/volantini/big_1728928.jpg
+    ? https://it-it-media.shopfully.cloud/images/catene/segnalino_pampers@2x_webp.webp
+  secondo tentativo:  9 immagini
+    img https://it-it-media.shopfully.cloud/images/volantini/big_1746553.jpg 32660B
+    img https://it-it-media.shopfully.cloud/images/volantini/big_1728796.jpg 17434B
+  volantino 1744299 giri: 14 immagini: 38
+  pubblicazione 974653 pagine: 24 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/974653/1/page_1_level_4_1169866363.webp 54126B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/974653/2/page_2_level_4_2130524623.webp 61770B
+== Despar https://www.doveconviene.it/napoli/volantino/despar
+  volantini trovati: 50 1757977,1747488,1757979,1744282,1741643,1731847,1731841,1731851,1731845,1731775,1731769,1750547,1750553,1755822,1744299,1755373,1744307,1744331,1755426,1751762,1746260,1750562,1750539,1751761,1755198,1741433,1739821,1746037,1758023,1754128,1754262,1754260,1689209,1752448,1752585,1746301,1734298,1730481,1737460,1709251,1486566,1758098,1666356,1734393,1734392,1471487,1719332,1648599,1624075,1741883
+  volantino 1757977 giri: 15 immagini: 40
+  pagine mancanti: 1 - le riapro
+  pubblicazione 987002 pagine: 27 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/987002/1/page_1_level_4_354858740.webp 78756B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/987002/2/page_2_level_4_1793654520.webp 56036B
+  volantino 1747488 giri: 18 immagini: 40
+  pubblicazione 977779 pagine: 25 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/977779/1/page_1_level_4_1851298616.webp 72850B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/977779/2/page_2_level_4_1497069044.webp 56168B
+  volantino 1757979 giri: 15 immagini: 40
+  pagine mancanti: 1 - le riapro
+  pubblicazione 987007 pagine: 27 (altre pubblicazioni viste: 0) numeri: 1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/987007/1/page_1_level_4_1522457559.webp 66658B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/987007/2/page_2_level_4_2088144643.webp 56036B
+  volantino 1744282 giri: 4 immagini: 17
+  pubblicazione 974633 pagine: 4 (altre pubblicazioni viste: 0) numeri: 1,2,3,4
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/974633/1/page_1_level_4_180813807.webp 47148B
+    img https://it-it-media-publications.shopfully.cloud/publications/page_assets/974633/2/page_2_level_4_2121217257.webp 58888B
+Richieste eliminate dalla coda: 2
