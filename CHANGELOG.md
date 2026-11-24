@@ -3,6 +3,12 @@
 Tutte le modifiche importanti a **Dispensa Smart** sono annotate qui.
 Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) e il numero di versione, mostrato in basso nelle Impostazioni (⚙️), segue il [versionamento semantico](https://semver.org/lang/it/).
 
+## [2.10.1] – 2026-11-24
+
+### Cambiato
+- **Opzioni avanzate** (⚙️ Impostazioni): backup e importazione dei dati, copie di sicurezza e sincronizzazione GitHub restano nascosti finché non spunti la casella. Quando è attiva li trovi in fondo alla Dispensa.
+- Aprendo una categoria della Dispensa si vede una schermata con **solo i prodotti** (e «← Categorie»), senza guida, avvisi, filtri, ricerca e backup.
+
 ## [2.10.0] – 2026-11-24
 
 ### Cambiato

@@ -40,6 +40,8 @@ function tick(id){const x=S.shop.find(s=>s.id===id);if(!x)return;
 function undoTick(){const u=S.undo;if(!u)return;if(u.merged){const it=S.items.find(i=>i.id===u.pid);if(it){it.q=u.merged.q;it.exp=u.merged.exp}}else S.items=S.items.filter(i=>i.id!==u.pid);S.shop.push(u.x);S.undo=null;save();render();toast("Acquisto annullato.")}
 function saveEd(id){const it=S.items.find(i=>i.id===id);if(it){const e=$("ed").value,q=parseFloat($("eq").value);if($("en").checked)it.exp="";else if(e)it.exp=e;if(q>0)it.q=q}S.ed=null;save();render()}
 function rmShop(id){const i=S.shop.findIndex(s=>s.id===id);if(i<0)return;const x=S.shop[i];S.shop.splice(i,1);save();render();undoable("🗑️ Articolo tolto dalla lista.",{x,i},u=>{S.shop.splice(Math.min(u.i,S.shop.length),0,u.x)})}
+const advOn=()=>lsg("adv","")==="1";
+function advTog(on){lss("adv",on?"1":"0");render()}
 const RCP_CATS=()=>CATS.join(", ");
 async function rcpScan(inp){const fs=[...(inp.files||[])].slice(0,6);if(!fs.length)return;
  S.rcp={busy:1,msg:"Preparo le immagini…",err:"",items:null};render();
@@ -126,8 +128,11 @@ function autoSort(){const n=S.items.filter(i=>i.loc&&i.loc!==guessLoc(i)).length
  if(!S.cf2){S.cf2=1;setTimeout(()=>S.cf2=0,6000);return toast(`${n} prodott${n===1?"o":"i"} che hai spostato a mano torner${n===1?"à":"anno"} nella sezione consigliata. Premi di nuovo “Smista in automatico” entro 6 secondi per confermare.`)}
  S.cf2=0;S.items.forEach(i=>{i.loc=""});save();render();toast(`🔄 ${n} prodott${n===1?"o rimesso":"i rimessi"} nella sezione automatica`)}
 const dispRow=i=>{const d=days(i.exp);return `<div class="card"><div class="row"><div><b>${emo(i.name,i.cat)} ${esc(i.name)}</b><div class="mu">${fmt(i.q,i.u)} · ${i.exp?"scade "+i.exp.split("-").reverse().join("/"):"senza scadenza"}</div>${S.ed===i.id?`<div class="row" style="margin-top:6px;gap:6px;flex-wrap:wrap"><input id="ed" type="date" value="${i.exp}"><label class="mu" style="white-space:nowrap"><input id="en" type="checkbox" style="width:auto" ${i.exp?"":"checked"}> senza scad.</label><input id="eq" type="number" min="0" step="any" value="${/^cucchiai/.test(i.u)?i.q:Math.round(i.q)}"><span class="mu">${i.u}</span><button class="btn" style="padding:6px 14px" onclick="saveEd('${i.id}')">OK</button></div>`:""}</div><div>${i.exp?`<span class="bd ${d>3?"ok":""}">${d<0?"scaduto":d===0?"oggi":d+" gg"}</span>`:`<span class="bd ok">senza scad.</span>`} <select style="width:auto;padding:4px 6px;border-radius:99px" onchange="mv('${i.id}',this.value)" aria-label="Posizione" title="Sposta in…">${LOCS.map(([k,n])=>`<option value="${k}" ${locOf(i)===k?"selected":""}>${n}</option>`).join("")}</select><button class="x" onclick="frz('${i.id}')" aria-label="${locOf(i)==='congelatore'?'Scongela':'Congela'}" title="${locOf(i)==='congelatore'?'Scongela (va in frigo, 2 giorni)':'Congela (allunga la scadenza)'}">${locOf(i)==='congelatore'?'🔥':'❄️'}</button><button class="x" onclick="pfavTog('${i.id}')" aria-label="${isFav(i.name)?'Togli dai preferiti':'Aggiungi ai preferiti'}">${isFav(i.name)?'❤️':'🤍'}</button><button class="x" onclick="S.ed='${i.id}';render()" aria-label="Modifica">✏️</button><button class="x" onclick="del('${i.id}')" aria-label="Elimina">✕</button></div></div>${offStarHtml(i.name)}</div>`};
-function dcat(c){S.dc=c;render();window.scrollTo(0,0)}
+function dcat(c){S.dc=c;S.sx_disp="";render();window.scrollTo(0,0)}
 function vDisp(){
+ if(S.dc&&!CATS.includes(S.dc))S.dc="";
+ if(S.dc){const c=S.dc,lf0=S.lf||"all",l=S.items.filter(i=>i.cat===c&&(lf0==="all"||locOf(i)===lf0)).sort((a,b)=>(a.exp||"9")<(b.exp||"9")?-1:1);
+  return `<div class="row" style="margin:4px 0 12px"><button class="btn g" style="padding:8px 14px" onclick="dcat('')">← Categorie</button><b style="font-size:18px">${CE[c]} ${c}</b></div>`+(l.length?l.map(dispRow).join(""):`<p class="mu">Non c’è niente in questa categoria.</p>`)}
  const s=soon();let h=s.length?`<div class="al">⚠️ In scadenza: <b>${s.map(i=>esc(i.name)).join(", ")}</b>. <a href="#" onclick="S.tab='ricette';render();return false">Trova ricette per evitare sprechi →</a></div>`:"";
  const lf=S.lf||"all",cnt=k=>S.items.filter(i=>locOf(i)===k).length;
  h+=`<div style="display:flex;gap:6px;flex-wrap:wrap;margin:8px 0">${[["all","Tutto ("+S.items.length+")"],...LOCS.map(([k,n])=>[k,n+" ("+cnt(k)+")"])].map(([k,n])=>`<button class="btn ${lf===k?"":"g"}" style="padding:6px 12px;font-size:14px" onclick="S.lf='${k}';render()">${n}</button>`).join("")}<button class="btn g" style="padding:6px 12px;font-size:14px" onclick="autoSort()">🔄 Smista in automatico</button></div>`;
@@ -136,11 +141,6 @@ function vDisp(){
  h+=sxBox("disp","Cerca un prodotto in dispensa…");
  if(S.sx_disp){let n=0;CATS.forEach(c=>{const l=S.items.filter(i=>i.cat===c&&inLoc(i)&&sxOk("disp",i.name)).sort(byExp);if(!l.length)return;n+=l.length;h+=`<h2>${CE[c]} ${c}</h2>`+l.map(dispRow).join("")});
   return h+(n?"":`<p class="mu">Nessun prodotto trovato per “${esc(S.sx_disp)}”.</p>`)}
- if(S.dc&&!CATS.includes(S.dc))S.dc="";
- if(S.dc){const c=S.dc,l=S.items.filter(i=>i.cat===c&&inLoc(i)).sort(byExp);
-  h+=`<div class="row" style="margin:10px 0 4px"><button class="btn g" style="padding:8px 14px" onclick="dcat('')">← Categorie</button><b style="font-size:18px">${CE[c]} ${c}</b></div>`;
-  h+=`<div style="display:flex;gap:6px;overflow-x:auto;margin:6px 0 10px;padding-bottom:4px">${CATS.map(k=>`<button class="btn ${k===c?"":"g"}" style="padding:5px 11px;font-size:14px;white-space:nowrap" onclick="dcat('${k}')">${CE[k]} ${S.items.filter(i=>i.cat===k&&inLoc(i)).length}</button>`).join("")}</div>`;
-  return h+(l.length?l.map(dispRow).join(""):`<p class="mu">Non c’è niente in questa categoria${lf==="all"?"":" in questa sezione"}.</p>`)}
  h+=`<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:10px 0">`+CATS.map(c=>{const l=S.items.filter(i=>i.cat===c&&inLoc(i)),sc=l.filter(i=>i.exp&&days(i.exp)<=3).length;
   return `<button class="card" style="text-align:left;cursor:pointer;margin:0;position:relative;${l.length?"":"opacity:.5"}" onclick="dcat('${c}')" aria-label="${c}: ${l.length} prodotti"><div style="font-size:30px;line-height:1.1">${CE[c]}</div><div style="font-weight:700;margin-top:4px">${c}</div><div class="mu">${l.length} prodott${l.length===1?"o":"i"}</div>${sc?`<span class="bd" style="position:absolute;top:8px;right:8px">⚠️ ${sc}</span>`:""}</button>`}).join("")+`</div>`;
  return h+(S.items.some(inLoc)?"":`<p class="mu">Non c’è ancora niente in questa sezione.</p>`)}
