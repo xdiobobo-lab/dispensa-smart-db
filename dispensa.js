@@ -1,4 +1,6 @@
 /* Dispensa Smart - dispensa.js */
+const SPEC=[[/sugo|ragù|ragu|passata|pelati|polpa di pomod|salsa|pesto|maionese|ketchup|senape|concentrato|\bdado|brodo|aceto|olio|\bsale\b|\bpepe\b|spezi|origano|curry|paprika|cannella|lievito|zafferano|tahin|capperi|olive|sottaceti|sottolio|bicarbonato|vaniglia|moscata/,"Condimenti e oli"],[/panettone|pandoro|colomba|merendin|biscott|torta|crostata|gelato|budino|nutella|cioccolat|caramell|patatine|noci|nocciol|mandorl|pistacch|arachid|frutta secca/,"Dolci e snack"],[/succo|spremuta|latte di (mandorla|soia|avena|riso)|bevanda (di|vegetale)/,"Bevande"],[/pasta (sfoglia|brisè|brisee|frolla)|pizza/,"Cereali e derivati"]];
+const _mig=(()=>{let n=0;S.items.forEach(i=>{if(i&&i.cat==="Altro"){const g=guess(i.name);if(g!=="Altro"){i.cat=g;n++}}});if(n)W("items",S.items);return n})();
 function toShop(r,all){window._sr=r;let a=0,s=0;(r.ingredients||[]).forEach(g=>{const it=all?null:matchIt(g),need=(+g.amount||0)-(it?it.q:0);if(it&&need<=0){s++;return}
  const am=Math.round(Math.max(need,0)),ex=S.shop.find(x=>!x.done&&nm(x.name)===nm(g.name)&&x.unit===g.unit);
  if(ex)ex.amount=(+ex.amount||0)+am;else S.shop.push({id:"s"+Date.now()+Math.random().toString(36).slice(2,6),name:g.name,amount:am,unit:g.unit||"",done:false,from:r.title});a++});

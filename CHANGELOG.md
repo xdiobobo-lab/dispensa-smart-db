@@ -3,6 +3,12 @@
 Tutte le modifiche importanti a **Dispensa Smart** sono annotate qui.
 Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) e il numero di versione, mostrato in basso nelle Impostazioni (⚙️), segue il [versionamento semantico](https://semver.org/lang/it/).
 
+## [2.11.0] – 2026-11-24
+
+### Migliorato
+- **Categorie e emoji dei prodotti molto più ricche**: ora sugo, ragù, pesto, maionese, pelati, passata, spezie e salse vanno in «Condimenti e oli» (prima finivano in «Altro» o tra le verdure); formaggi, salumi, pesce, frutta, verdura, dolci, bevande e liquori sono riconosciuti molto meglio, con circa 300 emoji dedicate (🥫 sugo, 🌿 pesto, 🦐 gamberi, 🍕 pizza…).
+- I prodotti già in dispensa finiti in «Altro» vengono ricategorizzati da soli quando il nome è riconoscibile.
+
 ## [2.10.1] – 2026-11-24
 
 ### Cambiato
