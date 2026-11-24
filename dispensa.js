@@ -211,3 +211,7 @@ function add(){const n=$("n").value.trim(),q=parseFloat($("q").value),u=$("u").v
  if(!n||!(q>0)||(!e&&!$("ne").checked))return toast("Compila nome, quantità e scadenza.");
  S.items.push({id:"p"+Date.now(),name:n,cat:$("c").value,q:q*U[u][1],u:U[u][0],exp:$("ne").checked?"":e,loc:$("loc").value});save();toast("Aggiunto: "+esc(n)+" → "+(LOCS.find(l=>l[0]===locOf(S.items[S.items.length-1]))||LOCS[0])[1]);
  $("n").value="";$("q").value="";$("c").value="Altro";$("loc").value="";$("ne").checked=false;$("e").disabled=false}
+const CEM={"":"✨",Antipasto:"🥖",Primo:"🍝",Secondo:"🥩",Contorno:"🥗",Dolce:"🍰",Altro:"🍽️"};
+const rcN=k=>S.recs.filter(r=>!k||r.course===k).length;
+function rcPick(k){S.gc=k;S.rv=1;S.err="";S.note="";if(!rcN(k)&&S.items.length&&!S.busy){render();window.scrollTo(0,0);return gen()}render();window.scrollTo(0,0)}
+function rcBack(){S.rv=0;S.err="";S.note="";render();window.scrollTo(0,0)}

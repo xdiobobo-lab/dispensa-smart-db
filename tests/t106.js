@@ -23,7 +23,7 @@ T('lattosio: burro nelle ricette AI scartato',await p.evaluate(()=>dietBad(["bur
 T('i prompt AI includono la dieta',await p.evaluate(()=>/senza lattosio/.test(dietTxt())));
 await p.evaluate(()=>dietTog("lat",0));
 // non mi piace
-await p.evaluate(()=>{S.recs=[{title:"Carbonara della nonna",src:"ai",course:"Primo",steps:["a","b"],ingredients:[{id:null,name:"pasta",amount:100,unit:"g"}]},{title:"Risotto ai funghi",src:"pz",pz:23,course:"Primo",steps:["a","b"],ingredients:[{id:null,name:"riso",amount:100,unit:"g"}]}];S.tab="ricette";render()});
+await p.evaluate(()=>{S.recs=[{title:"Carbonara della nonna",src:"ai",course:"Primo",steps:["a","b"],ingredients:[{id:null,name:"pasta",amount:100,unit:"g"}]},{title:"Risotto ai funghi",src:"pz",pz:23,course:"Primo",steps:["a","b"],ingredients:[{id:null,name:"riso",amount:100,unit:"g"}]}];S.tab="ricette";S.rv=1;S.gc="";render()});
 T('bottone 👎 sulle schede',await p.evaluate(()=>document.querySelectorAll('#v button[aria-label="Non mi piace"]').length===2));
 await p.evaluate(()=>document.querySelector('#v button[aria-label="Non mi piace"]').click());
 T('👎 nasconde la ricetta e la ricorda',await p.evaluate(()=>S.recs.length===1&&isDis("Carbonara della nonna")&&/Annulla/.test(document.getElementById('t').innerText)));

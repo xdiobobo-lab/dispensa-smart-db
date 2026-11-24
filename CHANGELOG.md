@@ -3,6 +3,12 @@
 Tutte le modifiche importanti a **Dispensa Smart** sono annotate qui.
 Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) e il numero di versione, mostrato in basso nelle Impostazioni (⚙️), segue il [versionamento semantico](https://semver.org/lang/it/).
 
+## [2.13.0] – 2026-11-24
+
+### Cambiato
+- **Ricette a riquadri**: scegli la portata (Primo, Secondo, Contorno, Antipasto, Dolce o Qualsiasi) da una griglia; si apre una schermata con solo le ricette di quella portata e «← Portate» per tornare indietro. Se non ci sono ancora ricette, l'app le cerca da sola.
+- **Piano pasti a riquadri**: la settimana è una griglia di giorni con i pasti, il segno ✅ quando sono completati e ⚠️ se mancano ingredienti. Tocchi un giorno per vedere e segnare i suoi pasti; «⚙️ Genera o ricalcola il piano» apre le opzioni di generazione.
+
 ## [2.12.0] – 2026-11-24
 
 ### Aggiunto

@@ -1,0 +1,30 @@
+// Ricette e Piano a riquadri
+const {chromium}=require('playwright'),http=require('http'),fs=require('fs'),path=require('path');
+const ROOT=(process.env.SITE||require('path').resolve(__dirname,'..'));
+const srv=http.createServer((q,r)=>{let u=decodeURIComponent(q.url.split('?')[0]);if(u==='/')u='/index.html';const f=u==='/config.js'?path.join(__dirname,'fixtures','config-vuoto.js'):path.join(ROOT,u);if(!fs.existsSync(f)){r.writeHead(404);return r.end()}r.writeHead(200,{'content-type':u.endsWith('.js')?'text/javascript':u.endsWith('.html')?'text/html':'application/octet-stream'});r.end(fs.readFileSync(f))});
+let ok=0,ko=0;const T=(n,c)=>{console.log((c?'OK  ':'FAIL')+' '+n);c?ok++:ko++};
+(async()=>{await new Promise(r=>srv.listen(8820,r));const b=await chromium.launch(),p=await(await b.newContext({serviceWorkers:'block',viewport:{width:390,height:800}})).newPage();const E=[];p.on('pageerror',x=>x&&E.push(x.message));
+await p.goto('http://localhost:8820/index.html');await p.waitForTimeout(800);
+const v=()=>p.evaluate(()=>document.getElementById('v').innerText);
+await p.evaluate(()=>{S.items=[{id:"1",name:"Riso",cat:"Cereali e derivati",q:500,u:"g",exp:"",loc:""},{id:"2",name:"Burro",cat:"Latticini e uova",q:200,u:"g",exp:"",loc:""},{id:"3",name:"Parmigiano",cat:"Latticini e uova",q:100,u:"g",exp:"",loc:""},{id:"4",name:"Cipolla",cat:"Frutta e verdura",q:2,u:"pz",exp:"",loc:""},{id:"5",name:"Brodo vegetale",cat:"Altro",q:500,u:"ml",exp:"",loc:""}];S.recs=[];S.tab="ricette";S.rv=0;S.cur=null;
+ claude.use=async()=>({json:async(pr)=>[...pr.matchAll(/\[n=(\d+)\]/g)].map(m=>({n:+m[1],emoji:"🍚",time:"30 min",ingredients:[{id:"1",name:"riso",amount:160,unit:"g"},{id:"2",name:"burro",amount:20,unit:"g"},{id:"3",name:"parmigiano",amount:30,unit:"g"},{id:"4",name:"cipolla",amount:1,unit:"pz"},{id:"5",name:"brodo",amount:500,unit:"ml"}],steps:["a","b","c","d"]}))});render()});
+let t=await v();
+T('Ricette: griglia di portate',/Primo/.test(t)&&/Secondo/.test(t)&&/Dolce/.test(t)&&/Qualsiasi/.test(t)&&!/Suggeriscimi/.test(t));
+await p.click('button[aria-label="Primo"]');await p.waitForFunction(()=>!S.busy,null,{timeout:20000});await p.waitForTimeout(200);t=await v();
+T('toccando Primo l’app cerca da sola e mostra solo i primi',/← Portate/.test(t)&&await p.evaluate(()=>S.recs.length>0&&S.recs.every(r=>r.course==="Primo")&&document.querySelectorAll('#v .card.row').length===S.recs.length));
+await p.screenshot({path:'ric.png'});
+await p.evaluate(()=>rcBack());t=await v();
+T('indietro: torna alle portate con il conteggio',/Primo/.test(t)&&/ricett[ae] pront[ae]/.test(t));
+await p.evaluate(()=>{rcPick('Primo');open_(0)});
+T('aprire una ricetta e tornare indietro resta nei risultati',await p.evaluate(()=>{const a=!!S.cur;S.cur=null;S.tab="ricette";render();return a&&S.rv===1&&/← Portate/.test(document.getElementById('v').innerText)}));
+// piano
+await p.evaluate(()=>{const st=weekStart();const m=(t,d)=>({r:{title:t,emoji:"🍝",time:"20 min",steps:["a","b"],ingredients:[{id:null,name:"pasta",amount:100,unit:"g"}]},done:!!d});S.plan={start:st,mode:"pantry",days:{lun:{pranzo:m("Pasta al pomodoro",true),cena:m("Frittata di zucchine",true)},mar:{pranzo:m("Risotto ai funghi")},mer:{},gio:{},ven:{}}};S.tab="piano";S.pv="cur";S.pd="";S.pgo=0;render()});
+t=await v();
+T('Piano: griglia dei giorni con pasti',/Lunedì|Lun/i.test(t)&&/Pasta al pomodoro/.test(t)&&/Risotto ai funghi/.test(t)&&/completo/.test(t));
+T('Piano: il generatore è ripiegato',/Genera o ricalcola il piano/.test(t)&&!/Come generare il piano/.test(t));
+await p.screenshot({path:'piano.png'});
+await p.evaluate(()=>{S.pd="mar";render()});t=await v();
+T('Piano: giorno singolo con solo i suoi pasti',/← Settimana/.test(t)&&/Risotto ai funghi/.test(t)&&!/Pasta al pomodoro/.test(t)&&/Pasto completato/.test(t));
+await p.evaluate(()=>{S.pd="";S.pgo=1;render()});t=await v();
+T('Piano: «Genera o ricalcola» apre le opzioni',/Come generare il piano/.test(t));
+T('nessun errore',E.length===0);if(E.length)console.log(E);console.log(ok+' ok, '+ko+' ko');await b.close();srv.close()})();
