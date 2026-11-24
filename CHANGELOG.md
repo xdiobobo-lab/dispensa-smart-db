@@ -3,6 +3,12 @@
 Tutte le modifiche importanti a **Dispensa Smart** sono annotate qui.
 Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) e il numero di versione, mostrato in basso nelle Impostazioni (⚙️), segue il [versionamento semantico](https://semver.org/lang/it/).
 
+## [2.10.0] – 2026-11-24
+
+### Cambiato
+- **Dispensa a categorie**: invece di una lunga lista da scorrere, ora vedi una griglia di riquadri (Cereali e derivati, Latticini e uova, Carne e pesce…) con il numero di prodotti e un ⚠️ se qualcosa scade presto. Tocchi una categoria per vedere i prodotti; in alto c'è «← Categorie» e una barra per passare da una categoria all'altra.
+- I filtri Dispensa / Frigo / Congelatore valgono anche per i riquadri; la ricerca continua a cercare in tutte le categorie.
+
 ## [2.9.0] – 2026-11-24
 
 ### Aggiunto
