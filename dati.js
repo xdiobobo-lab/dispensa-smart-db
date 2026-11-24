@@ -131,5 +131,5 @@ async function sync(){
  }catch(e){setSy("local")}
 }
 if(S.items.length||S.mine.length)snapLocal();applyTheme();try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",()=>{if(((S.th||{}).mode||"auto")==="auto")applyTheme()})}catch(e){}
-render();sync();acctBoot();
+render();sync();acctBoot();setTimeout(novBoot,600);setTimeout(()=>ntfCheck(),2500);document.addEventListener("visibilitychange",()=>{if(!document.hidden)ntfCheck()});ntfSync();
 

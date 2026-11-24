@@ -1,0 +1,21 @@
+name: Versione
+# Rete di sicurezza: tiene versione.json uguale ad APP_VER (core.js), così l'avviso "nuova versione" non si blocca.
+on:
+  push:
+    branches: [main]
+    paths: ["core.js"]
+permissions:
+  contents: write
+jobs:
+  versione:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Allinea versione.json
+        run: |
+          V=$(grep -o 'APP_VER="[0-9.]*"' core.js | head -1 | grep -o '[0-9.]*')
+          [ -n "$V" ] || exit 0
+          echo "{\"v\":\"$V\"}" > versione.json
+          git diff --quiet versione.json && exit 0
+          git config user.name "versione-bot"; git config user.email "versione-bot@users.noreply.github.com"
+          git add versione.json; git commit -m "versione.json $V (automatico)"; git push

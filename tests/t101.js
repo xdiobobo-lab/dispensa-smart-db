@@ -1,0 +1,16 @@
+const {chromium}=require('playwright'),http=require('http'),fs=require('fs'),path=require('path');
+const ROOT=(process.env.SITE||require('path').resolve(__dirname,'..'));
+const srv=http.createServer((q,r)=>{let u=decodeURIComponent(q.url.split('?')[0]);if(u==='/')u='/index.html';const f=path.join(ROOT,u);if(!fs.existsSync(f)){r.writeHead(404);return r.end()}r.writeHead(200,{'content-type':u.endsWith('.js')?'text/javascript':u.endsWith('.html')?'text/html':'application/octet-stream'});r.end(fs.readFileSync(f))});
+let ok=0,ko=0;const T=(n,c)=>{console.log((c?'OK  ':'FAIL')+' '+n);c?ok++:ko++};
+(async()=>{await new Promise(r=>srv.listen(8812,r));const b=await chromium.launch(),p=await(await b.newContext({serviceWorkers:'block'})).newPage();const E=[];p.on('pageerror',x=>E.push(x.message));
+await p.goto('http://localhost:8812/index.html');await p.waitForTimeout(700);
+const C={"Sugo all'arrabbiata":"Condimenti e oli","Sugo di pomodoro":"Condimenti e oli","Passata di pomodoro":"Condimenti e oli","Pesto genovese":"Condimenti e oli","Maionese":"Condimenti e oli","Pomodori":"Frutta e verdura","Pomodori datterini":"Frutta e verdura","Pelati":"Condimenti e oli","Sale grosso":"Condimenti e oli","Salame":"Carne e pesce","Insalata":"Frutta e verdura","Peperoni":"Frutta e verdura","Pasta sfoglia":"Cereali e derivati","Penne rigate":"Cereali e derivati","Gnocchi":"Cereali e derivati","Pecorino":"Latticini e uova","Pancetta":"Carne e pesce","Gamberi":"Carne e pesce","Panettone":"Dolci e snack","Noci":"Dolci e snack","Succo di mela":"Bevande","Latte di soia":"Bevande","Latte":"Latticini e uova","Cioccolato":"Dolci e snack","Prosecco":"Bevande","Fagioli":"Legumi","Mandorle":"Dolci e snack","Caffè":"Bevande","Olio extravergine":"Condimenti e oli","Pangrattato":"Cereali e derivati","Biscotti":"Dolci e snack","Peperoncino":"Frutta e verdura"};
+const r=await p.evaluate(c=>Object.keys(c).filter(k=>guess(k)!==c[k]).map(k=>k+"→"+guess(k)),C);
+T('categorie dedotte ('+Object.keys(C).length+' nomi)',r.length===0);if(r.length)console.log(r);
+const EM={"Sugo":"🥫","Pesto":"🌿","Pizza":"🍕","Gamberi":"🦐","Gelato":"🍨","Kiwi":"🥝","Avocado":"🥑","Zucca":"🎃","Cioccolato":"🍫","Tortellini":"🥟","Prosecco":"🍾","Panettone":"🎄","Mela":"🍎","Melanzane":"🍆","Pane":"🍞","Latte":"🥛","Coca cola":"🥤","Tisana":"🍵"};
+const e=await p.evaluate(c=>Object.keys(c).filter(k=>emo(k)!==c[k]).map(k=>k+"→"+emo(k)),EM);
+T('emoji specifiche',e.length===0);if(e.length)console.log(e);
+T('prodotto sconosciuto: emoji della categoria',await p.evaluate(()=>emo("Xyzzy","Altro")==="🛒"));
+await p.evaluate(()=>{localStorage.setItem("items",JSON.stringify([{id:"z",name:"Sugo al basilico",cat:"Altro",q:1,u:"pz",exp:"",loc:""},{id:"y",name:"Xyzzy",cat:"Altro",q:1,u:"pz",exp:"",loc:""}]))});await p.reload();await p.waitForTimeout(600);
+T('vecchi prodotti in Altro ricategorizzati',await p.evaluate(()=>S.items.find(i=>i.id==="z").cat==="Condimenti e oli"&&S.items.find(i=>i.id==="y").cat==="Altro"));
+T('nessun errore',E.length===0);console.log(ok+' ok, '+ko+' ko');await b.close();srv.close()})();

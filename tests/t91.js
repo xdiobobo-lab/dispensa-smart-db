@@ -1,0 +1,21 @@
+const {chromium}=require('playwright'),http=require('http'),fs=require('fs'),path=require('path');
+const ROOT=(process.env.SITE||require('path').resolve(__dirname,'..'));
+const srv=http.createServer((q,r)=>{let u=decodeURIComponent(q.url.split('?')[0]);if(u==='/')u='/index.html';const f=path.join(ROOT,u);if(!fs.existsSync(f)){r.writeHead(404);return r.end()}r.writeHead(200,{'content-type':{'.html':'text/html','.js':'text/javascript','.css':'text/css'}[path.extname(f)]||'application/octet-stream'});r.end(fs.readFileSync(f))});
+let ok=0,ko=0;const T=(n,c)=>{console.log((c?'OK  ':'FAIL')+' '+n);c?ok++:ko++};
+(async()=>{await new Promise(r=>srv.listen(8802,r));const b=await chromium.launch(),p=await(await b.newContext({serviceWorkers:'block',viewport:{width:390,height:900}})).newPage();const E=[];p.on('pageerror',x=>E.push(x.message));
+await p.goto('http://localhost:8802/index.html');await p.waitForTimeout(600);
+fs.writeFileSync('/tmp/w/p.png',Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==','base64'));
+await p.evaluate(()=>{window.PRM=[];claude.vision=async(pr,im)=>{PRM.push([pr,im.length]);return{items:[{name:"Yogurt greco",qty:150,unit:"g",cat:"Latticini e uova",exp:"2026-11-20",days:null}]}};S.tab="add";render()});
+let t=await p.evaluate(()=>document.getElementById('v').innerText);T('card prodotto da foto presente',/Aggiungi un prodotto con una foto/.test(t));
+await p.setInputFiles('input[capture]','/tmp/w/p.png');await p.waitForTimeout(900);
+t=await p.evaluate(()=>document.getElementById('v').innerText);T('revisione con nome e scadenza letta',/Controlla il prodotto/.test(t)&&await p.evaluate(()=>S.rcp.items[0].exp==='2026-11-20'&&S.rcp.items[0].est===false));
+T('prompt chiede la data di scadenza',await p.evaluate(()=>/DATA DI SCADENZA/.test(PRM[0][0])));
+await p.evaluate(()=>rcpAdd());T('aggiunto in dispensa con scadenza',await p.evaluate(()=>S.items.some(i=>i.name==='Yogurt greco'&&i.exp==='2026-11-20'&&i.q===150&&i.u==='g')));
+// data non letta → stima segnalata
+await p.evaluate(()=>{claude.vision=async()=>({items:[{name:"Riso",qty:1000,unit:"g",cat:"Pasta e cereali",exp:null,days:365}]});S.tab="add";render()});
+await p.setInputFiles('input[capture]','/tmp/w/p.png');await p.waitForTimeout(900);
+t=await p.evaluate(()=>document.getElementById('v').innerText);T('scadenza stimata segnalata',/Scadenza non letta/.test(t));
+await p.evaluate(()=>rcpSet(0,'exp','2027-01-01'));T('modifica manuale toglie l’avviso',await p.evaluate(()=>S.rcp.items[0].est===false));
+await p.evaluate(()=>{rcpCancel();claude.vision=async()=>({items:[]})});await p.setInputFiles('input[capture]','/tmp/w/p.png');await p.waitForTimeout(700);
+t=await p.evaluate(()=>document.getElementById('v').innerText);T('errore chiaro se non riconosce',/Non ho riconosciuto il prodotto/.test(t));
+T('nessun errore JS',E.length===0);if(E.length)console.log(E);console.log(ok+' ok, '+ko+' ko');await b.close();srv.close()})();

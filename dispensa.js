@@ -27,7 +27,7 @@ function vShop(){
  if(td.length){const so=td.slice().sort((a,b)=>(a.store||"zz").localeCompare(b.store||"zz")||nm(a.name).localeCompare(nm(b.name)));let last=null;
   h+=so.map(x=>{let hd="";if(hasSt&&(x.store||"")!==last){last=x.store||"";hd=`<div style="margin:14px 0 0;font-weight:700">${last?"🏪 "+esc(last):"❔ Senza negozio"}</div>`}return hd+line(x)}).join("")}
  else h+=`<div class="card" style="text-align:center">🎉 Hai comprato tutto!</div>`;
- if(dn.length)h+=`<h2 style="font-size:17px;margin-bottom:0">Già comprati (${dn.length})</h2>`+dn.map(line).join("")+`<button class="btn g" onclick="S.shop=S.shop.filter(x=>!x.done);save();render()">Rimuovi i comprati dalla lista</button>`;
+ if(dn.length)h+=`<button class="btn g" style="width:100%;margin-top:14px;text-align:left" onclick="S.sdn=!S.sdn;render()">${S.sdn?"▾":"▸"} ✅ Già comprati (${dn.length})</button>`+(S.sdn||S.sx_shop?dn.map(line).join("")+`<button class="btn g" onclick="S.shop=S.shop.filter(x=>!x.done);save();render()">Rimuovi i comprati dalla lista</button>`:"");
  return h}
 function addShop(){const n=$("sn").value.trim();if(!n)return;S.shop.push({id:"s"+Date.now(),name:n,amount:0,unit:"",done:false,from:""});save();render();$("sn").focus()}
 const NOEXP=/zucchero|\bsale\b|miele|aceto/i,EXD=[[/pane|pizza/i,3],[/latte|panna/i,7],[/mozzarella|ricotta/i,5],[/yogurt/i,14],[/uova|uovo/i,21]],CD={"Cereali e derivati":180,"Latticini e uova":10,"Carne e pesce":4,"Frutta e verdura":6,"Legumi":365,"Condimenti e oli":240,"Dolci e snack":120,"Bevande":120,"Altro":30};
@@ -109,6 +109,59 @@ function rcpHtml(){if(!(window.claude&&claude.vision))return"";const R=S.rcp,fi=
   <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap"><button class="btn" onclick="rcpAdd()">Aggiungi ${sel} prodott${sel===1?"o":"i"} alla dispensa</button><button class="btn g" onclick="rcpCancel()">Annulla</button></div><div class="mu" style="margin-top:6px">Se un prodotto è già in dispensa la quantità viene sommata; gli articoli corrispondenti vengono tolti dalla lista della spesa.</div></div>`}
  return `<div class="card"><b>🧾 Scansiona lo scontrino</b><div class="mu">Fotografa lo scontrino (o carica un’immagine o un PDF): l’AI legge i prodotti e li aggiunge alla dispensa con quantità e scadenze stimate. Prima di salvare puoi correggere tutto.</div>${R&&R.err?`<div class="al" style="margin-top:8px">${esc(R.err)}</div>`:""}<label class="btn" style="display:block;text-align:center;margin-top:10px;cursor:pointer">📷 Scatta o carica lo scontrino${fi}</label><div class="mu" style="margin-top:6px">Foto nitida, dritta e con tutto lo scontrino visibile. Per scontrini lunghi puoi caricare più foto (fino a 6).</div>
  <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--bd)"><b>📷 Aggiungi un prodotto con una foto</b><div class="mu">Fotografa il prodotto inquadrando anche la data di scadenza (puoi aggiungere una seconda foto della data): l’AI legge nome, quantità e scadenza e tu confermi.</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><label class="btn" style="cursor:pointer">📷 Scatta una foto<input type="file" accept="image/*" capture="environment" hidden onchange="prodScan(this)"></label><label class="btn g" style="cursor:pointer">🖼️ Carica foto<input type="file" accept="image/*" multiple hidden onchange="prodScan(this)"></label></div></div></div>`}
+const vNum=v=>String(v).split(".").reduce((a,x)=>a*1000+(+x||0),0);
+const NOVT={Aggiunto:"🆕 Novità",Cambiato:"✏️ Cambiato",Migliorato:"✨ Migliorato",Corretto:"🔧 Sistemato",Rimosso:"🗑️ Rimosso"};
+function novHtml(l){return l.map(e=>`<div style="margin:12px 0;padding-top:10px;border-top:1px solid var(--bd)"><b>Versione ${esc(e.v)}</b> <span class="mu">${e.d?e.d.split("-").reverse().join("/"):""}</span>`+e.s.map(([t,a])=>`<div style="margin-top:6px"><b>${NOVT[t]||esc(t)}</b><ul style="margin:4px 0 0 18px;padding:0">${a.map(x=>`<li style="margin:3px 0">${esc(x).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>")}</li>`).join("")}</ul></div>`).join("")+`</div>`).join("")}
+function novClose(){const o=$("nvo");if(o)o.remove();lss("seenv",APP_VER)}
+function novShow(l,tit){if(!l||!l.length||$("nvo"))return;const o=document.createElement("div");o.id="nvo";o.setAttribute("role","dialog");o.setAttribute("aria-label","Novità dell’app");
+ o.style.cssText="position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:16px";
+ o.innerHTML=`<div style="background:var(--card);color:var(--tx);border:2px solid var(--bd);border-radius:24px;max-width:520px;width:100%;max-height:85vh;display:flex;flex-direction:column;box-shadow:0 10px 40px rgba(0,0,0,.4)"><div style="padding:18px 20px 4px"><b style="font-size:20px">${tit||"🎉 Dispensa Smart si è aggiornata"}</b><div class="mu">Ecco cosa è cambiato:</div></div><div style="overflow:auto;padding:0 20px;flex:1">${novHtml(l)}</div><div style="padding:12px 20px 16px"><button class="btn" style="width:100%" onclick="novClose()">Ho capito</button></div></div>`;
+ document.body.appendChild(o)}
+function novAll(){S.thp=false;render();novShow((window.NOVITA||[]).slice(0,8),"📣 Novità dell’app")}
+function novBoot(){try{if(!window.NOVITA||!NOVITA.length)return;const seen=lsg("seenv","");
+ if(seen===APP_VER)return;
+ if(!seen){if(S.items.length||S.mine.length||S.shop.length)return novShow(NOVITA.slice(0,1));lss("seenv",APP_VER);return}
+ const l=NOVITA.filter(e=>vNum(e.v)>vNum(seen)).slice(0,6);if(l.length)novShow(l);else lss("seenv",APP_VER)}catch(e){}}
+const DEMO=[["Latte","Latticini e uova",1000,"ml",1,"frigo"],["Yogurt bianco","Latticini e uova",250,"g",3,"frigo"],["Uova","Latticini e uova",6,"pz",14,"frigo"],["Mozzarella","Latticini e uova",250,"g",2,"frigo"],["Burro","Latticini e uova",200,"g",30,"frigo"],["Petto di pollo","Carne e pesce",500,"g",2,"frigo"],["Pasta penne","Cereali e derivati",500,"g",300,""],["Riso","Cereali e derivati",1000,"g",400,""],["Pomodori","Frutta e verdura",400,"g",4,"frigo"],["Zucchine","Frutta e verdura",300,"g",5,"frigo"],["Cipolla","Frutta e verdura",2,"pz",20,""],["Passata di pomodoro","Condimenti e oli",700,"g",400,""],["Parmigiano","Latticini e uova",150,"g",60,"frigo"],["Olio extravergine","Condimenti e oli",750,"ml",300,""]];
+const demoN=()=>S.items.filter(i=>String(i.id).startsWith("demo-")).length;
+function demoLoad(){if(demoN())return toast("I dati di esempio sono già presenti.");DEMO.forEach(([name,cat,q,u,d,loc],k)=>S.items.push({id:"demo-"+k,name,cat,q,u,exp:addDays(d),loc}));S.tab="oggi";save();render();toast("🧪 Ho aggiunto 14 prodotti di esempio. Prova «Ricette» per vedere cosa puoi cucinare; quando hai finito li togli con un tocco.")}
+function demoClear(){const n=demoN();S.items=S.items.filter(i=>!String(i.id).startsWith("demo-"));save();render();toast(`🧹 Tolti ${n} prodotti di esempio.`)}
+const demoBar=()=>demoN()?`<div class="al">🧪 Stai usando dati di esempio. <a href="#" onclick="demoClear();return false"><b>Rimuovili</b></a> quando vuoi iniziare con i tuoi prodotti.</div>`:"";
+function reb(n,u){n=String(n);if(!S.shop.some(x=>!x.done&&nm(x.name)===nm(n)))S.shop.push({id:"s"+Date.now()+Math.random().toString(36).slice(2,6),name:n,amount:0,unit:u||"",done:false,from:"Finito in dispensa"});save();render();toast(`🛒 ${esc(n)} è nella lista della spesa.`)}
+const ntfOk=()=>"Notification" in window&&"serviceWorker" in navigator&&!!window.caches;
+const ntfOn=()=>ntfOk()&&lsg("ntf","")==="1"&&Notification.permission==="granted";
+const ntfLocal=()=>iso(new Date(Date.now()-new Date().getTimezoneOffset()*6e4));
+function ntfList(){const lim=addDays(1);return S.items.filter(i=>i.exp&&i.exp<=lim&&+i.q>0).sort((a,b)=>a.exp<b.exp?-1:1)}
+function ntfMsg(l){const n=l.map(i=>i.name),t=n.length>3?n.slice(0,3).join(", ")+" e altri "+(n.length-3):n.length>1?n.slice(0,-1).join(", ")+" e "+n[n.length-1]:n[0];const sc=l.filter(i=>i.exp<today()).length;return sc===l.length?`${t}: già scadut${l.length>1?"i":"o"}. Controlla prima di usar${l.length>1?"li":"lo"}.`:`${t}: scad${l.length>1?"ono":"e"} oggi o domani. Tocca per trovare una ricetta.`}
+function ntfSync(mark){if(!ntfOk())return;if(mark)ntfSync.m=mark;clearTimeout(ntfSync.t);ntfSync.t=setTimeout(async()=>{try{const c=await caches.open("dispensa-ntf");let last="";try{const r=await c.match("ntf");if(r)last=(await r.json()).last||""}catch(e){}
+ await c.put("ntf",new Response(JSON.stringify({on:ntfOn(),last:ntfSync.m||last,items:S.items.filter(i=>i.exp&&+i.q>0).map(i=>({n:i.name,e:i.exp}))})))}catch(e){}},700)}
+async function ntfCheck(force){if(!ntfOn())return false;const t=ntfLocal();if(!force&&lsg("ntfday","")===t)return false;const l=ntfList();if(!l.length)return false;
+ try{const reg=await navigator.serviceWorker.ready;await reg.showNotification("⚠️ Dispensa Smart: in scadenza",{body:ntfMsg(l),tag:"scad",icon:"icon-192.png"});lss("ntfday",t);ntfSync(t);return true}catch(e){return false}}
+async function ntfTog(on){if(!ntfOk())return toast("Questo browser non supporta gli avvisi.");
+ if(!on){lss("ntf","0");ntfSync();render();return}
+ let p=Notification.permission;if(p==="default")try{p=await Notification.requestPermission()}catch(e){}
+ if(p!=="granted"){lss("ntf","0");render();return toast("Il telefono non ha dato il permesso. Attivalo dalle impostazioni del browser o dell’app e riprova.")}
+ lss("ntf","1");try{const reg=await navigator.serviceWorker.ready;if(reg.periodicSync)await reg.periodicSync.register("scadenze",{minInterval:12*36e5})}catch(e){}
+ ntfSync();render();toast("🔔 Avvisi attivati: ti avviso quando qualcosa sta per scadere.");ntfCheck(true)}
+function ntfCard(){if(!ntfOk())return"";const on=ntfOn(),den=Notification.permission==="denied";return `<div class="card"><label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer"><input type="checkbox" style="width:auto;margin-top:4px" ${on?"checked":""} ${den?"disabled":""} onchange="ntfTog(this.checked)"><span><b>🔔 Avvisi sulle scadenze</b><span class="mu" style="display:block">Una notifica quando qualcosa scade oggi o domani. Compare quando apri l’app e, su Android con l’app installata sulla schermata Home, anche da sola una volta al giorno.${den?" Hai bloccato le notifiche: riattivale dalle impostazioni del browser.":""}</span></span></label></div>`}
+function vAltro(){const t=(e,n,d,a)=>`<button class="card" style="text-align:left;cursor:pointer;margin:0" onclick="${a}"><div style="font-size:30px;line-height:1.1">${e}</div><div style="font-weight:700;margin-top:4px">${n}</div><div class="mu">${d}</div></button>`;
+ return `<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:10px 0">`+t("📅","Piano pasti","Pranzi e cene della settimana","S.tab='piano';render()")+t("⭐","Offerte","Volantini dei tuoi negozi","S.tab='offerte';render()")+t("📣","Novità","Cosa è cambiato nell’app","novAll()")+t("ℹ️","Guida","Cosa puoi fare con l’app","S.tab='guida';render()")+t("⚙️","Impostazioni","Colori, avvisi, opzioni avanzate","S.thp=true;render()")+t("🕘","Cronologia","Le ricette già cucinate","S.tab='cron';render()")+`</div>`}
+const DISL=()=>L("dis")||[];
+const isDis=t=>DISL().includes(nm(t));
+const DIETS=[["veg","🥬 Vegetariano","pollo|tacchino|coniglio|anatra|manzo|maiale|salsiccia|agnello|carne macinata|prosciutto|pancetta|frattaglie|baccalà|tonno|acciughe|salmone|frutti di mare|pesce|gelatina"],["lat","🥛 Senza lattosio","latte|panna|burro|mascarpone|yogurt|ricotta|mozzarella|formaggio|gelato"],["glu","🌾 Senza glutine","pasta|lasagne|gnocchi|pasta ripiena|farro|orzo|farina|pane|semolino|biscotti|savoiardi"],["pig","🐖 Senza maiale","maiale|salsiccia|prosciutto|pancetta"]];
+const dietGet=()=>L("diet")||{};
+const dietEx=()=>{const d=dietGet();return new Set(DIETS.filter(x=>d[x[0]]).flatMap(x=>x[2].split("|")))};
+const dietBadC=c=>{const ex=dietEx();return ex.size>0&&c.some(k=>ex.has(k))};
+const dietBad=names=>{const ex=dietEx();return ex.size>0&&names.some(n=>[...pzCanon(n)].some(c=>ex.has(c)))};
+const dietTxt=()=>{const d=dietGet(),l=DIETS.filter(x=>d[x[0]]).map(x=>x[1].replace(/^\S+ /,"").toLowerCase());return l.length?` L'utente segue questa dieta: ${l.join(", ")}. Rispettala rigorosamente: nessun ingrediente non adatto.`:""};
+const recOk=r=>!isDis(r.title)&&!dietBad((r.ingredients||[]).map(g=>g.name));
+function dietTog(k,on){const d=dietGet();d[k]=on?1:0;W("diet",d);S.recs=S.recs.filter(recOk);W("recs",S.recs);render()}
+function dislikeT(t,fromCur){window.__dis={key:nm(t),recs:S.recs.slice(),srch:(S.srch||[]).slice()};const l=DISL();if(!l.includes(nm(t))){l.push(nm(t));W("dis",l.slice(-300))}
+ S.recs=S.recs.filter(r=>nm(r.title)!==nm(t));S.srch=(S.srch||[]).filter(r=>nm(r.title)!==nm(t));W("recs",S.recs);if(fromCur){S.cur=null;S.tab=S.from||"ricette"}render();
+ toast(`👎 «${esc(t)}» non ti verrà più proposta. <a href="#" onclick="disUndo();return false" style="color:inherit;font-weight:700">↩️ Annulla</a>`)}
+function disUndo(){const u=window.__dis;if(!u)return;W("dis",DISL().filter(x=>x!==u.key));S.recs=u.recs;S.srch=u.srch;W("recs",S.recs);window.__dis=null;render();toast("Ricetta ripristinata.")}
+function disReset(){W("dis",[]);render();toast("Le ricette nascoste possono tornare nei suggerimenti.")}
+function dietCard(){const d=dietGet(),n=DISL().length;return `<div class="card"><b>🥗 Preferenze alimentari</b><div class="mu">Le ricette suggerite escluderanno gli ingredienti non adatti. L’AI può sbagliare: controlla sempre gli ingredienti se hai allergie.</div>${DIETS.map(([k,l])=>`<label style="display:flex;gap:10px;align-items:center;margin-top:8px;cursor:pointer"><input type="checkbox" style="width:auto" ${d[k]?"checked":""} onchange="dietTog('${k}',this.checked)"> ${l}</label>`).join("")}${n?`<div class="row" style="margin-top:12px"><span class="mu">👎 Ricette nascoste: ${n}</span><button class="btn g" ${BS} onclick="disReset()">Ripristina</button></div>`:""}</div>`}
 const LOCS=[["dispensa","🥫 Dispensa"],["frigo","🧊 Frigo"],["congelatore","❄️ Congelatore"]];
 function guessLoc(i){const n=nm(i.name),c=i.cat;
  if(/congelator|freezer/.test(n))return"congelatore";
@@ -138,7 +191,7 @@ function vDisp(){
  const s=soon();let h=s.length?`<div class="al">⚠️ In scadenza: <b>${s.map(i=>esc(i.name)).join(", ")}</b>. <a href="#" onclick="S.tab='ricette';render();return false">Trova ricette per evitare sprechi →</a></div>`:"";
  const lf=S.lf||"all",cnt=k=>S.items.filter(i=>locOf(i)===k).length;
  h+=`<div style="display:flex;gap:6px;flex-wrap:wrap;margin:8px 0">${[["all","Tutto ("+S.items.length+")"],...LOCS.map(([k,n])=>[k,n+" ("+cnt(k)+")"])].map(([k,n])=>`<button class="btn ${lf===k?"":"g"}" style="padding:6px 12px;font-size:14px" onclick="S.lf='${k}';render()">${n}</button>`).join("")}<button class="btn g" style="padding:6px 12px;font-size:14px" onclick="autoSort()">🔄 Smista in automatico</button></div>`;
- if(!S.items.length)return h+`<p class="mu">La dispensa è vuota. Aggiungi la spesa dalla scheda “Aggiungi prodotto”.</p>`;
+ if(!S.items.length)return h+`<p class="mu">La dispensa è vuota. Aggiungi la spesa dalla scheda “Aggiungi prodotto”.</p><button class="btn g" onclick="demoLoad()">🧪 Prova con dati di esempio</button>`;
  const inLoc=i=>lf==="all"||locOf(i)===lf,byExp=(a,b)=>(a.exp||"9")<(b.exp||"9")?-1:1;
  h+=sxBox("disp","Cerca un prodotto in dispensa…");
  if(S.sx_disp){let n=0;CATS.forEach(c=>{const l=S.items.filter(i=>i.cat===c&&inLoc(i)&&sxOk("disp",i.name)).sort(byExp);if(!l.length)return;n+=l.length;h+=`<h2>${CE[c]} ${c}</h2>`+l.map(dispRow).join("")});
@@ -146,7 +199,7 @@ function vDisp(){
  h+=`<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:10px 0">`+CATS.map(c=>{const l=S.items.filter(i=>i.cat===c&&inLoc(i)),sc=l.filter(i=>i.exp&&days(i.exp)<=3).length;
   return `<button class="card" style="text-align:left;cursor:pointer;margin:0;position:relative;${l.length?"":"opacity:.5"}" onclick="dcat('${c}')" aria-label="${c}: ${l.length} prodotti"><div style="font-size:30px;line-height:1.1">${CE[c]}</div><div style="font-weight:700;margin-top:4px">${c}</div><div class="mu">${l.length} prodott${l.length===1?"o":"i"}</div>${sc?`<span class="bd" style="position:absolute;top:8px;right:8px">⚠️ ${sc}</span>`:""}</button>`}).join("")+`</div>`;
  return h+(S.items.some(inLoc)?"":`<p class="mu">Non c’è ancora niente in questa sezione.</p>`)}
-function del(id){const i=S.items.findIndex(x=>x.id===id);if(i<0)return;const x=S.items[i];S.items.splice(i,1);save();render();undoable("🗑️ Prodotto eliminato dalla dispensa.",{x,i},u=>{S.items.splice(Math.min(u.i,S.items.length),0,u.x)})}
+function del(id){const i=S.items.findIndex(x=>x.id===id);if(i<0)return;const x=S.items[i];S.items.splice(i,1);save();render();undoable(`🗑️ Prodotto eliminato. <a href="#" onclick="reb(${esc(JSON.stringify(x.name))},'${x.u==="pz"?"pz":""}');return false" style="color:inherit;font-weight:700">🛒 Ricompra</a> ·`,{x,i},u=>{S.items.splice(Math.min(u.i,S.items.length),0,u.x)})}
 function vAdd(){return rcpHtml()+vAdd0()}
 function vAdd0(){return `<div class="card"><div class="f">
 <div class="w"><input id="n" placeholder="Prodotto (es. Pasta penne)" oninput="$('c').value=guess(this.value)"></div>

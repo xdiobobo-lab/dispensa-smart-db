@@ -1,0 +1,40 @@
+const {chromium}=require('playwright'),http=require('http'),fs=require('fs'),path=require('path');
+const ROOT=(process.env.SITE||require('path').resolve(__dirname,'..'));
+const srv=http.createServer((q,r)=>{let u=decodeURIComponent(q.url.split('?')[0]);if(u==='/')u='/index.html';const f=path.join(ROOT,u);if(!fs.existsSync(f)){r.writeHead(404);return r.end()}r.writeHead(200,{'content-type':u.endsWith('.js')?'text/javascript':u.endsWith('.html')?'text/html':u.endsWith('.json')?'application/json':'application/octet-stream'});r.end(fs.readFileSync(f))});
+let ok=0,ko=0;const T=(n,c)=>{console.log((c?'OK  ':'FAIL')+' '+n);c?ok++:ko++};
+(async()=>{await new Promise(r=>srv.listen(8806,r));const b=await chromium.launch(),p=await(await b.newContext({serviceWorkers:'block',viewport:{width:390,height:900}})).newPage();const E=[];p.on('pageerror',x=>E.push(x.message));
+await p.goto('http://localhost:8806/index.html');await p.waitForTimeout(700);
+// congela
+await p.evaluate(()=>{S.items=[{id:"a1",name:"Petto di pollo",cat:"Carne e pesce",q:500,u:"g",exp:addDays(2),loc:""},{id:"a2",name:"Pane",cat:"Cereali e derivati",q:1,u:"pz",exp:addDays(1),loc:""},{id:"a3",name:"Sale",cat:"Altro",q:1,u:"pz",exp:"",loc:""}];S.tab="dispensa";render()});
+let t=await p.evaluate(()=>document.getElementById('v').innerText);
+await p.evaluate(()=>frz("a1"));
+let it=await p.evaluate(()=>S.items.find(i=>i.id==="a1"));
+T('pollo congelato in congelatore',it.loc==="congelatore");
+T('scadenza pollo ~90 giorni',await p.evaluate(()=>days(S.items.find(i=>i.id==="a1").exp))===90);
+await p.evaluate(()=>frz("a2"));T('pane 60 gg',await p.evaluate(()=>days(S.items.find(i=>i.id==="a2").exp))===60);
+await p.evaluate(()=>frz("a3"));it=await p.evaluate(()=>S.items.find(i=>i.id==="a3"));T('senza scadenza resta senza',it.loc==="congelatore"&&!it.exp);
+await p.evaluate(()=>frz("a1"));it=await p.evaluate(()=>S.items.find(i=>i.id==="a1"));T('scongela: frigo + 2 gg',it.loc==="frigo"&&await p.evaluate(()=>days(S.items.find(i=>i.id==="a1").exp))===2);
+await p.evaluate(()=>doUndo());it=await p.evaluate(()=>S.items.find(i=>i.id==="a1"));T('annulla scongela',it.loc==="congelatore");
+T('bottone ❄️ in dispensa',await p.evaluate(()=>S.tab="dispensa"&&(S.dc="Cereali e derivati",render(),document.getElementById('v').innerHTML.includes("frz('a2')"))));
+// scontrino lungo
+await p.evaluate(()=>{S.items=[];S.tab="add";window.__calls=[];claude.vision=async(P,imgs)=>{window.__calls.push({n:imgs.length,P});const k=window.__calls.length;
+ if(k===1)return {store:"Coop",date:null,total:50,items:[{raw:"LATTE PS 1L",name:"Latte parzialmente scremato",conf:"alta",qty:1,unit:"ml",price:1.5,cat:"Latticini e uova",days:7},{raw:"XZQ 33",name:"Qualcosa",conf:"bassa",qty:1,unit:"pz",price:2.2,cat:"Altro",days:30}]};
+ return {items:[{raw:"XZQ 33",name:"Qualcosa",conf:"bassa",qty:1,unit:"pz",price:2.2,cat:"Altro",days:30},{raw:"PETTO POLLO",name:"Petto di pollo",conf:"alta",qty:500,unit:"g",price:5,cat:"Carne e pesce",days:3}]}};render()});
+await p.waitForTimeout(300);
+await p.setInputFiles('input[onchange="rcpScan(this)"]',require('path').join(__dirname,'fixtures','scontrino-lungo.png'));
+await p.waitForFunction(()=>S.rcp&&(S.rcp.items||S.rcp.err),null,{timeout:90000});
+const R=await p.evaluate(()=>({n:S.rcp.items&&S.rcp.items.length,items:S.rcp.items,calls:window.__calls.map(c=>c.n),err:S.rcp.err,nlow:S.rcp.nlow}));
+console.log(JSON.stringify(R).slice(0,600));
+T('immagine alta divisa in più strisce (>=3 chiamate dimezzate)',R.calls&&R.calls.length>=2&&R.calls[0]===2);
+T('riga doppia ai bordi tolta',R.n===3);
+T('riga dubbia deselezionata',R.items&&R.items.find(x=>x.name==="Qualcosa").sel===false&&R.nlow===1);
+T('prompt vieta di inventare',await p.evaluate(()=>/NON inventare/.test(window.__calls[0].P)));
+t=await p.evaluate(()=>document.getElementById('v').innerText);
+T('mostra riga originale e avviso',/Sullo scontrino: «LATTE PS 1L»/.test(t)&&/Riga poco chiara/.test(t));
+// congela in revisione
+await p.evaluate(()=>{const i=S.rcp.items.findIndex(x=>x.name==="Petto di pollo");rcpSet(i,"frz",true);render()});
+await p.evaluate(()=>rcpAdd());
+const pol=await p.evaluate(()=>S.items.find(i=>i.name==="Petto di pollo"));
+T('scontrino: pollo congelato con scadenza 90gg',pol&&pol.loc==="congelatore"&&await p.evaluate(()=>days(S.items.find(i=>i.name==="Petto di pollo").exp))===90);
+T('prodotto non congelato resta senza loc forzata',await p.evaluate(()=>S.items.find(i=>i.name==="Latte parzialmente scremato").loc==="")&&await p.evaluate(()=>!S.items.find(i=>i.name==="Qualcosa")));
+T('nessun errore JS',E.length===0);if(E.length)console.log(E);console.log(ok+' ok, '+ko+' ko');await b.close();srv.close()})();

@@ -1,0 +1,19 @@
+name: Test
+on:
+  push:
+    branches: [main]
+    paths-ignore: ["volantini/**", "dispensa-smart-dati.json"]
+  workflow_dispatch: {}
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Browser
+        run: cd tests && npm install --no-audit --no-fund && npx playwright install --with-deps chromium
+      - name: Test
+        run: bash tests/run-all.sh

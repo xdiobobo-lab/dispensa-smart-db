@@ -1,0 +1,1 @@
+{"name":"dispensa-smart-tests","private":true,"scripts":{"test":"bash run-all.sh"},"devDependencies":{"playwright":"^1.48.0"}}

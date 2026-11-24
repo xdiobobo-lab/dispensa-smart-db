@@ -3,6 +3,24 @@
 Tutte le modifiche importanti a **Dispensa Smart** sono annotate qui.
 Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) e il numero di versione, mostrato in basso nelle Impostazioni (⚙️), segue il [versionamento semantico](https://semver.org/lang/it/).
 
+## [2.12.0] – 2026-11-24
+
+### Aggiunto
+- **Novità a ogni aggiornamento**: quando l'app si aggiorna, all'apertura compare una finestra che spiega cosa è cambiato. Puoi rileggerla quando vuoi da ⚙️ Impostazioni → Novità.
+- **Avvisi sulle scadenze** (⚙️ Impostazioni → Avvisi): una notifica quando qualcosa scade oggi o domani. Compare quando apri l'app e, su Android con l'app installata sulla schermata Home, anche da sola una volta al giorno.
+- **Prova con dati di esempio**: al primo avvio (o a dispensa vuota) puoi caricare 14 prodotti di esempio per vedere come funziona l'app, e toglierli con un tocco.
+- **Ricompra**: quando elimini un prodotto dalla dispensa puoi metterlo subito nella lista della spesa.
+- **Preferenze alimentari** (⚙️ Impostazioni): vegetariano, senza lattosio, senza glutine, senza maiale. I suggerimenti e le ricette dell'AI evitano gli ingredienti non adatti.
+- **👎 Non mi piace** sulle ricette suggerite: non ti verrà più riproposta (si può annullare e ripristinare dalle impostazioni).
+- Altri 15 piatti nel catalogo delle ricette classiche (ora 251).
+
+### Cambiato
+- **Menu in basso più semplice**: Oggi, Dispensa, Ricette, Spesa e Altro. Piano pasti e Offerte sono ora in «Altro», insieme a Novità, Guida, Impostazioni e Cronologia.
+- Nella lista della spesa i prodotti «Già comprati» restano ripiegati finché non li apri.
+
+### Corretto
+- L'avviso «C'è una nuova versione» non può più bloccarsi: ora l'app controlla direttamente la versione del programma.
+
 ## [2.11.0] – 2026-11-24
 
 ### Migliorato
