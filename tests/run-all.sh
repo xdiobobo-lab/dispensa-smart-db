@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Esegue tutti i test: bash tests/run-all.sh   (serve: npm install && npx playwright install chromium)
+mkdir -p /tmp/w
 cd "$(dirname "$0")"
 fail=0
 for t in versione.test.js t9*.js t10*.js pw2.js pw3.js; do
