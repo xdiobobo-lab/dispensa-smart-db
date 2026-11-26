@@ -3,6 +3,17 @@
 Tutte le modifiche importanti a **Dispensa Smart** sono annotate qui.
 Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) e il numero di versione, mostrato in basso nelle Impostazioni (⚙️), segue il [versionamento semantico](https://semver.org/lang/it/).
 
+## [2.15.0] – 2026-11-26
+
+### Aggiunto
+- **Codice a barre**: nella scheda «Aggiungi» tocca «📷 Scansiona il codice a barre», inquadra la confezione e l'app compila da sola nome, categoria e quantità (dati da Open Food Facts). Tu scegli solo la scadenza. Se la fotocamera non va, puoi scrivere il numero del codice.
+- I prodotti che inserisci a mano vengono associati al loro codice: la volta dopo li riconosce subito, anche senza Internet.
+- «Aggiungi e scansiona il prossimo» per caricare la spesa un prodotto dopo l'altro.
+
+### Migliorato
+- **Nuova schermata «Aggiungi prodotto»**: suggerimenti dei nomi mentre scrivi, categoria, unità e scadenza proposte in automatico, tasti rapidi per quantità (− / + e valori comuni) e per la scadenza (domani, 1 settimana, 1 mese… o nessuna).
+- Elenco «Appena aggiunti» sotto il modulo, per controllare o annullare al volo.
+
 ## [2.14.0] – 2026-11-26
 
 ### Aggiunto

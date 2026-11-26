@@ -200,17 +200,82 @@ function vDisp(){
   return `<button class="card" style="text-align:left;cursor:pointer;margin:0;position:relative;${l.length?"":"opacity:.5"}" onclick="dcat('${c}')" aria-label="${c}: ${l.length} prodotti"><div style="font-size:30px;line-height:1.1">${CE[c]}</div><div style="font-weight:700;margin-top:4px">${c}</div><div class="mu">${l.length} prodott${l.length===1?"o":"i"}</div>${sc?`<span class="bd" style="position:absolute;top:8px;right:8px">⚠️ ${sc}</span>`:""}</button>`}).join("")+`</div>`;
  return h+(S.items.some(inLoc)?"":`<p class="mu">Non c’è ancora niente in questa sezione.</p>`)}
 function del(id){const i=S.items.findIndex(x=>x.id===id);if(i<0)return;const x=S.items[i];S.items.splice(i,1);save();render();undoable(`🗑️ Prodotto eliminato. <a href="#" onclick="reb(${esc(JSON.stringify(x.name))},'${x.u==="pz"?"pz":""}');return false" style="color:inherit;font-weight:700">🛒 Ricompra</a> ·`,{x,i},u=>{S.items.splice(Math.min(u.i,S.items.length),0,u.x)})}
-function vAdd(){return rcpHtml()+vAdd0()}
-function vAdd0(){return `<div class="card"><div class="f">
-<div class="w"><input id="n" placeholder="Prodotto (es. Pasta penne)" oninput="$('c').value=guess(this.value)"></div>
-<div class="w"><select id="c">${CATS.map(c=>`<option>${c}</option>`).join("")}</select></div><div class="w"><select id="loc"><option value="">Dove lo metti? Automatico</option>${LOCS.map(([k,n])=>`<option value="${k}">${n}</option>`).join("")}</select></div>
-<input id="q" type="number" min="0" step="any" placeholder="Quantità"><select id="u"><option>kg</option><option>g</option><option>l</option><option>ml</option><option>pz</option><option>cucchiaio</option><option>mezzo cucchiaio</option><option>cucchiaino</option></select>
-<div class="w"><label class="mu">Data di scadenza</label><input id="e" type="date" value="${addDays(7)}"><label class="mu" style="display:flex;gap:8px;align-items:center;margin-top:6px"><input id="ne" type="checkbox" style="width:auto" onchange="$('e').disabled=this.checked"> Senza scadenza</label></div>
-<div class="w"><button class="btn" style="width:100%" onclick="add()">Aggiungi alla dispensa</button></div></div></div>`}
-function add(){const n=$("n").value.trim(),q=parseFloat($("q").value),u=$("u").value,e=$("e").value;
+const COMUNI=["Pasta","Spaghetti","Penne","Riso","Farina 00","Pane","Latte","Uova","Burro","Yogurt","Mozzarella","Parmigiano","Ricotta","Mascarpone","Gorgonzola","Pecorino","Panna","Pomodori","Passata di pomodoro","Pelati","Zucchine","Melanzane","Patate","Cipolle","Carote","Insalata","Spinaci","Peperoni","Funghi","Broccoli","Cavolfiore","Zucca","Fagiolini","Cetrioli","Aglio","Basilico","Prezzemolo","Mele","Pere","Banane","Arance","Limoni","Fragole","Uva","Kiwi","Pesche","Pollo","Petto di pollo","Macinato di manzo","Salsiccia","Prosciutto cotto","Prosciutto crudo","Tonno in scatola","Salmone","Merluzzo","Fagioli","Ceci","Lenticchie","Piselli","Olio extravergine","Aceto","Sale","Zucchero","Biscotti","Cioccolato","Marmellata","Miele","Caffè","Tè","Acqua","Succo di frutta","Birra","Vino","Cornflakes","Fette biscottate","Pangrattato","Brodo","Dado","Pesto","Maionese","Ketchup","Senape","Gnocchi","Tortellini","Cous cous","Orzo","Farro","Polenta","Pizza surgelata","Gelato","Piselli surgelati","Spinaci surgelati"];
+const DU_CAT={"Cereali e derivati":"g","Latticini e uova":"g","Carne e pesce":"g","Frutta e verdura":"g","Legumi":"g","Condimenti e oli":"g","Dolci e snack":"g","Bevande":"l","Altro":"pz"};
+const DEXP={"Cereali e derivati":180,"Latticini e uova":10,"Carne e pesce":3,"Frutta e verdura":5,"Legumi":365,"Condimenti e oli":365,"Dolci e snack":90,"Bevande":180,"Altro":30};
+function addDef(name,cat){let u=DU_CAT[cat]||"pz",d=DEXP[cat]||30;const t=nm(name);
+ if(/\buov/.test(t)){u="pz";d=21}else if(/yogurt/.test(t)){u="pz";d=14}else if(/mozzarella|burrata|stracchino/.test(t)){u="g";d=7}else if(/\blatte\b/.test(t)){u="l";d=7}else if(/panna/.test(t)){u="ml";d=14}else if(/olio|aceto/.test(t)){u="l";d=540}else if(/\bpane\b|pancarr/.test(t)){d=5}else if(/parmigiano|grana|pecorino/.test(t)){d=60}else if(/surgelat|gelato/.test(t)){d=180}
+ return{u,d}}
+const QSTEP={kg:.5,g:50,l:.5,ml:50,pz:1,cucchiaio:1,"mezzo cucchiaio":1,cucchiaino:1};
+const QPRE={pz:[1,2,3,4,6,12],g:[100,200,250,500],kg:[.5,1,2],ml:[250,500,750],l:[.5,1,1.5,2],cucchiaio:[1,2,3],"mezzo cucchiaio":[1,2],cucchiaino:[1,2]};
+const EXPC=[["Domani",1],["3 giorni",3],["1 settimana",7],["2 settimane",14],["1 mese",30],["3 mesi",90],["6 mesi",180],["Nessuna",0]];
+const addT=()=>S.addT||(S.addT={});
+function qChips(){const el=$("qc");if(!el)return;const u=$("u").value;el.innerHTML=(QPRE[u]||[]).map(v=>`<button type="button" class="btn g" style="padding:5px 11px;font-size:14px" onclick="qSet(${v})">${String(v).replace(".",",")}</button>`).join("")}
+function qSet(v){$("q").value=v;addT().q=1}
+function qStep(k){const u=$("u").value,st=QSTEP[u]||1,v=Math.max(0,Math.round(((parseFloat($("q").value)||0)+k*st)*100)/100);$("q").value=v||"";addT().q=1}
+function expMark(){const ne=$("ne").checked,e=$("e").value;document.querySelectorAll("#ec button").forEach(b=>{const d=+b.dataset.d,on=d===0?ne:(!ne&&e===addDays(d));b.className="btn "+(on?"":"g")})}
+function expChip(d){addT().e=1;if(d===0){$("ne").checked=true;$("e").disabled=true}else{$("ne").checked=false;$("e").disabled=false;$("e").value=addDays(d)}$("eh").textContent="";expMark()}
+function expManual(){addT().e=1;$("eh").textContent="";expMark()}
+function addName(el){const v=el.value,T=addT();if(v.trim().length<3)return;if(!T.c)$("c").value=guess(v);const df=addDef(v,$("c").value);
+ if(!T.u){$("u").value=df.u;qChips()}if(!T.e&&!$("ne").checked){$("e").value=addDays(df.d);$("eh").textContent="Scadenza suggerita: controlla la confezione e cambiala se serve.";expMark()}}
+function recentHtml(){const l=(S.recent||[]).map(id=>S.items.find(i=>i.id===id)).filter(Boolean);if(!l.length)return"";
+ return `<div class="card"><b>✅ Appena aggiunti</b>${l.map(i=>`<div class="row" style="margin-top:8px"><span>${emo(i.name,i.cat)} <b>${esc(i.name)}</b> <span class="mu">${fmt(Math.round(i.q*100)/100,i.u)}${i.exp?" · scade "+dl2(i.exp):" · senza scadenza"}</span></span><button class="x" onclick="del('${i.id}')" aria-label="Elimina">✕</button></div>`).join("")}</div>`}
+const dl2=e=>{const p=String(e).split("-");return p.length===3?p[2]+"/"+p[1]:e};
+function vAdd(){return bcCard()+rcpHtml()+vAdd0()+recentHtml()}
+const bcCard=()=>`<div class="card"><button class="btn" style="width:100%;font-size:18px;padding:14px" onclick="bcStart()">📷 Scansiona il codice a barre</button><div class="mu" style="margin-top:8px">Inquadra il codice sulla confezione: compilo nome, categoria e quantità, tu scegli solo la scadenza.</div></div>`;
+function vAdd0(){const hist=(L("pnames")||[]),names=[...new Set([...hist,...S.items.map(i=>i.name),...COMUNI])].slice(0,400);
+ return `<div class="card"><h2 style="margin-top:0;font-size:18px">✍️ Oppure inserisci a mano</h2><div class="f">
+<div class="w"><input id="n" list="dl" autocomplete="off" placeholder="Prodotto (es. Pasta penne)" oninput="addName(this)"><datalist id="dl">${names.map(n=>`<option value="${esc(n)}">`).join("")}</datalist></div>
+<div class="w"><select id="c" onchange="addT().c=1">${CATS.map(c=>`<option>${c}</option>`).join("")}</select></div>
+<div class="w"><label class="mu">Quantità</label><div style="display:flex;gap:6px;align-items:center"><button type="button" class="btn g" style="padding:8px 16px;font-size:20px" onclick="qStep(-1)" aria-label="Meno">−</button><input id="q" type="number" min="0" step="any" placeholder="0" style="text-align:center;flex:1;min-width:0" oninput="addT().q=1"><button type="button" class="btn g" style="padding:8px 16px;font-size:20px" onclick="qStep(1)" aria-label="Più">+</button><select id="u" style="width:auto" onchange="addT().u=1;qChips()"><option>kg</option><option>g</option><option>l</option><option>ml</option><option selected>pz</option><option>cucchiaio</option><option>mezzo cucchiaio</option><option>cucchiaino</option></select></div><div id="qc" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px"></div></div>
+<div class="w"><label class="mu">Scadenza</label><div id="ec" style="display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 8px">${EXPC.map(([l,d])=>`<button type="button" class="btn g" data-d="${d}" style="padding:5px 11px;font-size:14px" onclick="expChip(${d})">${l}</button>`).join("")}</div><input id="e" type="date" value="${addDays(7)}" onchange="expManual()"><input id="ne" type="checkbox" hidden onchange="$('e').disabled=this.checked"><div class="mu" id="eh" style="margin-top:4px"></div></div>
+<div class="w"><select id="loc"><option value="">Dove lo metti? Automatico</option>${LOCS.map(([k,n])=>`<option value="${k}">${n}</option>`).join("")}</select></div>
+<div class="w"><button class="btn" style="width:100%" onclick="add()">Aggiungi alla dispensa</button><button class="btn g" style="width:100%;margin-top:8px" onclick="add(1)">➕ Aggiungi e scansiona il prossimo</button></div></div></div>`}
+function add(next){const n=$("n").value.trim(),q=parseFloat($("q").value),u=$("u").value,e=$("e").value;
  if(!n||!(q>0)||(!e&&!$("ne").checked))return toast("Compila nome, quantità e scadenza.");
- S.items.push({id:"p"+Date.now(),name:n,cat:$("c").value,q:q*U[u][1],u:U[u][0],exp:$("ne").checked?"":e,loc:$("loc").value});save();toast("Aggiunto: "+esc(n)+" → "+(LOCS.find(l=>l[0]===locOf(S.items[S.items.length-1]))||LOCS[0])[1]);
- $("n").value="";$("q").value="";$("c").value="Altro";$("loc").value="";$("ne").checked=false;$("e").disabled=false}
+ const it={id:"p"+Date.now(),name:n,cat:$("c").value,q:q*U[u][1],u:U[u][0],exp:$("ne").checked?"":e,loc:$("loc").value};S.items.push(it);
+ (S.recent=S.recent||[]).unshift(it.id);S.recent=S.recent.slice(0,6);
+ const h=(L("pnames")||[]).filter(x=>nm(x)!==nm(n));h.unshift(n);W("pnames",h.slice(0,60));
+ if(S.bcCur){const m=L("bc")||{};m[S.bcCur]={n,c:it.cat,q,u};W("bc",m);S.bcCur=null}
+ S.addT={};save();toast("Aggiunto: "+esc(n)+" → "+(LOCS.find(l=>l[0]===locOf(it))||LOCS[0])[1]);render();
+ if(next)bcStart();else setTimeout(()=>{const x=$("n");if(x)x.focus()},50)}
+/* ---------- codice a barre ---------- */
+function eanOk(c){c=String(c||"");if(!/^\d{8}$|^\d{12,13}$/.test(c))return false;const d=c.split("").map(Number),k=d.pop();let s=0;d.reverse().forEach((x,i)=>s+=x*(i%2?1:3));return (10-s%10)%10===k}
+let bcLibP=null;
+function bcLib(){if(window.Html5Qrcode)return Promise.resolve();return bcLibP||(bcLibP=new Promise((ok,ko)=>{const s=document.createElement("script");s.src="html5-qrcode.min.js?v="+APP_VER;s.onload=()=>window.Html5Qrcode?ok():ko(new Error("lib"));s.onerror=()=>{bcLibP=null;ko(new Error("lib"))};document.head.appendChild(s)}))}
+function bcMsg(t){const m=$("bcm");if(m)m.textContent=t}
+async function bcStart(){if($("bco"))return;S.tab="add";S.thp=false;render();
+ const o=document.createElement("div");o.id="bco";o.setAttribute("role","dialog");o.setAttribute("aria-label","Scansione codice a barre");o.style.cssText="position:fixed;inset:0;z-index:80;background:#000;display:flex;flex-direction:column";
+ o.innerHTML=`<div style="padding:12px 16px;display:flex;justify-content:space-between;align-items:center;color:#fff"><b>📷 Inquadra il codice a barre</b><button class="btn g" onclick="bcStop()">✕ Chiudi</button></div><div id="bcr" style="flex:1;min-height:0;display:flex;align-items:center;justify-content:center;color:#fff"></div><div style="padding:12px 16px 16px;background:var(--card);color:var(--tx)"><div class="mu" id="bcm">Avvicina il telefono al codice, con buona luce.</div><div style="display:flex;gap:8px;margin-top:8px"><input id="bcn" inputmode="numeric" placeholder="Oppure scrivi il numero" style="flex:1;min-width:0"><button class="btn" onclick="bcManual()">Cerca</button></div><div class="mu" style="margin-top:6px;font-size:12px">Dati dei prodotti: Open Food Facts (licenza ODbL)</div></div>`;
+ document.body.appendChild(o);
+ try{await bcLib();if(!$("bco"))return;const F=window.Html5QrcodeSupportedFormats||{};const h=new Html5Qrcode("bcr",{formatsToSupport:[F.EAN_13,F.EAN_8,F.UPC_A,F.UPC_E].filter(x=>x!==undefined),useBarCodeDetectorIfSupported:true,verbose:false});S.bcH=h;
+  await h.start({facingMode:"environment"},{fps:10,qrbox:(w,hh)=>({width:Math.max(120,Math.min(w-40,320)),height:Math.max(80,Math.min(hh-40,160))})},c=>bcHit(c),()=>{})}
+ catch(e){bcMsg("Non riesco ad aprire la fotocamera (permesso negato o non disponibile). Scrivi qui sotto il numero del codice.")}}
+async function bcStop(){const h=S.bcH;S.bcH=null;try{if(h){await h.stop();h.clear()}}catch(e){}const o=$("bco");if(o)o.remove()}
+function bcHit(code){if(S.bcBusy||!eanOk(code))return;S.bcBusy=true;try{navigator.vibrate&&navigator.vibrate(60)}catch(e){}bcStop().then(()=>bcLookup(code)).finally(()=>{S.bcBusy=false})}
+function bcManual(){const c=($("bcn")||{}).value;const v=String(c||"").replace(/\D/g,"");if(!eanOk(v))return bcMsg("Numero non valido: controlla le cifre sotto il codice a barre (8 o 13 cifre).");bcStop().then(()=>bcLookup(v))}
+const BCEN=[[/milk|yogurt|yoghurt|cheese|butter|egg|cream|dairy/,"Latticini e uova"],[/meat|chicken|beef|pork|fish|tuna|sausage|ham|salami|seafood|poultry/,"Carne e pesce"],[/legume|bean|lentil|chickpea|pea/,"Legumi"],[/fruit|vegetable|salad|tomato|potato/,"Frutta e verdura"],[/pasta|rice|bread|cereal|flour|noodle|couscous/,"Cereali e derivati"],[/sauce|oil|vinegar|spice|salt|condiment|seasoning/,"Condimenti e oli"],[/chocolate|sweet|candy|biscuit|cookie|cake|snack|dessert|jam/,"Dolci e snack"],[/beverage|water|juice|beer|wine|soda|coffee|tea/,"Bevande"]];
+function bcCat(name,tags){let c=guess(name);if(c!=="Altro")return c;const t=(tags||[]).join(" ").toLowerCase();const m=BCEN.find(([r])=>r.test(t));return m?m[1]:"Altro"}
+function bcQty(p){let q=0,u="";const t=String(p.quantity||"").toLowerCase().replace(",",".");
+ let m=t.match(/(\d+)\s*[x×]\s*(\d+(?:\.\d+)?)\s*(kg|g|l|cl|ml)\b/);
+ if(m){q=+m[1]*+m[2];u=m[3]}else{m=t.match(/(\d+(?:\.\d+)?)\s*(kg|g|l|cl|ml)\b/);if(m){q=+m[1];u=m[2]}}
+ if(!q&&+p.product_quantity>0){q=+p.product_quantity;u=String(p.product_quantity_unit||"g").toLowerCase()}
+ if(!q)return{q:1,u:"pz"};
+ if(u==="cl"){q*=10;u="ml"}
+ if(u==="g"&&q>=1000){q/=1000;u="kg"}else if(u==="ml"&&q>=1000){q/=1000;u="l"}
+ return{q:Math.round(q*100)/100,u:["kg","g","l","ml"].includes(u)?u:"pz"}}
+async function bcOff(code){const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),8000);
+ try{const r=await fetch("https://world.openfoodfacts.org/api/v2/product/"+code+".json?fields=product_name,product_name_it,generic_name_it,quantity,product_quantity,product_quantity_unit,categories_tags",{signal:ac.signal});if(!r.ok)return null;const j=await r.json();if(j.status!==1||!j.product)return null;
+  const p=j.product,name=String(p.product_name_it||p.product_name||p.generic_name_it||"").trim().slice(0,60);if(!name)return null;const q=bcQty(p);return{n:name,c:bcCat(name,p.categories_tags),q:q.q,u:q.u}}
+ finally{clearTimeout(tm)}}
+async function bcLookup(code){S.bcCur=code;const loc=(L("bc")||{})[code];toast("🔎 Cerco il prodotto…");let r=loc||null,src=loc?"tuo elenco":"Open Food Facts";
+ if(!r){try{r=await bcOff(code)}catch(e){r=null}}
+ S.tab="add";render();
+ if(!r){toast("Prodotto non trovato nel database: inserisci i dati a mano. La prossima volta lo riconosco io.");const x=$("n");if(x)x.focus();return}
+ bcFill(r,src)}
+function bcFill(r,src){const T=S.addT={};$("n").value=r.n;$("c").value=r.c;$("u").value=r.u;$("q").value=r.q;T.c=T.u=T.q=1;qChips();
+ const df=addDef(r.n,r.c);$("e").value=addDays(df.d);$("eh").textContent="Scadenza suggerita: scegli quella stampata sulla confezione.";expMark();
+ toast("✅ "+esc(r.n)+" ("+src+"). Scegli la scadenza e tocca Aggiungi.");const e=$("ec");if(e)e.scrollIntoView({block:"center",behavior:"smooth"})}
 const CEM={"":"✨",Antipasto:"🥖",Primo:"🍝",Secondo:"🥩",Contorno:"🥗",Dolce:"🍰",Altro:"🍽️"};
 const rcN=k=>S.recs.filter(r=>!k||r.course===k).length;
 function rcPick(k){S.gc=k;S.rv=1;S.err="";S.note="";if(!rcN(k)&&S.items.length&&!S.busy){render();window.scrollTo(0,0);return gen()}render();window.scrollTo(0,0)}

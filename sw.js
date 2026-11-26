@@ -1,6 +1,6 @@
-const C="dispensa-v2.14.0";
-const FILES=["./","index.html","style.css","ai.js","config.js","piatti.js","novita.js","core.js","dispensa.js","ricette.js","piano.js","negozi.js","account.js","dati.js","manifest.webmanifest","icon-192.png","icon-512.png"];
-self.addEventListener("install",e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(FILES.map(f=>f==="./"||f==="config.js"?f:f+"?v=2.14.0"))));self.skipWaiting()});
+const C="dispensa-v2.15.0";
+const FILES=["./","index.html","style.css","ai.js","config.js","piatti.js","novita.js","core.js","dispensa.js","ricette.js","piano.js","negozi.js","account.js","dati.js","manifest.webmanifest","icon-192.png","icon-512.png","html5-qrcode.min.js"];
+self.addEventListener("install",e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(FILES.map(f=>f==="./"||f==="config.js"?f:f+"?v=2.15.0"))));self.skipWaiting()});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C&&x!=="dispensa-ntf").map(x=>caches.delete(x)))));self.clients.claim()});
 self.addEventListener("fetch",e=>{
  const u=new URL(e.request.url);
