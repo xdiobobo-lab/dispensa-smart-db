@@ -3,6 +3,13 @@
 Tutte le modifiche importanti a **Dispensa Smart** sono annotate qui.
 Il formato segue [Keep a Changelog](https://keepachangelog.com/it/1.1.0/) e il numero di versione, mostrato in basso nelle Impostazioni (⚙️), segue il [versionamento semantico](https://semver.org/lang/it/).
 
+## [2.14.0] – 2026-11-26
+
+### Aggiunto
+- **Ricette vere da Wikibooks**: quando cerchi un piatto che non è nel catalogo, l'app lo cerca nel Libro di cucina di Wikibooks (ricette scritte da volontari) e l'AI lo riscrive in italiano usando solo ingredienti e passaggi che ci sono nel testo originale. Se l'AI aggiunge ingredienti che nel testo non ci sono, la ricetta viene scartata.
+- Anche in «Suggeriscimi ricette», se il catalogo non basta, l'app cerca su Wikibooks ricette che si fanno con la tua dispensa prima di far inventare abbinamenti all'AI.
+- Ogni ricetta da Wikibooks mostra la fonte: titolo con link alla pagina originale, licenza CC BY-SA e link agli autori.
+
 ## [2.13.0] – 2026-11-24
 
 ### Cambiato
